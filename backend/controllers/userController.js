@@ -47,17 +47,23 @@ const signup = async (req, res) => {
       role: newUser.role,
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: error });
   }
 };
 
 const signin = async (req, res) => {
   try {
-    const { email, password } = userLoginSchema.parse(req.body);
+    const { email, password, role } = userLoginSchema.parse(req.body);
 
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "User doesn't exists." });
+    }
+    if (user && user.role !== role) {
+      return res
+        .status(400)
+        .json({ message: "User with the provided role doesn't exists." });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -68,11 +74,13 @@ const signin = async (req, res) => {
     const token = getToken(user);
 
     res.json({
+      message: "User logged in successfully",
       token,
       userId: user._id,
       role: user.role,
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: error });
   }
 };

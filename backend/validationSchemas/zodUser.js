@@ -9,7 +9,7 @@ const userRegistrationSchema = z.object({
   phoneno: z
     .string()
     .regex(/^\d{10}$/, { message: "Phone number must be 10 digits" }),
-  role: z.enum(["farmer", "admin"]).optional().default("farmer"),
+  role: z.enum(["farmer", "owner"]).optional().default("farmer"),
 });
 
 const userLoginSchema = z.object({
@@ -17,6 +17,7 @@ const userLoginSchema = z.object({
   password: z
     .string()
     .min(6, { message: "Password must be at least 6 characters" }),
+  role: z.enum(["farmer", "owner"]).optional().default("farmer"),
 });
 
 module.exports = { userRegistrationSchema, userLoginSchema };
