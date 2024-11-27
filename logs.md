@@ -19,3 +19,15 @@
 - Designed Navbar component with necessary links.
 
 ---
+
+### Date: 27-11-2024
+
+**Tasks Completed:**
+
+- Warehouse owners can list their storages for rent.
+- Owners can upload an image of storage and also select the location using embedded map.
+- Created routes and controllers for warehouses.
+- Farmers can browser through a list of available storage areas.
+- They can also view particular storage area in detail by click on them.
+
+---
