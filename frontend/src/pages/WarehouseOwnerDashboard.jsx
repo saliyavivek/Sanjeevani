@@ -71,10 +71,12 @@ const WarehouseOwnerDashboard = () => {
           <h2 className="text-3xl font-semibold text-gray-800">
             Welcome back, Sarah!
           </h2>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-700 transition-colors duration-200">
-            <PlusCircle className="w-5 h-5 mr-2" />
-            Add New Listing
-          </button>
+          <a href="/warehouse/list">
+            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-700 transition-colors duration-200">
+              <PlusCircle className="w-5 h-5 mr-2" />
+              Add New Listing
+            </button>
+          </a>
         </div>
 
         {/* Quick Stats */}

@@ -3,25 +3,71 @@ const { Schema } = mongoose;
 
 const warehouseSchema = new Schema({
   ownerId: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+    required: true,
   },
-  name: String,
-  location: String,
-  size: String,
-  pricePerDay: String,
-  description: String,
-  availability: Boolean,
-  image: {
+  name: {
     type: String,
-    default:
-      "https://plus.unsplash.com/premium_photo-1681426730828-bfee2d13861d?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    set: (v) =>
-      v === ""
-        ? "https://plus.unsplash.com/premium_photo-1681426730828-bfee2d13861d?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        : v,
+    required: true,
+    trim: true,
+  },
+  description: {
+    type: String,
+    trim: true,
+  },
+  size: {
+    type: String,
+    required: true,
+  },
+  pricePerMonth: {
+    type: Number,
+    required: true,
+  },
+  images: [
+    {
+      type: String,
+    },
+  ],
+  availability: {
+    type: String,
+    enum: ["available", "booked", "maintenance"],
+    default: "available",
+  },
+  location: {
+    type: {
+      type: String,
+      enum: ["Point"],
+      required: true,
+    },
+    coordinates: {
+      type: [Number],
+      required: true,
+    },
+    formattedAddress: {
+      type: String,
+      trim: true,
+    },
+    city: {
+      type: String,
+      trim: true,
+    },
+    state: {
+      type: String,
+      trim: true,
+    },
+    country: {
+      type: String,
+      trim: true,
+    },
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
   },
 });
+
+warehouseSchema.index({ location: "2dsphere" });
 
 const Warehouse = mongoose.model("Warehouse", warehouseSchema);
 module.exports = Warehouse;
