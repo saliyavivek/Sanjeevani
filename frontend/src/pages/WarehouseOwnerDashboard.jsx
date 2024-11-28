@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   BarChart3,
   Package,
@@ -8,8 +8,25 @@ import {
   PlusCircle,
   LogOut,
 } from "lucide-react";
+import useAuth from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const WarehouseOwnerDashboard = () => {
+  const token = useAuth();
+  const navigate = useNavigate();
+  const [name, setName] = useState("");
+
+  useEffect(() => {
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setName(decodedToken.name);
+      if (decodedToken.role === "farmer") {
+        navigate("/farmer/dashboard");
+      }
+    }
+  }, [token, navigate]);
+
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
@@ -39,13 +56,7 @@ const WarehouseOwnerDashboard = () => {
             <Calendar className="w-5 h-5 mr-3" />
             Bookings
           </a>
-          <a
-            href="#"
-            className="flex items-center px-4 py-2 mt-2 text-gray-600 hover:bg-gray-100 hover:text-gray-700 transition-colors duration-200"
-          >
-            <MessageSquare className="w-5 h-5 mr-3" />
-            Messages
-          </a>
+
           <a
             href="#"
             className="flex items-center px-4 py-2 mt-2 text-gray-600 hover:bg-gray-100 hover:text-gray-700 transition-colors duration-200"
@@ -69,7 +80,7 @@ const WarehouseOwnerDashboard = () => {
       <main className="flex-1 overflow-y-auto p-8">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-3xl font-semibold text-gray-800">
-            Welcome back, Sarah!
+            Welcome back, {name ? name : "Kisan"}!
           </h2>
           <a href="/warehouse/list">
             <button className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-700 transition-colors duration-200">

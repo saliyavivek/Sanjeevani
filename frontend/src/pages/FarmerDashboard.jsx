@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   BarChart3,
   Warehouse,
@@ -7,8 +7,23 @@ import {
   Settings,
   LogOut,
 } from "lucide-react";
+import useAuth from "../hooks/useAuth";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 const FarmerDashboard = () => {
+  const token = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      if (decodedToken.role === "owner") {
+        navigate("/owner/dashboard");
+      }
+    }
+  }, [token, navigate]);
+
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
@@ -38,13 +53,7 @@ const FarmerDashboard = () => {
             <Calendar className="w-5 h-5 mr-3" />
             Book Storage
           </a>
-          <a
-            href="#"
-            className="flex items-center px-4 py-2 mt-2 text-gray-600 hover:bg-gray-100 hover:text-gray-700 transition-colors duration-200"
-          >
-            <MessageSquare className="w-5 h-5 mr-3" />
-            Messages
-          </a>
+
           <a
             href="#"
             className="flex items-center px-4 py-2 mt-2 text-gray-600 hover:bg-gray-100 hover:text-gray-700 transition-colors duration-200"

@@ -10,8 +10,14 @@ import { ArrowLeft, Upload } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 import { validateForm } from "../utils/FormValidation";
 import { jwtDecode } from "jwt-decode";
+import useAuth from "../hooks/useAuth";
+import { useDropzone } from "react-dropzone";
+import { useNavigate } from "react-router-dom";
 
 const AddNewListing = () => {
+  useAuth();
+  const navigate = useNavigate();
+  const [imagePreview, setImagePreview] = useState(null);
   const [currentUserId, setCurrentUserId] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -84,13 +90,32 @@ const AddNewListing = () => {
       });
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setFormData((prevState) => ({
-      ...prevState,
-      image: file,
-    }));
+  const handleImageChange = (acceptedFiles) => {
+    const file = acceptedFiles[0]; // Get the first file from the accepted files
+    if (file) {
+      if (!file.type.startsWith("image/")) {
+        console.error("Invalid file type. Please upload an image.");
+        return; // Exit if the file type is not valid
+      }
+      setFormData((prevState) => ({
+        ...prevState,
+        image: file,
+      }));
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result); // Set the image preview
+      };
+      reader.readAsDataURL(file);
+    }
   };
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: handleImageChange,
+    accept: {
+      "image/*": [], // Accept all image types
+    },
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -141,6 +166,7 @@ const AddNewListing = () => {
       if (response.ok) {
         const data = await response.json();
         console.log(data.message);
+        navigate("/listings");
       } else {
         const errorData = await response.json();
         console.error("Error adding warehouse:", errorData);
@@ -180,7 +206,7 @@ const AddNewListing = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="p-4 border-b bg-white">
+      {/* <div className="p-4 border-b bg-white">
         <div className="max-w-[1400px] mx-auto">
           <a
             href="/owner"
@@ -190,7 +216,7 @@ const AddNewListing = () => {
             Back to Dashboard
           </a>
         </div>
-      </div>
+      </div> */}
 
       {/* Main Content */}
       <div className="max-w-[1400px] mx-auto p-4">
@@ -341,7 +367,7 @@ const AddNewListing = () => {
                   <label className="block text-sm font-medium text-gray-700">
                     Warehouse Images
                   </label>
-                  <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
+                  {/* <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
                     <div className="space-y-1 text-center">
                       <Upload className="mx-auto h-12 w-12 text-gray-400" />
                       <div className="flex text-sm text-gray-600">
@@ -366,7 +392,36 @@ const AddNewListing = () => {
                         PNG, JPG, GIF up to 10MB
                       </p>
                     </div>
+                  </div> */}
+                  <div
+                    {...getRootProps({
+                      className:
+                        "mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer",
+                    })}
+                  >
+                    <input {...getInputProps()} />
+                    <div className="space-y-1 text-center">
+                      <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                      <p className="text-sm text-gray-600">
+                        Drag & drop your image here, or click to select files
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        PNG, JPG, GIF up to 10MB
+                      </p>
+                    </div>
                   </div>
+                  {imagePreview && (
+                    <div className="mt-4">
+                      <h3 className="text-sm font-medium text-gray-700">
+                        Image Preview:
+                      </h3>
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="mt-2 w-full h-auto rounded-lg border border-gray-300"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex justify-end">

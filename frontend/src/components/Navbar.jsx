@@ -4,7 +4,7 @@ import { jwtDecode } from "jwt-decode";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [role, setRole] = useState("farmer");
+  const [role, setRole] = useState("");
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -22,9 +22,18 @@ const Navbar = () => {
     }
   }, []);
 
+  function handleLogout() {
+    try {
+      localStorage.removeItem("token");
+      setRole("");
+    } catch (error) {
+      console.error("Invalid token", error);
+    }
+  }
+
   return (
     <header className="border-b">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between backdrop-blur-md">
+      <div className="max-w-[1400px] container mx-auto px-4 h-16 flex items-center justify-between backdrop-blur-md">
         {/* Logo */}
         <a href="/" className="flex items-center space-x-2">
           <ArrowUpDown className="h-6 w-6 text-green-500" />
@@ -36,14 +45,20 @@ const Navbar = () => {
           {role === "farmer" && (
             <>
               <a
-                href="/search"
-                className="text-sm font-medium text-gray-700 hover:text-green-600 transition-colors"
+                href="/farmer/dashboard"
+                className="text-md font-medium text-gray-700 hover:text-green-600 transition-colors"
+              >
+                My Dashboard
+              </a>
+              <a
+                href="/warehouses/search"
+                className="text-md font-medium text-gray-700 hover:text-green-600 transition-colors"
               >
                 Search Storage
               </a>
               <a
                 href="/bookings"
-                className="text-sm font-medium text-gray-700 hover:text-green-600 transition-colors"
+                className="text-md font-medium text-gray-700 hover:text-green-600 transition-colors"
               >
                 My Bookings
               </a>
@@ -52,14 +67,20 @@ const Navbar = () => {
           {role === "owner" && (
             <>
               <a
+                href="/owner/dashboard"
+                className="text-md font-medium text-gray-700 hover:text-green-600 transition-colors"
+              >
+                My Dashboard
+              </a>
+              <a
                 href="/listings"
-                className="text-sm font-medium text-gray-700 hover:text-green-600 transition-colors"
+                className="text-md font-medium text-gray-700 hover:text-green-600 transition-colors"
               >
                 Manage Listings
               </a>
               <a
                 href="/requests"
-                className="text-sm font-medium text-gray-700 hover:text-green-600 transition-colors"
+                className="text-md font-medium text-gray-700 hover:text-green-600 transition-colors"
               >
                 Booking Requests
               </a>
@@ -69,18 +90,32 @@ const Navbar = () => {
 
         {/* Auth Buttons */}
         <div className="hidden lg:flex items-center space-x-4">
-          <a
-            href="/signin"
-            className="px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 rounded-md h-10"
-          >
-            Sign in
-          </a>
-          <a
-            href="/signup"
-            className="px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-md transition-colors h-10"
-          >
-            Sign up
-          </a>
+          {role ? (
+            <>
+              <a
+                href=""
+                className="px-4 py-2 text-md font-medium text-gray-700 transition-colors hover:bg-gray-100 rounded-md h-10"
+                onClick={handleLogout}
+              >
+                Logout
+              </a>
+            </>
+          ) : (
+            <>
+              <a
+                href="/signin"
+                className="px-4 py-2 text-md font-medium text-gray-700 transition-colors hover:bg-gray-100 rounded-md h-10"
+              >
+                Sign in
+              </a>
+              <a
+                href="/signup"
+                className="px-4 py-2 text-md font-medium text-white bg-green-600 hover:bg-green-700 rounded-md transition-colors h-10"
+              >
+                Sign up
+              </a>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -99,7 +134,7 @@ const Navbar = () => {
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="lg:hidden fixed inset-0 z-50 bg-white">
-            <div className="flex flex-col space-y-4 p-4">
+            <div className="flex flex-col space-y-4 p-4 bg-white">
               <button
                 onClick={toggleMenu}
                 className="self-end p-2 text-gray-700 hover:text-green-600 transition-colors"

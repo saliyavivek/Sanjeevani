@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import StorageCard from "../components/StorageCard";
+import useAuth from "../hooks/useAuth";
 
 export default function BrowseStorage() {
+  useAuth();
   const [warehouses, setWarehouses] = useState([]);
 
   const fetchStorages = async () => {

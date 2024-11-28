@@ -60,7 +60,25 @@ const getAllWarehouses = async (req, res) => {
   }
 };
 
+const getMyListings = async (req, res) => {
+  try {
+    const warehouses = await Warehouse.find({
+      ownerId: req.body.user,
+    }).populate("ownerId");
+
+    if (warehouses.length > 0) {
+      return res.status(201).send({ warehouses });
+    } else {
+      return res.status(500).send({ message: "No warehouses found." });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: error });
+  }
+};
+
 module.exports = {
   addWarehouse,
   getAllWarehouses,
+  getMyListings,
 };

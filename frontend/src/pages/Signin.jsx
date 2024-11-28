@@ -24,9 +24,9 @@ const Signin = () => {
       const data = await response.json();
       localStorage.setItem("token", JSON.stringify(data.token));
       if (data.role === "farmer") {
-        navigate("/farmer");
+        navigate("/warehouses/search");
       } else {
-        navigate("/owner");
+        navigate("/listings");
       }
       // console.log(data.message);
     }
