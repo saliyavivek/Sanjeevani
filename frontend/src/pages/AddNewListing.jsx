@@ -12,10 +12,15 @@ import { validateForm } from "../utils/FormValidation";
 import { jwtDecode } from "jwt-decode";
 import useAuth from "../hooks/useAuth";
 import { useDropzone } from "react-dropzone";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const AddNewListing = () => {
   useAuth();
+  const location = useLocation();
+  const { existingWarehouse } = location.state || {};
+  const warehouseId = location.state?.existingWarehouse?._id;
+  console.log(warehouseId);
+
   const navigate = useNavigate();
   const [imagePreview, setImagePreview] = useState(null);
   const [currentUserId, setCurrentUserId] = useState(null);
@@ -35,6 +40,33 @@ const AddNewListing = () => {
       country: "",
     },
   });
+
+  useEffect(() => {
+    if (existingWarehouse) {
+      console.log(existingWarehouse);
+
+      setFormData({
+        name: existingWarehouse.name,
+        size: existingWarehouse.size,
+        pricePerMonth: existingWarehouse.pricePerMonth,
+        description: existingWarehouse.description,
+        availability: existingWarehouse.availability,
+        image: null, // Handle image separately
+        location: existingWarehouse.location && {
+          type: "Point",
+          coordinates: existingWarehouse.location.coordinates, // Default to India's center
+          formattedAddress: existingWarehouse.location.formattedAddress,
+          city: existingWarehouse.location.city,
+          state: existingWarehouse.location.state,
+          country: existingWarehouse.location.country,
+        },
+      });
+      console.log(formData);
+
+      // Set image preview if needed
+      setImagePreview(existingWarehouse.images[0]);
+    }
+  }, [existingWarehouse]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -128,6 +160,10 @@ const AddNewListing = () => {
       formDataToSend.append("image", formData.image);
     }
 
+    if (warehouseId) {
+      formDataToSend.append("warehouseId", warehouseId);
+    }
+
     // Append other form fields
     Object.keys(formData).forEach((key) => {
       if (key !== "image") {
@@ -158,10 +194,13 @@ const AddNewListing = () => {
     });
 
     try {
-      const response = await fetch("http://localhost:8080/api/warehouses/add", {
-        method: "POST",
-        body: formDataToSend,
-      });
+      const response = await fetch(
+        `http://localhost:8080/api/warehouses/${warehouseId ? "edit" : "add"}`,
+        {
+          method: warehouseId ? "PUT" : "POST",
+          body: formDataToSend,
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -169,7 +208,7 @@ const AddNewListing = () => {
         navigate("/listings");
       } else {
         const errorData = await response.json();
-        console.error("Error adding warehouse:", errorData);
+        console.error("Error saving warehouse:", errorData);
       }
     } catch (error) {
       console.error("Network error:", error);
@@ -225,7 +264,7 @@ const AddNewListing = () => {
           <div className="flex-1 lg:max-w-[600px]">
             <div className="bg-white rounded-xl shadow-sm p-6">
               <h1 className="text-2xl font-semibold text-gray-900 mb-6">
-                Add New Listing
+                {existingWarehouse ? "Edit this Listing" : "Add New Listing"}
               </h1>
 
               <form
@@ -427,9 +466,9 @@ const AddNewListing = () => {
                 <div className="flex justify-end">
                   <button
                     type="submit"
-                    className="inline-flex justify-center rounded-lg border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    className="inline-flex justify-center rounded-lg border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                   >
-                    Add Listing
+                    {existingWarehouse ? "Update Listing" : "Add Listing"}
                   </button>
                 </div>
               </form>

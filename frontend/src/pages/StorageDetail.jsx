@@ -14,42 +14,12 @@ const StorageDetail = () => {
     <div className="max-w-6xl mx-auto px-4 py-8">
       {/* Image Grid */}
       <div className="relative">
-        <div className="grid grid-cols-2 gap-2 rounded-xl overflow-hidden">
-          <div className="col-span-2 row-span-2 relative aspect-[4/3]">
-            <img
-              src={warehouse.images[0]}
-              alt="Main storage view"
-              className="w-full h-full object-cover"
-            />
-          </div>
-          {/* <div className="relative aspect-[4/3]">
-            <img
-              src={warehouse.images[1]}
-              alt="Storage view"
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <div className="relative aspect-[4/3]">
-            <img
-              src={warehouse.images[2]}
-              alt="Storage view"
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <div className="relative aspect-[4/3]">
-            <img
-              src={warehouse.images[3]}
-              alt="Storage view"
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <div className="relative aspect-[4/3]">
-            <img
-              src={warehouse.images[4]}
-              alt="Storage view"
-              className="w-full h-full object-cover"
-            />
-          </div> */}
+        <div className="relative overflow-hidden">
+          <img
+            src={warehouse.images[0]}
+            alt="Main storage view"
+            className="w-full h-[500px] object-cover rounded-xl"
+          />
         </div>
         {/* <button
           onClick={() => setShowAllPhotos(true)}
@@ -153,7 +123,7 @@ const StorageDetail = () => {
         </p>
         <div className="h-[400px] rounded-xl overflow-hidden">
           <MapContainer
-            center={warehouse.location.coordinates}
+            center={warehouse.location.coordinates.slice().reverse()}
             zoom={13}
             style={{ height: "100%", width: "100%" }}
           >
@@ -161,7 +131,7 @@ const StorageDetail = () => {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
-            <Marker position={warehouse.location.coordinates}>
+            <Marker position={warehouse.location.coordinates.slice().reverse()}>
               <Popup>
                 {warehouse.name}
                 <br />

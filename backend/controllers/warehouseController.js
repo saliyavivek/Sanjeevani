@@ -25,7 +25,7 @@ const addWarehouse = async (req, res) => {
       images: [imageUrl],
       location: {
         type: location.type,
-        coordinates: [latitude, longitude],
+        coordinates: [longitude, latitude],
         formattedAddress: location.formattedAddress,
         city: location.city,
         state: location.state,
@@ -77,8 +77,76 @@ const getMyListings = async (req, res) => {
   }
 };
 
+const editWarehouse = async (req, res) => {
+  try {
+    const {
+      warehouseId,
+      name,
+      size,
+      pricePerMonth,
+      description,
+      availability,
+      location,
+      longitude,
+      latitude,
+    } = req.body;
+    console.log("longitude", longitude);
+    console.log("latitude", latitude);
+
+    const warehouse = await Warehouse.findById(warehouseId);
+
+    if (!warehouse) {
+      return res.status(404).json({ message: "Warehouse not found" });
+    }
+
+    warehouse.name = name || warehouse.name;
+    warehouse.description = description || warehouse.description;
+    warehouse.size = size || warehouse.size;
+    warehouse.pricePerMonth = pricePerMonth || warehouse.pricePerMonth;
+    warehouse.availability = availability || warehouse.availability;
+    warehouse.location.coordinates[0] =
+      longitude || warehouse.location.coordinates[0];
+    warehouse.location.coordinates[1] =
+      latitude || warehouse.location.coordinates[1];
+
+    Object.keys(location).forEach((key) => {
+      if (location[key] !== undefined) {
+        warehouse.location[key] = location[key];
+      }
+    });
+
+    if (req.file) {
+      warehouse.images[0] = req.file.path;
+    }
+
+    // Save updated warehouse
+    await warehouse.save();
+    res.status(200).json({ message: "Warehouse updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating warehouse", error });
+  }
+};
+
+const deleteWarehouse = async (req, res) => {
+  try {
+    const { warehouseId } = req.body;
+
+    const warehouse = await Warehouse.findById(warehouseId);
+    if (!warehouse) {
+      return res.status(404).json({ message: "Warehouse not found" });
+    }
+
+    await Warehouse.deleteOne({ _id: warehouseId });
+    res.status(200).json({ message: "Warehouse deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting warehouse", error });
+  }
+};
+
 module.exports = {
   addWarehouse,
   getAllWarehouses,
   getMyListings,
+  editWarehouse,
+  deleteWarehouse,
 };
