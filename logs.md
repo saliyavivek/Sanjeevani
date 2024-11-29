@@ -31,3 +31,26 @@
 - They can also view particular storage area in detail by click on them.
 
 ---
+
+### Date: 28-11-2024
+
+**Tasks Completed:**
+
+- Owners can see storages listed by them.
+- Implemented logout functionality.
+- Change navbar links.
+- Created custom hook to check if the user is logged in or not.
+- Implemented drag-and-drop functionality when owners list the storage images.
+
+---
+
+### Date: 29-11-2024
+
+**Tasks Completed:**
+
+- Implemented Edit and Delete feature for Storages.
+- Designed confirmation modal to confirm deletion of storage spaces by the owners.
+- Designed filter modal to allow farmers to filter storages based on price and size.
+- Both add and edit listing is handled in single file on the frontend.
+
+---
