@@ -8,7 +8,7 @@ const useAuth = () => {
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (!storedToken) {
-      navigate("/signin");
+      navigate("/signup");
     } else {
       setToken(storedToken);
     }

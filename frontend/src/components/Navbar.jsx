@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { ArrowUpDown, Menu, X } from "lucide-react";
+import { ArrowUpDown, Leaf, Menu, X, LogOut } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
+import { useLocation, useNavigate } from "react-router-dom";
+import LogoutConfirmModal from "./LogoutConfirmModal";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [role, setRole] = useState("");
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -16,7 +21,6 @@ const Navbar = () => {
         setRole(decodedToken.role);
       } catch (error) {
         console.error("Invalid token", error);
-        // Optional: Clear invalid token
         localStorage.removeItem("token");
       }
     }
@@ -26,8 +30,10 @@ const Navbar = () => {
     try {
       localStorage.removeItem("token");
       setRole("");
+      setIsLogoutModalOpen(false);
+      navigate("/"); // Redirect to home page after logout
     } catch (error) {
-      console.error("Invalid token", error);
+      console.error("Error during logout", error);
     }
   }
 
@@ -35,9 +41,13 @@ const Navbar = () => {
     <header className="border-b">
       <div className="max-w-[1400px] container mx-auto px-4 h-16 flex items-center justify-between backdrop-blur-md">
         {/* Logo */}
-        <a href="/" className="flex items-center space-x-2">
-          <ArrowUpDown className="h-6 w-6 text-green-500" />
-          <span className="font-bold text-xl">Sanjeevani</span>
+        <a href="/" className="cursor-pointer">
+          <div className="flex items-center">
+            <Leaf className="h-8 w-8 text-emerald-600" />
+            <span className="ml-1 text-2xl font-bold text-emerald-700">
+              Sanjeevani
+            </span>
+          </div>
         </a>
 
         {/* Desktop Navigation */}
@@ -91,15 +101,13 @@ const Navbar = () => {
         {/* Auth Buttons */}
         <div className="hidden lg:flex items-center space-x-4">
           {role ? (
-            <>
-              <a
-                href=""
-                className="px-4 py-2 text-md font-medium text-gray-700 transition-colors hover:bg-gray-100 rounded-md h-10"
-                onClick={handleLogout}
-              >
-                Logout
-              </a>
-            </>
+            <button
+              className="px-4 py-2 text-md font-medium text-gray-700 transition-colors hover:bg-gray-100 rounded-md h-10 flex items-center"
+              onClick={() => setIsLogoutModalOpen(true)}
+            >
+              <LogOut className="w-5 h-5 mr-2" />
+              Logout
+            </button>
           ) : (
             <>
               <a
@@ -110,7 +118,7 @@ const Navbar = () => {
               </a>
               <a
                 href="/signup"
-                className="px-4 py-2 text-md font-medium text-white bg-green-600 hover:bg-green-700 rounded-md transition-colors h-10"
+                className="px-4 py-2 text-md font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-md transition-colors h-10"
               >
                 Sign up
               </a>
@@ -142,47 +150,89 @@ const Navbar = () => {
               >
                 <X className="h-6 w-6" />
               </button>
-              <a
-                href="/search"
-                className="text-lg font-medium text-gray-700 hover:text-green-600 transition-colors"
-              >
-                Search Storage
-              </a>
-              <a
-                href="/bookings"
-                className="text-lg font-medium text-gray-700 hover:text-green-600 transition-colors"
-              >
-                My Bookings
-              </a>
-              <a
-                href="/listings"
-                className="text-lg font-medium text-gray-700 hover:text-green-600 transition-colors"
-              >
-                Manage Listings
-              </a>
-              <a
-                href="/requests"
-                className="text-lg font-medium text-gray-700 hover:text-green-600 transition-colors"
-              >
-                Booking Requests
-              </a>
+              {role === "farmer" && (
+                <>
+                  <a
+                    href="/farmer/dashboard"
+                    className="text-lg font-medium text-gray-700 hover:text-green-600 transition-colors"
+                  >
+                    My Dashboard
+                  </a>
+                  <a
+                    href="/warehouses/search"
+                    className="text-lg font-medium text-gray-700 hover:text-green-600 transition-colors"
+                  >
+                    Search Storage
+                  </a>
+                  <a
+                    href="/bookings"
+                    className="text-lg font-medium text-gray-700 hover:text-green-600 transition-colors"
+                  >
+                    My Bookings
+                  </a>
+                </>
+              )}
+              {role === "owner" && (
+                <>
+                  <a
+                    href="/owner/dashboard"
+                    className="text-lg font-medium text-gray-700 hover:text-green-600 transition-colors"
+                  >
+                    My Dashboard
+                  </a>
+                  <a
+                    href="/listings"
+                    className="text-lg font-medium text-gray-700 hover:text-green-600 transition-colors"
+                  >
+                    Manage Listings
+                  </a>
+                  <a
+                    href="/requests"
+                    className="text-lg font-medium text-gray-700 hover:text-green-600 transition-colors"
+                  >
+                    Booking Requests
+                  </a>
+                </>
+              )}
               <hr className="my-4" />
-              <a
-                href="/signin"
-                className="text-lg font-medium text-gray-700 hover:text-green-600 transition-colors"
-              >
-                Sign in
-              </a>
-              <a
-                href="/signup"
-                className="px-4 py-2 text-lg font-medium text-white bg-green-600 hover:bg-green-700 rounded-md transition-colors text-center"
-              >
-                Sign up
-              </a>
+              {role ? (
+                <button
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setIsLogoutModalOpen(true);
+                  }}
+                  className="text-lg font-medium text-gray-700 hover:text-green-600 transition-colors flex items-center"
+                >
+                  <LogOut className="w-5 h-5 mr-2" />
+                  Logout
+                </button>
+              ) : (
+                <>
+                  <a
+                    href="/signin"
+                    className="text-lg font-medium text-gray-700 hover:text-green-600 transition-colors"
+                  >
+                    Sign in
+                  </a>
+                  <a
+                    href="/signup"
+                    className="px-4 py-2 text-lg font-medium text-white bg-emerald-600 hover:bg-green-700 rounded-md transition-colors text-center"
+                  >
+                    Sign up
+                  </a>
+                </>
+              )}
             </div>
           </div>
         )}
       </div>
+
+      {/* Logout Confirm Modal */}
+      <LogoutConfirmModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={handleLogout}
+      />
     </header>
   );
 };

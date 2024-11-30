@@ -8,12 +8,18 @@ import AddNewListing from "./pages/AddNewListing";
 import BrowseStorage from "./pages/BrowseStorage";
 import StorageDetail from "./pages/StorageDetail";
 import Listings from "./pages/Listings";
+import LandingPage from "./pages/LandingPage";
+import { useLocation } from "react-router-dom";
 
-function App() {
+const AppRoutes = () => {
+  const location = useLocation(); // Get the current location
+
   return (
-    <BrowserRouter>
-      <Navbar />
+    <>
+      {/* Conditionally render Navbar based on the current path */}
+      {location.pathname !== "/" && <Navbar />}
       <Routes>
+        <Route path="/" element={<LandingPage />} />
         <Route path="/warehouses/search" element={<BrowseStorage />} />
         <Route path="/owner/dashboard" element={<WarehouseOwnerDashboard />} />
         <Route path="/farmer/dashboard" element={<FarmerDashboard />} />
@@ -23,6 +29,14 @@ function App() {
         <Route path="/warehouse/:id" element={<StorageDetail />} />
         <Route path="/listings" element={<Listings />} />
       </Routes>
+    </>
+  );
+};
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppRoutes /> {/* Use the new AppRoutes component */}
     </BrowserRouter>
   );
 }

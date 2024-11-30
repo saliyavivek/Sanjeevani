@@ -50,7 +50,7 @@ export default function Listings() {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gray-900">Your listings</h1>
           <a href="/warehouse/list">
-            <button className="bg-green-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-green-700 transition-colors duration-200">
+            <button className="bg-emerald-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-emerald-700 transition-colors duration-200">
               <PlusCircle className="w-5 h-5 mr-2" />
               Add New Listing
             </button>
