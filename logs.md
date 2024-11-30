@@ -54,3 +54,11 @@
 - Both add and edit listing is handled in single file on the frontend.
 
 ---
+
+### Date: 30-11-2024
+
+**Tasks Completed:**
+
+- Designed the clean and minimal landing page of the website.
+- Re-designed Login and Register page to make it look good.
+- Also added a LogoutConfirmModal which asks for confirmation from the user to logout or not.
