@@ -62,3 +62,14 @@
 - Designed the clean and minimal landing page of the website.
 - Re-designed Login and Register page to make it look good.
 - Also added a LogoutConfirmModal which asks for confirmation from the user to logout or not.
+
+---
+
+### Date: 01-12-2024
+
+**Tasks Completed:**
+
+- Modified Login form. Now user doesn't need to select whether he is a farmer or owner. We check the role in the backend.
+- Renamed pricePerMonth field to pricePerDay in warehouseSchema.
+- Create new Booking schema.
+- Designed BookWarehouse page, used material ui date picker for the good look of the page.
