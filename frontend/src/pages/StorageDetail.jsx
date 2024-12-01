@@ -2,12 +2,16 @@ import React, { useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { Grid, MapPin, Share2, User } from "lucide-react";
 import "leaflet/dist/leaflet.css";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const StorageDetail = () => {
   // const [showAllPhotos, setShowAllPhotos] = useState(false);
   const location = useLocation();
   const { warehouse } = location.state;
+  // console.log(warehouse);
+
+  const navigate = useNavigate();
+
   // console.log(warehouse);
 
   return (
@@ -79,7 +83,7 @@ const StorageDetail = () => {
               <div>
                 <p className="font-medium">Price</p>
                 <p className="text-gray-600">
-                  ₹{warehouse.pricePerMonth} per month
+                  ₹{warehouse.pricePerDay} per day
                 </p>
               </div>
             </div>
@@ -91,9 +95,9 @@ const StorageDetail = () => {
             <div className="flex justify-between items-center mb-6">
               <div>
                 <p className="text-2xl font-semibold">
-                  ₹{warehouse.pricePerMonth}
+                  ₹{warehouse.pricePerDay}
                 </p>
-                <p className="text-gray-600">per month</p>
+                <p className="text-gray-600">per day</p>
               </div>
               <span
                 className={`px-3 py-1 rounded-full text-sm ${
@@ -105,9 +109,17 @@ const StorageDetail = () => {
                 {warehouse.availability ? "Available" : "Sold out"}
               </span>
             </div>
-            <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700">
+
+            {/* <a href="/book/warehouse"> */}
+            <button
+              onClick={() =>
+                navigate("/book/warehouse", { state: { warehouse } })
+              }
+              className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700"
+            >
               Book Now
             </button>
+            {/* </a> */}
           </div>
         </div>
       </div>
@@ -118,7 +130,8 @@ const StorageDetail = () => {
           Where your storage will be
         </h2>
         <p className="mb-4 text-gray-600">
-          {warehouse.location.city}, {warehouse.location.state},{" "}
+          {warehouse.location.city && `${warehouse.location.city}, `}
+          {warehouse.location.state && `${warehouse.location.state}, `}
           {warehouse.location.country}
         </p>
         <div className="h-[400px] rounded-xl overflow-hidden">

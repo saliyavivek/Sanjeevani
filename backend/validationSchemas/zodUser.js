@@ -17,7 +17,6 @@ const userLoginSchema = z.object({
   password: z
     .string()
     .min(6, { message: "Password must be at least 6 characters" }),
-  role: z.enum(["farmer", "owner"]).optional().default("farmer"),
 });
 
 module.exports = { userRegistrationSchema, userLoginSchema };

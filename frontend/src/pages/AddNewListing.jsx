@@ -27,7 +27,7 @@ const AddNewListing = () => {
   const [formData, setFormData] = useState({
     name: "",
     size: "",
-    pricePerMonth: "",
+    pricePerDay: "",
     description: "",
     availability: "",
     image: null,
@@ -48,7 +48,7 @@ const AddNewListing = () => {
       setFormData({
         name: existingWarehouse.name,
         size: existingWarehouse.size,
-        pricePerMonth: existingWarehouse.pricePerMonth,
+        pricePerDay: existingWarehouse.pricePerDay,
         description: existingWarehouse.description,
         availability: existingWarehouse.availability,
         image: null, // Handle image separately
@@ -338,16 +338,16 @@ const AddNewListing = () => {
 
                   <div>
                     <label
-                      htmlFor="pricePerMonth"
+                      htmlFor="pricePerDay"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Price per Month (₹)
+                      Price per Day (₹)
                     </label>
                     <input
                       type="number"
-                      id="pricePerMonth"
-                      name="pricePerMonth"
-                      value={formData.pricePerMonth}
+                      id="pricePerDay"
+                      name="pricePerDay"
+                      value={formData.pricePerDay}
                       onChange={handleChange}
                       required
                       className="form-control mt-1 block w-full rounded-lg px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"

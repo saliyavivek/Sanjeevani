@@ -5,7 +5,7 @@ const addWarehouse = async (req, res) => {
     ownerId,
     name,
     size,
-    pricePerMonth,
+    pricePerDay,
     description,
     availability,
     location,
@@ -20,7 +20,7 @@ const addWarehouse = async (req, res) => {
       name,
       description,
       size,
-      pricePerMonth,
+      pricePerDay,
       availability,
       images: [imageUrl],
       location: {
@@ -83,7 +83,7 @@ const editWarehouse = async (req, res) => {
       warehouseId,
       name,
       size,
-      pricePerMonth,
+      pricePerDay,
       description,
       availability,
       location,
@@ -102,7 +102,7 @@ const editWarehouse = async (req, res) => {
     warehouse.name = name || warehouse.name;
     warehouse.description = description || warehouse.description;
     warehouse.size = size || warehouse.size;
-    warehouse.pricePerMonth = pricePerMonth || warehouse.pricePerMonth;
+    warehouse.pricePerDay = pricePerDay || warehouse.pricePerDay;
     warehouse.availability = availability || warehouse.availability;
     warehouse.location.coordinates[0] =
       longitude || warehouse.location.coordinates[0];

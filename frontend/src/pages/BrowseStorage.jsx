@@ -28,8 +28,8 @@ export default function BrowseStorage() {
     // Filter warehouses based on the applied filters
     const filtered = warehouses.filter((warehouse) => {
       const withinPriceRange =
-        warehouse.pricePerMonth >= filters.priceRange.min &&
-        warehouse.pricePerMonth <= filters.priceRange.max;
+        warehouse.pricePerDay >= filters.priceRange.min &&
+        warehouse.pricePerDay <= filters.priceRange.max;
       const withinSizeRange =
         warehouse.size >= filters.sizeRange.min &&
         warehouse.size <= filters.sizeRange.max;

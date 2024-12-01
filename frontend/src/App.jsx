@@ -10,6 +10,7 @@ import StorageDetail from "./pages/StorageDetail";
 import Listings from "./pages/Listings";
 import LandingPage from "./pages/LandingPage";
 import { useLocation } from "react-router-dom";
+import BookWarehouse from "./pages/BookWarehouse";
 
 const AppRoutes = () => {
   const location = useLocation(); // Get the current location
@@ -28,6 +29,7 @@ const AppRoutes = () => {
         <Route path="/warehouse/list" element={<AddNewListing />} />
         <Route path="/warehouse/:id" element={<StorageDetail />} />
         <Route path="/listings" element={<Listings />} />
+        <Route path="/book/warehouse" element={<BookWarehouse />} />
       </Routes>
     </>
   );

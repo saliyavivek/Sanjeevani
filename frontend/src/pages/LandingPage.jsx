@@ -112,8 +112,8 @@ const LandingPage = () => {
             </div>
             <div className="mt-10 lg:mt-0 lg:w-1/2">
               <img
-                className="rounded-lg shadow-xl"
-                src="/placeholder.svg?height=400&width=600"
+                className="rounded-lg shadow-xl h-400 w-600 object-cover"
+                src="https://res.cloudinary.com/dqb07bzeu/image/upload/v1733070017/sanjeevani/9f12094d-f623-4ffa-8a0d-643c7f8c6334_acktn0_e_gen_remove_prompt__watermark_on_the_bottom_right_corner_multiple_true_m4onid.jpg"
                 alt="Farmer in field"
               />
             </div>
@@ -328,7 +328,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <p className="text-gray-400">
-              &copy; 2023 Sanjeevani. All rights reserved.
+              &copy; 2024 Sanjeevani. All rights reserved.
             </p>
           </div>
         </div>

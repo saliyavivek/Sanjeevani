@@ -5,7 +5,7 @@ import { Leaf, ArrowRight, Mail, Lock } from "lucide-react";
 const Signin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("farmer");
+  // const [role, setRole] = useState("farmer");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -18,7 +18,7 @@ const Signin = () => {
       body: JSON.stringify({
         email,
         password,
-        role,
+        // role,
       }),
     });
     if (response.ok) {
@@ -27,7 +27,7 @@ const Signin = () => {
       if (data.role === "farmer") {
         navigate("/warehouses/search");
       } else {
-        navigate("/listings");
+        navigate("/owner/dashboard");
       }
     }
   };
@@ -90,7 +90,7 @@ const Signin = () => {
               </div>
             </div>
 
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <span className="block text-sm font-medium text-gray-700">
                 I am a
               </span>
@@ -125,7 +125,7 @@ const Signin = () => {
                   </label>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             <button
               type="submit"

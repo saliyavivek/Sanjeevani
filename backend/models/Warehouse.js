@@ -20,13 +20,19 @@ const warehouseSchema = new Schema({
     type: String,
     required: true,
   },
-  pricePerMonth: {
+  pricePerDay: {
     type: Number,
     required: true,
   },
   images: [
     {
       type: String,
+    },
+  ],
+  bookings: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Booking",
     },
   ],
   availability: {
