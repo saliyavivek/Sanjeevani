@@ -90,8 +90,8 @@ const editWarehouse = async (req, res) => {
       longitude,
       latitude,
     } = req.body;
-    console.log("longitude", longitude);
-    console.log("latitude", latitude);
+    // console.log("longitude", longitude);
+    // console.log("latitude", latitude);
 
     const warehouse = await Warehouse.findById(warehouseId);
 

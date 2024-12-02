@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { MapPin } from "lucide-react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -6,9 +6,10 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
-import dayjs from "dayjs";
 import "leaflet/dist/leaflet.css";
 import { useLocation, useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
+import { jwtDecode } from "jwt-decode";
 
 const theme = createTheme({
   palette: {
@@ -22,7 +23,7 @@ const BookWarehouse = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { warehouse } = location.state;
-  console.log(warehouse);
+  // console.log(warehouse);
 
   if (!warehouse) {
     navigate(-1);
@@ -32,6 +33,16 @@ const BookWarehouse = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [userId, setUserId] = useState("");
+
+  const token = useAuth();
+
+  useEffect(() => {
+    if (token) {
+      const { userId } = jwtDecode(token);
+      setUserId(userId);
+    }
+  }, [token]);
 
   const calculateDays = (start, end) => {
     if (!start || !end) return 0;
@@ -54,15 +65,32 @@ const BookWarehouse = () => {
   };
 
   const handleBooking = async () => {
-    if (!startDate || !endDate) {
-      alert("Please select both start and end dates");
-      return;
+    try {
+      if (!startDate || !endDate) {
+        alert("Please select both start and end dates");
+        return;
+      }
+
+      const response = await fetch("http://localhost:8080/api/bookings", {
+        method: "POST",
+        body: JSON.stringify({
+          warehouseId: warehouse._id,
+          userId,
+          startDate,
+          endDate,
+          totalPrice,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data.message, data.booking);
+      }
+    } catch (error) {
+      console.log(error);
     }
-    console.log("Booking submitted:", {
-      startDate: startDate.format("YYYY-MM-DD"),
-      endDate: endDate.format("YYYY-MM-DD"),
-      totalPrice,
-    });
   };
 
   return (

@@ -4,6 +4,7 @@ const express = require("express");
 const db = require("./db/db");
 const userRouter = require("./routes/userRoutes");
 const warehouseRouter = require("./routes/warehouseRoutes");
+const bookingRouter = require("./routes/bookingRoutes");
 const cors = require("cors");
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/users", userRouter);
 app.use("/api/warehouses", warehouseRouter);
+app.use("/api/bookings", bookingRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is up and listening to port ${PORT}`);
