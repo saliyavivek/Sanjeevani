@@ -73,3 +73,10 @@
 - Renamed pricePerMonth field to pricePerDay in warehouseSchema.
 - Create new Booking schema.
 - Designed BookWarehouse page, used material ui date picker for the good look of the page.
+
+### Date: 05-12-2024
+
+**Tasks Completed:**
+
+- Did some minor improvements to enhance user experience.
+- Conditionally showing buttons on Storage Details page based on the user's role.
