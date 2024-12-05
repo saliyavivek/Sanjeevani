@@ -39,9 +39,12 @@ const createBooking = async (req, res) => {
 
 const getUserBookings = async (req, res) => {
   try {
-    const bookings = await Booking.find({ userId: req.body.userId }).populate(
-      "warehouseId"
-    );
+    const bookings = await Booking.find({ userId: req.body.userId }).populate({
+      path: "warehouseId",
+      populate: {
+        path: "ownerId",
+      },
+    });
     res.status(200).json(bookings);
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
@@ -67,4 +70,27 @@ const cancelBooking = async (req, res) => {
   }
 };
 
-module.exports = { createBooking, getUserBookings, cancelBooking };
+const getBookingDetails = async (req, res) => {
+  try {
+    // console.log("inside get details");
+    const booking = await Booking.findById(req.params.bookingId).populate({
+      path: "warehouseId",
+      populate: {
+        path: "ownerId",
+      },
+    });
+    if (!booking) return res.status(404).json({ message: "Booking not found" });
+    // console.log(booking);
+
+    return res.status(200).json(booking);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+module.exports = {
+  createBooking,
+  getUserBookings,
+  cancelBooking,
+  getBookingDetails,
+};

@@ -34,8 +34,7 @@ export default function BrowseStorage() {
         warehouse.size >= filters.sizeRange.min &&
         warehouse.size <= filters.sizeRange.max;
       const availabilityMatch =
-        filters.availability === "all" ||
-        (filters.availability === "available" && warehouse.available);
+        filters.availability === "all" || filters.availability === "available";
 
       return withinPriceRange && withinSizeRange && availabilityMatch;
     });

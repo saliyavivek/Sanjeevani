@@ -1,18 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { Grid, MapPin, Share2, User } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 import { useLocation, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const StorageDetail = () => {
   // const [showAllPhotos, setShowAllPhotos] = useState(false);
   const location = useLocation();
   const { warehouse } = location.state;
-  // console.log(warehouse);
 
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  // console.log(warehouse);
+  const fetchCurrentUser = async () => {
+    const storedToken = localStorage.getItem("token");
+
+    if (storedToken) {
+      try {
+        const decodedToken = jwtDecode(storedToken);
+        setUser(decodedToken.userId);
+      } catch (error) {
+        console.error("Invalid token", error);
+        localStorage.removeItem("token");
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchCurrentUser();
+  }, []);
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
@@ -35,7 +52,13 @@ const StorageDetail = () => {
       </div>
 
       {/* Details Section */}
-      <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-12">
+      <div
+        className={
+          warehouse.ownerId._id !== user
+            ? "mt-8 grid grid-cols-1 lg:grid-cols-3 gap-12"
+            : "mt-8 grid grid-cols-1 lg:grid-cols-1 gap-12"
+        }
+      >
         <div className="lg:col-span-2">
           <div className="flex justify-between items-start">
             <div>
@@ -57,7 +80,10 @@ const StorageDetail = () => {
               <User className="w-10 h-10 p-2 bg-gray-100 rounded-full" />
               <div>
                 <p className="font-medium">
-                  Listed by {warehouse.ownerId.name}
+                  Listed by{" "}
+                  {warehouse.ownerId._id === user
+                    ? "you"
+                    : warehouse.ownerId.name}
                 </p>
                 <p className="text-gray-600">Storage Owner</p>
               </div>
@@ -91,36 +117,48 @@ const StorageDetail = () => {
         </div>
 
         <div className="lg:col-span-1">
-          <div className="sticky top-8 bg-white p-6 rounded-xl border shadow-sm">
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <p className="text-2xl font-semibold">
-                  ₹{warehouse.pricePerDay}
-                </p>
-                <p className="text-gray-600">per day</p>
+          {warehouse.ownerId._id !== user && (
+            <div className="sticky top-8 bg-white p-6 rounded-xl border shadow-sm">
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <p className="text-2xl font-semibold">
+                    ₹{warehouse.pricePerDay}
+                  </p>
+                  <p className="text-gray-600">per day</p>
+                </div>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm ${
+                    warehouse.availability === "available"
+                      ? "bg-green-100 text-green-800"
+                      : warehouse.availability === "booked"
+                      ? "bg-red-100 text-red-800"
+                      : "bg-yellow-100 text-yellow-800"
+                  }`}
+                >
+                  {warehouse.availability === "available"
+                    ? "Available"
+                    : warehouse.availability === "booked"
+                    ? "Booked"
+                    : "Under Maintenance"}
+                </span>
               </div>
-              <span
-                className={`px-3 py-1 rounded-full text-sm ${
-                  warehouse.availability
-                    ? "bg-green-100 text-green-800"
-                    : "bg-red-100 text-red-800"
-                }`}
-              >
-                {warehouse.availability ? "Available" : "Sold out"}
-              </span>
-            </div>
 
-            {/* <a href="/book/warehouse"> */}
-            <button
-              onClick={() =>
-                navigate("/book/warehouse", { state: { warehouse } })
-              }
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700"
-            >
-              Book Now
-            </button>
-            {/* </a> */}
-          </div>
+              {/* <a href="/book/warehouse"> */}
+              <button
+                onClick={() =>
+                  navigate("/book/warehouse", { state: { warehouse } })
+                }
+                className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700"
+              >
+                {warehouse.availability === "available"
+                  ? "Book Now"
+                  : warehouse.availability === "booked"
+                  ? "Booked"
+                  : "Under Maintenance"}
+              </button>
+              {/* </a> */}
+            </div>
+          )}
         </div>
       </div>
 

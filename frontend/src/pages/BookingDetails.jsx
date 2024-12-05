@@ -7,9 +7,11 @@ import {
   AlertCircle,
   CheckCircle,
   XCircle,
+  PhoneCall,
+  User,
 } from "lucide-react";
 import { format } from "date-fns";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const StatusBadge = ({ status }) => {
   const statusStyles = {
@@ -51,16 +53,33 @@ const BookingDetails = () => {
   //   const [booking, setBooking] = useState({});
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
-  const location = useLocation();
-  const { bookingData } = location.state;
+  const [booking, setBooking] = useState(null);
+  // const location = useLocation();
+  const navigate = useNavigate();
+  const { id } = useParams();
 
-  console.log(bookingData);
+  const fetchBookingDetails = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/bookings/${id}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      // console.log(data);
+      setBooking(data);
+      // console.log("fetched");
+    } catch (error) {
+      console.error("Failed to fetch booking details:", error.message);
+    }
+  };
 
-  //   useEffect(() => {
-  // if (bookingData) {
-  //   setBooking(bookingData);
-  // }
-  //   }, [location.state]);
+  useEffect(() => {
+    fetchBookingDetails();
+  }, [id]);
+
+  if (!booking) {
+    return <div>Loading...</div>; // Render loading state
+  }
 
   const handlePayment = () => {
     // Simulating payment process
@@ -70,9 +89,24 @@ const BookingDetails = () => {
     }, 1000);
   };
 
-  const handleCancel = () => {
-    setBooking({ ...booking, status: "cancelled" });
-    setIsCancelModalOpen(false);
+  const handleCancel = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/bookings/${booking._id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data.message);
+        // setBooking({ ...booking, status: "cancelled" });
+        setIsCancelModalOpen(false);
+        navigate("/bookings");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -87,47 +121,46 @@ const BookingDetails = () => {
               <div className="p-6">
                 <div className="flex justify-between items-start mb-4">
                   <h2 className="text-2xl font-semibold text-gray-900">
-                    {bookingData.warehouseId.name}
+                    {booking.warehouseId.name}
                   </h2>
-                  <StatusBadge status={bookingData.status} />
+                  <StatusBadge status={booking.status} />
                 </div>
                 <img
-                  src={bookingData.warehouseId.images[0]}
-                  alt={bookingData.warehouseId.name}
+                  src={booking.warehouseId.images[0]}
+                  alt={booking.warehouseId.name}
                   className="w-full h-64 object-cover rounded-lg mb-6"
                 />
                 <div className="space-y-4">
                   <div className="flex items-center text-gray-600">
                     <MapPin className="w-5 h-5 mr-2 flex-shrink-0" />
-                    <span>
-                      {bookingData.warehouseId.location.formattedAddress}
-                    </span>
+                    <span>{booking.warehouseId.location.formattedAddress}</span>
                   </div>
                   <div className="flex items-center text-gray-600">
                     <Calendar className="w-5 h-5 mr-2 flex-shrink-0" />
                     <span>
-                      {format(bookingData.startDate, "MMM d, yyyy")} -{" "}
-                      {format(bookingData.endDate, "MMM d, yyyy")}
+                      {format(booking.startDate, "MMM d, yyyy")} -{" "}
+                      {format(booking.endDate, "MMM d, yyyy")}
                     </span>
                   </div>
                   <div className="flex items-center text-gray-600">
                     <Package className="w-5 h-5 mr-2 flex-shrink-0" />
-                    <span>{bookingData.warehouseId.size} sq ft.</span>
+                    <span>{booking.warehouseId.size} sq ft.</span>
                   </div>
                 </div>
               </div>
               <div className="border-t border-gray-200 mt-6 pt-6 px-6 pb-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
-                    {/* <img
-                      src={bookingData.host.image}
-                      alt={bookingData.host.name}
-                      className="w-12 h-12 rounded-full"
-                    />
+                    <User className="w-10 h-10 p-2 bg-gray-100 rounded-full" />
                     <div>
-                      <p className="font-semibold">{booking.host.name}</p>
-                      <p className="text-sm text-gray-500">Host</p>
-                    </div> */}
+                      <p className="font-semibold">
+                        {booking.warehouseId.ownerId.name}
+                      </p>
+                      <p className="text-sm text-gray-500 flex items-center justify-center">
+                        <PhoneCall className="w-3 h-3 mr-1 flex-shrink-0 mt-1" />
+                        {booking.warehouseId.ownerId.phoneno}
+                      </p>
+                    </div>
                   </div>
                   <div className="text-right">
                     {/* <p className="font-semibold">{booking.host.rating} ★</p>
@@ -145,12 +178,12 @@ const BookingDetails = () => {
               <div className="flex justify-between items-center mb-4">
                 <span>Total Price</span>
                 <span className="text-2xl font-bold">
-                  ₹{bookingData.totalPrice.toLocaleString()}
+                  ₹{booking.totalPrice.toLocaleString()}
                 </span>
               </div>
               <div className="border-t border-gray-200 my-4"></div>
               <div className="space-y-4">
-                {bookingData.status === "pending" && (
+                {booking.status === "pending" && (
                   <button
                     onClick={() => setIsPaymentModalOpen(true)}
                     className="w-full bg-emerald-600 text-white py-2 px-4 rounded-lg hover:bg-emerald-700 transition-colors"
@@ -158,7 +191,7 @@ const BookingDetails = () => {
                     Complete Payment
                   </button>
                 )}
-                {bookingData.status !== "cancelled" && (
+                {booking.status !== "cancelled" && (
                   <button
                     onClick={() => setIsCancelModalOpen(true)}
                     className="w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors"
@@ -172,14 +205,13 @@ const BookingDetails = () => {
         </div>
       </div>
 
-      {/* Payment Modal */}
       <Modal
         isOpen={isPaymentModalOpen}
         onClose={() => setIsPaymentModalOpen(false)}
         title="Complete Payment"
       >
         <p className="mb-4">
-          Total Amount: ₹{bookingData.totalPrice.toLocaleString()}
+          Total Amount: ₹{booking.totalPrice.toLocaleString()}
         </p>
         <div className="flex justify-end space-x-4">
           <button
@@ -197,7 +229,6 @@ const BookingDetails = () => {
         </div>
       </Modal>
 
-      {/* Cancel Modal */}
       <Modal
         isOpen={isCancelModalOpen}
         onClose={() => setIsCancelModalOpen(false)}

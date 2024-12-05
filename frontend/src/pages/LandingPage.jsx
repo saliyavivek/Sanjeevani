@@ -6,6 +6,7 @@ import {
   Home,
   Star,
   ChevronRight,
+  User,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -274,11 +275,7 @@ const LandingPage = () => {
                   className="bg-white shadow-lg rounded-lg px-5 py-6 sm:px-6"
                 >
                   <div className="flex items-center space-x-4">
-                    <img
-                      className="h-12 w-12 rounded-full"
-                      src={testimonial.image}
-                      alt={testimonial.name}
-                    />
+                    <User />
                     <div>
                       <h3 className="text-lg font-medium text-gray-900">
                         {testimonial.name}

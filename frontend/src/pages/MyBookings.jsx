@@ -97,11 +97,7 @@ const BookingCard = ({ booking, navigate }) => (
         </span>
 
         <button
-          onClick={() =>
-            navigate(`/booking/${booking._id}`, {
-              state: { bookingData: booking },
-            })
-          }
+          onClick={() => navigate(`/booking/${booking._id}`)}
           className="text-emerald-600 hover:text-emerald-700 font-medium flex items-center transition-colors"
         >
           View Details

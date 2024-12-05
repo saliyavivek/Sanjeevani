@@ -87,6 +87,7 @@ const BookWarehouse = () => {
       if (response.ok) {
         const data = await response.json();
         console.log(data.message, data.booking);
+        navigate(`/booking/${data.booking._id}`);
       }
     } catch (error) {
       console.log(error);
