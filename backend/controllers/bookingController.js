@@ -88,9 +88,39 @@ const getBookingDetails = async (req, res) => {
   }
 };
 
+const confirmBooking = async (req, res) => {
+  try {
+    const booking = await Booking.findByIdAndUpdate(
+      req.params.bookingId,
+      {
+        status: "active",
+      },
+      {
+        new: true,
+      }
+    )
+      .populate("userId") // Populate userId
+      .populate({
+        path: "warehouseId", // Populate warehouseId
+        populate: {
+          path: "ownerId", // Populate warehouseId->ownerId
+        },
+      });
+    if (!booking) return res.status(404).json({ message: "Booking not found" });
+    // console.log(booking);
+
+    return res
+      .status(200)
+      .json({ message: "Booking is updated and is now active.", booking });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
 module.exports = {
   createBooking,
   getUserBookings,
   cancelBooking,
   getBookingDetails,
+  confirmBooking,
 };

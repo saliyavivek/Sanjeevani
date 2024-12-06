@@ -12,7 +12,6 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters }) => {
       max: 5000,
     },
     availability: "all",
-    sortBy: "recommended",
   });
 
   const handlePriceChange = (e) => {
@@ -171,24 +170,6 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters }) => {
                 Show All
               </button>
             </div>
-          </div>
-
-          {/* Sort By */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Sort by</h3>
-            <select
-              value={filters.sortBy}
-              onChange={(e) =>
-                setFilters((prev) => ({ ...prev, sortBy: e.target.value }))
-              }
-              className="w-full border rounded-lg p-2"
-            >
-              <option value="recommended">Recommended</option>
-              <option value="price_low">Price: Low to High</option>
-              <option value="price_high">Price: High to Low</option>
-              <option value="size_low">Size: Small to Large</option>
-              <option value="size_high">Size: Large to Small</option>
-            </select>
           </div>
         </div>
 

@@ -4,42 +4,7 @@ import { MapPin, Calendar, Package, ChevronRight } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-
-// const bookings = [
-//   {
-//     id: 1,
-//     warehouseName: "Modern Storage Facility",
-//     location: "123 Storage Lane, Mumbai, Maharashtra 400001",
-//     startDate: new Date(2024, 0, 15),
-//     endDate: new Date(2024, 1, 15),
-//     status: "active",
-//     size: "500 sq ft",
-//     price: 25000,
-//     image: "/placeholder.svg?height=200&width=300",
-//   },
-//   {
-//     id: 2,
-//     warehouseName: "Secure Warehouse Solutions",
-//     location: "456 Safekeep Road, Delhi, 110001",
-//     startDate: new Date(2024, 2, 1),
-//     endDate: new Date(2024, 3, 30),
-//     status: "upcoming",
-//     size: "1000 sq ft",
-//     price: 45000,
-//     image: "/placeholder.svg?height=200&width=300",
-//   },
-//   {
-//     id: 3,
-//     warehouseName: "City Center Storage",
-//     location: "789 Urban Avenue, Bangalore, 560001",
-//     startDate: new Date(2023, 11, 1),
-//     endDate: new Date(2023, 11, 31),
-//     status: "completed",
-//     size: "250 sq ft",
-//     price: 15000,
-//     image: "/placeholder.svg?height=200&width=300",
-//   },
-// ];
+import StorageCardSkeleton from "../components/StorageCardSkeleton";
 
 const StatusBadge = ({ status }) => {
   const statusStyles = {
@@ -112,6 +77,7 @@ const MyBookings = () => {
   const token = useAuth();
   const navigate = useNavigate();
   const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const fetchBookings = async () => {
     if (token) {
@@ -132,6 +98,7 @@ const MyBookings = () => {
 
         setBookings(data);
       }
+      setLoading(false);
     }
   };
 
@@ -143,13 +110,20 @@ const MyBookings = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">My Bookings</h1>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {bookings.map((booking) => (
-            <BookingCard
-              key={booking._id}
-              booking={booking}
-              navigate={navigate}
-            />
-          ))}
+          {loading
+            ? Array.from({ length: 2 }).map(
+                (
+                  _,
+                  index // Adjust the length as needed
+                ) => <StorageCardSkeleton key={index} />
+              )
+            : bookings.map((booking) => (
+                <BookingCard
+                  key={booking._id}
+                  booking={booking}
+                  navigate={navigate}
+                />
+              ))}
         </div>
       </div>
     </div>

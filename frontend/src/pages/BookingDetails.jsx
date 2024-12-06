@@ -3,27 +3,30 @@ import {
   MapPin,
   Calendar,
   Package,
-  CreditCard,
   AlertCircle,
   CheckCircle,
-  XCircle,
   PhoneCall,
   User,
+  Clock,
+  Check,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import generateInvoice from "../utils/generateInvoice";
 
 const StatusBadge = ({ status }) => {
   const statusStyles = {
     pending: "bg-yellow-100 text-yellow-800",
-    confirmed: "bg-green-100 text-green-800",
-    cancelled: "bg-red-100 text-red-800",
+    active: "bg-green-100 text-green-800",
+    upcoming: "bg-blue-100 text-blue-800",
+    completed: "bg-green-100 text-green-800",
   };
 
   const statusIcons = {
     pending: <AlertCircle className="w-4 h-4 mr-1" />,
-    confirmed: <CheckCircle className="w-4 h-4 mr-1" />,
-    cancelled: <XCircle className="w-4 h-4 mr-1" />,
+    active: <CheckCircle className="w-4 h-4 mr-1" />,
+    upcoming: <Clock className="w-4 h-4 mr-1" />,
+    completed: <Check className="w-4 h-4 mr-1" />,
   };
 
   return (
@@ -65,9 +68,12 @@ const BookingDetails = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      // console.log(data);
       setBooking(data);
-      // console.log("fetched");
+      // console.log(booking);
+
+      // if (booking?.status === "active") {
+      //   setBooking({ ...booking, status: "confirmed" });
+      // }
     } catch (error) {
       console.error("Failed to fetch booking details:", error.message);
     }
@@ -81,10 +87,22 @@ const BookingDetails = () => {
     return <div>Loading...</div>; // Render loading state
   }
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
     // Simulating payment process
+    const response = await fetch(`http://localhost:8080/api/bookings/${id}`, {
+      method: "PUT",
+    });
+
+    if (!response.ok) {
+      console.error("Failed to process payment.");
+      return;
+    }
+    const data = await response.json();
+    console.log(data.message, data.booking);
+    generateInvoice(data.booking);
+
     setTimeout(() => {
-      setBooking({ ...booking, status: "confirmed" });
+      setBooking({ ...booking, status: "active" });
       setIsPaymentModalOpen(false);
     }, 1000);
   };

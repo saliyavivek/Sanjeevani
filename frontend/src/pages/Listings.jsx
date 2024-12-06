@@ -3,12 +3,14 @@ import { jwtDecode } from "jwt-decode";
 import StorageCard from "../components/StorageCard";
 import useAuth from "../hooks/useAuth";
 import { PlusCircle } from "lucide-react";
+import StorageCardSkeleton from "../components/StorageCardSkeleton";
 
 export default function Listings() {
   useAuth();
 
   const [warehouses, setWarehouses] = useState([]);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const fetchStorages = async () => {
     const storedToken = localStorage.getItem("token");
@@ -38,6 +40,7 @@ export default function Listings() {
       const data = await response.json();
       setWarehouses(data.warehouses);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -58,13 +61,21 @@ export default function Listings() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {warehouses.map((warehouse) => (
-            <StorageCard
-              key={warehouse._id}
-              warehouse={warehouse}
-              onDelete={fetchStorages}
-            />
-          ))}
+          {loading
+            ? // Show skeletons based on the number of warehouses
+              Array.from({ length: 4 }).map(
+                (
+                  _,
+                  index // Adjust the length as needed
+                ) => <StorageCardSkeleton key={index} />
+              )
+            : warehouses.map((warehouse) => (
+                <StorageCard
+                  key={warehouse._id}
+                  warehouse={warehouse}
+                  onDelete={fetchStorages}
+                />
+              ))}
         </div>
       </div>
     </div>

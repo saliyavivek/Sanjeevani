@@ -83,9 +83,10 @@ const StorageCard = ({ warehouse, onDelete }) => {
         <h3 className="mt-2 text-lg font-semibold text-gray-900">
           {warehouse.name}
         </h3>
-        <p className="text-sm text-gray-600">
-          Listed by{" "}
-          {warehouse.ownerId._id === user ? "you" : warehouse.ownerId.name}
+        <p className="text-md text-black-600">
+          {/* Listed by{" "}
+          {warehouse.ownerId._id === user ? "you" : warehouse.ownerId.name} */}
+          <span className="font-medium">₹{warehouse.pricePerDay}</span> day
         </p>
         <p
           className={`mt-1 text-sm ${

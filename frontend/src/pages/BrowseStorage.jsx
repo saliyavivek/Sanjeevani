@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import StorageCard from "../components/StorageCard";
+import StorageCardSkeleton from "../components/StorageCardSkeleton";
 import useAuth from "../hooks/useAuth";
 import { SlidersHorizontal } from "lucide-react";
 import FilterModal from "../components/FilterModal";
@@ -9,13 +10,21 @@ export default function BrowseStorage() {
   const [warehouses, setWarehouses] = useState([]);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [filteredWarehouses, setFilteredWarehouses] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchStorages = async () => {
-    const response = await fetch("http://localhost:8080/api/warehouses/");
-    if (response.ok) {
-      const data = await response.json();
-      setWarehouses(data.warehouses);
-      setFilteredWarehouses(data.warehouses);
+    setIsLoading(true);
+    try {
+      const response = await fetch("http://localhost:8080/api/warehouses/");
+      if (response.ok) {
+        const data = await response.json();
+        setWarehouses(data.warehouses);
+        setFilteredWarehouses(data.warehouses);
+      }
+    } catch (error) {
+      console.error("Error fetching warehouses:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -25,7 +34,6 @@ export default function BrowseStorage() {
 
   const handleApplyFilters = (filters) => {
     console.log("Applied filters:", filters);
-    // Filter warehouses based on the applied filters
     const filtered = warehouses.filter((warehouse) => {
       const withinPriceRange =
         warehouse.pricePerDay >= filters.priceRange.min &&
@@ -38,8 +46,11 @@ export default function BrowseStorage() {
 
       return withinPriceRange && withinSizeRange && availabilityMatch;
     });
-    setFilteredWarehouses(filtered); // Update the filtered warehouses state
+    setFilteredWarehouses(filtered);
   };
+
+  // Generate skeleton array based on grid layout
+  const skeletons = Array(8).fill(null);
 
   return (
     <div className="min-h-screen bg-white py-8">
@@ -59,13 +70,11 @@ export default function BrowseStorage() {
           </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filteredWarehouses.map(
-            (
-              warehouse // Use filtered warehouses for display
-            ) => (
-              <StorageCard key={warehouse._id} warehouse={warehouse} />
-            )
-          )}
+          {isLoading
+            ? skeletons.map((_, index) => <StorageCardSkeleton key={index} />)
+            : filteredWarehouses.map((warehouse) => (
+                <StorageCard key={warehouse._id} warehouse={warehouse} />
+              ))}
         </div>
       </div>
       <FilterModal

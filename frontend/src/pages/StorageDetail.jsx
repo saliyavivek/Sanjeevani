@@ -4,13 +4,16 @@ import { Grid, MapPin, Share2, User } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import ReviewModal from "../components/ReviewModal";
+import ReviewList from "../components/ReviewList";
 
 const StorageDetail = () => {
-  // const [showAllPhotos, setShowAllPhotos] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const location = useLocation();
   const { warehouse } = location.state;
 
   const [user, setUser] = useState(null);
+  const [reviews, setReviews] = useState([]);
   const navigate = useNavigate();
 
   const fetchCurrentUser = async () => {
@@ -29,7 +32,56 @@ const StorageDetail = () => {
 
   useEffect(() => {
     fetchCurrentUser();
+    fetchReviews();
   }, []);
+
+  const handleSubmit = async (reviewData) => {
+    const response = await fetch("http://localhost:8080/api/reviews/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: user,
+        ratings: reviewData.rating,
+        review: reviewData.review,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error("Failed to submit review");
+      return;
+    }
+
+    const data = await response.json();
+    // console.log(data.message, data.addedReview);
+
+    setIsModalOpen(false);
+  };
+
+  const fetchReviews = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/reviews/${warehouse._id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        console.error("Failed to fetch reviews");
+        return;
+      }
+
+      const data = await response.json();
+      setReviews(data.reviews);
+    } catch (error) {
+      console.error("Error fetching reviews", error);
+    }
+  };
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
@@ -160,6 +212,23 @@ const StorageDetail = () => {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Review */}
+      <div>
+        <p className="text-xl font-semibold mb-4">Reviews</p>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+        >
+          Add Review
+        </button>
+        <ReviewModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={handleSubmit}
+        />
+        <ReviewList reviews={reviews} />
       </div>
 
       {/* Map Section */}
