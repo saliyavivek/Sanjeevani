@@ -11,6 +11,7 @@ const userSchema = new Schema({
     default: "farmer",
   },
   phoneno: String,
+  avatar: String,
 });
 
 const User = mongoose.model("User", userSchema);

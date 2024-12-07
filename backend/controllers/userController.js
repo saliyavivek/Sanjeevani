@@ -22,6 +22,7 @@ const getToken = (newUser) => {
 const signup = async (req, res) => {
   try {
     const validatedData = userRegistrationSchema.parse(req.body);
+    const imageUrl = req.file ? req.file.path : null;
 
     const existingUser = await User.findOne({ email: validatedData.email });
     if (existingUser) {
@@ -34,6 +35,7 @@ const signup = async (req, res) => {
     const newUser = new User({
       ...validatedData,
       password: hashedPassword,
+      avatar: imageUrl,
     });
 
     await newUser.save();

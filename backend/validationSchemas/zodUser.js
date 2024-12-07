@@ -10,6 +10,7 @@ const userRegistrationSchema = z.object({
     .string()
     .regex(/^\d{10}$/, { message: "Phone number must be 10 digits" }),
   role: z.enum(["farmer", "owner"]).optional().default("farmer"),
+  // avatar: z.string().min(1, { message: "Avatar URL is required" }),
 });
 
 const userLoginSchema = z.object({

@@ -1,10 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Star, X } from "lucide-react";
 
-const ReviewModal = ({ isOpen, onClose, onSubmit }) => {
+const ReviewModal = ({ isOpen, onClose, onSubmit, editReview = null }) => {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [review, setReview] = useState("");
+
+  useEffect(() => {
+    if (editReview) {
+      setRating(editReview.ratings);
+      setReview(editReview.review);
+    } else {
+      setRating(0);
+      setReview("");
+    }
+  }, [editReview]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -12,7 +22,7 @@ const ReviewModal = ({ isOpen, onClose, onSubmit }) => {
       alert("Please select a rating");
       return;
     }
-    onSubmit({ rating, review });
+    onSubmit({ rating, review, id: editReview ? editReview._id : null });
     setRating(0);
     setReview("");
     onClose();
@@ -30,7 +40,7 @@ const ReviewModal = ({ isOpen, onClose, onSubmit }) => {
           <X className="w-6 h-6" />
         </button>
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-          Write a Review
+          {editReview ? "Edit Review" : "Write a Review"}
         </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -78,7 +88,7 @@ const ReviewModal = ({ isOpen, onClose, onSubmit }) => {
               type="submit"
               className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
             >
-              Submit Review
+              {editReview ? "Update Review" : "Submit Review"}
             </button>
           </div>
         </form>

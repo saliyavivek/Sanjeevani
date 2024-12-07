@@ -9,10 +9,11 @@ import ReviewList from "../components/ReviewList";
 
 const StorageDetail = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingReview, setEditingReview] = useState(null);
   const location = useLocation();
   const { warehouse } = location.state;
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({});
   const [reviews, setReviews] = useState([]);
   const navigate = useNavigate();
 
@@ -22,7 +23,7 @@ const StorageDetail = () => {
     if (storedToken) {
       try {
         const decodedToken = jwtDecode(storedToken);
-        setUser(decodedToken.userId);
+        setUser(decodedToken);
       } catch (error) {
         console.error("Invalid token", error);
         localStorage.removeItem("token");
@@ -36,15 +37,21 @@ const StorageDetail = () => {
   }, []);
 
   const handleSubmit = async (reviewData) => {
-    const response = await fetch("http://localhost:8080/api/reviews/", {
-      method: "POST",
+    const url = editingReview
+      ? `http://localhost:8080/api/reviews/${editingReview._id}`
+      : "http://localhost:8080/api/reviews/";
+    const method = editingReview ? "PUT" : "POST";
+
+    const response = await fetch(url, {
+      method: method,
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        userId: user,
+        userId: user.userId,
         ratings: reviewData.rating,
         review: reviewData.review,
+        warehouseId: warehouse._id,
       }),
     });
 
@@ -53,10 +60,30 @@ const StorageDetail = () => {
       return;
     }
 
-    const data = await response.json();
-    // console.log(data.message, data.addedReview);
-
     setIsModalOpen(false);
+    setEditingReview(null);
+    fetchReviews();
+  };
+
+  const handleEditReview = (review) => {
+    setEditingReview(review);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteReview = async (reviewId) => {
+    const response = await fetch(
+      `http://localhost:8080/api/reviews/${reviewId}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    if (!response.ok) {
+      console.error("Failed to delete review");
+      return;
+    }
+
+    fetchReviews();
   };
 
   const fetchReviews = async () => {
@@ -106,8 +133,8 @@ const StorageDetail = () => {
       {/* Details Section */}
       <div
         className={
-          warehouse.ownerId._id !== user
-            ? "mt-8 grid grid-cols-1 lg:grid-cols-3 gap-12"
+          warehouse.ownerId._id !== user.userId
+            ? "mt-8 grid grid-cols-1 lg:grid-cols-3 gap-12 border-b pb-5"
             : "mt-8 grid grid-cols-1 lg:grid-cols-1 gap-12"
         }
       >
@@ -133,7 +160,7 @@ const StorageDetail = () => {
               <div>
                 <p className="font-medium">
                   Listed by{" "}
-                  {warehouse.ownerId._id === user
+                  {warehouse.ownerId._id === user.userId
                     ? "you"
                     : warehouse.ownerId.name}
                 </p>
@@ -169,7 +196,7 @@ const StorageDetail = () => {
         </div>
 
         <div className="lg:col-span-1">
-          {warehouse.ownerId._id !== user && (
+          {warehouse.ownerId._id !== user.userId && (
             <div className="sticky top-8 bg-white p-6 rounded-xl border shadow-sm">
               <div className="flex justify-between items-center mb-6">
                 <div>
@@ -216,19 +243,35 @@ const StorageDetail = () => {
 
       {/* Review */}
       <div>
-        <p className="text-xl font-semibold mb-4">Reviews</p>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
-        >
-          Add Review
-        </button>
+        <p className="text-2xl font-semibold mb-4 flex items-center justify-center pt-4">
+          Reviews
+        </p>
+
         <ReviewModal
           isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          onClose={() => {
+            setIsModalOpen(false);
+            setEditingReview(null);
+          }}
           onSubmit={handleSubmit}
+          editReview={editingReview}
         />
-        <ReviewList reviews={reviews} />
+        <ReviewList
+          reviews={reviews}
+          onEditReview={handleEditReview}
+          onDeleteReview={handleDeleteReview}
+        />
+
+        {user.userId !== warehouse.ownerId._id && (
+          <div className="flex justify-center items-center">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="py-2 px-4 rounded hover:bg-gray-100"
+            >
+              Add Review
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Map Section */}

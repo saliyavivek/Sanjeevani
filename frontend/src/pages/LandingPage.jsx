@@ -95,7 +95,13 @@ const LandingPage = () => {
               <div className="mt-10 sm:flex">
                 <div className="rounded-md flex items-end">
                   <a
-                    href="/warehouses/search"
+                    href={
+                      !isLoggedIn
+                        ? "/signup"
+                        : role === "owner"
+                        ? "/owner/dashboard"
+                        : "/warehouses/search"
+                    }
                     className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700 md:py-4 md:text-lg md:px-10"
                   >
                     Find Storage

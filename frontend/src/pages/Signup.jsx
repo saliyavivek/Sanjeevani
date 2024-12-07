@@ -1,6 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Leaf, ArrowRight, Mail, Lock, User, Phone } from "lucide-react";
+import {
+  Leaf,
+  ArrowRight,
+  Mail,
+  Lock,
+  User,
+  Phone,
+  Camera,
+} from "lucide-react";
 
 const Signup = () => {
   const [name, setName] = useState("");
@@ -8,22 +16,25 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [phno, setPhno] = useState("");
   const [role, setRole] = useState("farmer");
+  const [profilePicture, setProfilePicture] = useState(null);
+  const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("phoneno", phno);
+    formData.append("role", role);
+    if (profilePicture) {
+      formData.append("profilePicture", profilePicture);
+    }
+
     const response = await fetch("http://localhost:8080/api/users/signup", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name,
-        email,
-        password,
-        phoneno: phno,
-        role,
-      }),
+      body: formData,
     });
     if (response.ok) {
       const data = await response.json();
@@ -33,6 +44,13 @@ const Signup = () => {
       } else {
         navigate("/owner/dashboard");
       }
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setProfilePicture(file);
     }
   };
 
@@ -50,6 +68,41 @@ const Signup = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="flex justify-center flex-col items-center gap-2">
+              <div className="relative w-32 h-32 rounded-full overflow-hidden bg-gray-200 cursor-pointer group">
+                {profilePicture ? (
+                  <img
+                    src={URL.createObjectURL(profilePicture)}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center w-full h-full">
+                    <User
+                      className="h-16 w-16 text-gray-400"
+                      aria-hidden="true"
+                    />
+                  </div>
+                )}
+                <div
+                  className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                  onClick={() => fileInputRef.current.click()}
+                >
+                  <Camera className="h-8 w-8 text-white" aria-hidden="true" />
+                </div>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  accept="image/*"
+                  className="hidden"
+                />
+              </div>
+              <p className="block text-sm font-medium text-gray-700">
+                Profile Picture
+              </p>
+            </div>
+
             <div className="space-y-2">
               <label
                 htmlFor="name"
