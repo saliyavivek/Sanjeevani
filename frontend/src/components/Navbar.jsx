@@ -1,15 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { ArrowUpDown, Leaf, Menu, X, LogOut } from "lucide-react";
+import React, { useEffect, useState, useRef } from "react";
+import {
+  ArrowUpDown,
+  Leaf,
+  Menu,
+  X,
+  LogOut,
+  Bell,
+  User,
+  Settings,
+} from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import { useLocation, useNavigate } from "react-router-dom";
 import LogoutConfirmModal from "./LogoutConfirmModal";
+import { showSuccessToast } from "./toast";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [role, setRole] = useState("");
+  const [user, setUser] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
+  const profileDropdownRef = useRef(null);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -19,6 +32,7 @@ const Navbar = () => {
       try {
         const decodedToken = jwtDecode(storedToken);
         setRole(decodedToken.role);
+        setUser(decodedToken);
       } catch (error) {
         console.error("Invalid token", error);
         localStorage.removeItem("token");
@@ -26,19 +40,128 @@ const Navbar = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        profileDropdownRef.current &&
+        !profileDropdownRef.current.contains(event.target)
+      ) {
+        setIsProfileDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   function handleLogout() {
     try {
       localStorage.removeItem("token");
       setRole("");
+      setUser(null);
       setIsLogoutModalOpen(false);
+      setIsProfileDropdownOpen(false);
       navigate("/"); // Redirect to home page after logout
+      showSuccessToast("Logged out.");
     } catch (error) {
       console.error("Error during logout", error);
     }
   }
 
+  const ProfileDropdown = () => (
+    <div ref={profileDropdownRef} className="relative">
+      <button
+        onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+        className="flex items-center space-x-2 focus:outline-none"
+      >
+        <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-white text-lg font-semibold">
+          {/* {user?.name ? (
+            user.name[0].toUpperCase()
+          ) : (
+            <User className="w-6 h-6" />
+          )} */}
+          <img
+            src={user.avatar}
+            alt={user.name[0].toUpperCase()}
+            className="w-10 h-10 rounded-full object-cover"
+          />
+        </div>
+      </button>
+      {isProfileDropdownOpen && (
+        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-[1050]">
+          {role === "farmer" ? (
+            <>
+              <a
+                href="/farmer/dashboard"
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
+                My Dashboard
+              </a>
+              <a
+                href="/warehouses/search"
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
+                Search Storage
+              </a>
+              <a
+                href="/bookings"
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
+                My Bookings
+              </a>
+            </>
+          ) : role === "owner" ? (
+            <>
+              <a
+                href="/owner/dashboard"
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
+                My Dashboard
+              </a>
+              <a
+                href="/listings"
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
+                Manage Listings
+              </a>
+              <a
+                href="/requests"
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
+                Booking Requests
+              </a>
+            </>
+          ) : null}
+          <a
+            href="/notifications"
+            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          >
+            <Bell className="w-4 h-4 inline-block mr-2" />
+            Notifications
+          </a>
+          <a
+            href="/settings"
+            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          >
+            <Settings className="w-4 h-4 inline-block mr-2" />
+            Settings
+          </a>
+          <button
+            onClick={() => setIsLogoutModalOpen(true)}
+            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          >
+            <LogOut className="w-4 h-4 inline-block mr-2" />
+            Logout
+          </button>
+        </div>
+      )}
+    </div>
+  );
+
   return (
-    <header className="border-b">
+    <header className="border-b z-[1000]">
       <div className="max-w-[1400px] container mx-auto px-4 h-16 flex items-center justify-between backdrop-blur-md">
         {/* Logo */}
         <a href="/" className="cursor-pointer">
@@ -98,16 +221,10 @@ const Navbar = () => {
           )}
         </nav>
 
-        {/* Auth Buttons */}
+        {/* Auth Buttons or Profile Dropdown */}
         <div className="hidden lg:flex items-center space-x-4">
-          {role ? (
-            <button
-              className="px-4 py-2 text-md font-medium text-gray-700 transition-colors hover:bg-gray-100 rounded-md h-10 flex items-center"
-              onClick={() => setIsLogoutModalOpen(true)}
-            >
-              <LogOut className="w-5 h-5 mr-2" />
-              Logout
-            </button>
+          {user ? (
+            <ProfileDropdown />
           ) : (
             <>
               <a
@@ -150,6 +267,18 @@ const Navbar = () => {
               >
                 <X className="h-6 w-6" />
               </button>
+              {user && (
+                <div className="flex items-center space-x-2 mb-4">
+                  <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-white text-lg font-semibold">
+                    {user.name ? (
+                      user.name[0].toUpperCase()
+                    ) : (
+                      <User className="w-6 h-6" />
+                    )}
+                  </div>
+                  <span className="text-lg font-medium">{user.name}</span>
+                </div>
+              )}
               {role === "farmer" && (
                 <>
                   <a
@@ -194,8 +323,26 @@ const Navbar = () => {
                   </a>
                 </>
               )}
+              {user && (
+                <>
+                  <a
+                    href="/notifications"
+                    className="text-lg font-medium text-gray-700 hover:text-green-600 transition-colors flex items-center"
+                  >
+                    <Bell className="w-5 h-5 mr-2" />
+                    Notifications
+                  </a>
+                  <a
+                    href="/settings"
+                    className="text-lg font-medium text-gray-700 hover:text-green-600 transition-colors flex items-center"
+                  >
+                    <Settings className="w-5 h-5 mr-2" />
+                    Settings
+                  </a>
+                </>
+              )}
               <hr className="my-4" />
-              {role ? (
+              {user ? (
                 <button
                   onClick={() => {
                     setIsMenuOpen(false);

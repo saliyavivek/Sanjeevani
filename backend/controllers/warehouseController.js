@@ -36,7 +36,7 @@ const addWarehouse = async (req, res) => {
     await warehouse.save();
 
     res.status(201).json({
-      message: "Warehouse listed successfully.",
+      message: "Warehouse listed.",
       warehouse: warehouse,
     });
   } catch (error) {
@@ -121,7 +121,7 @@ const editWarehouse = async (req, res) => {
 
     // Save updated warehouse
     await warehouse.save();
-    res.status(200).json({ message: "Warehouse updated successfully" });
+    res.status(200).json({ message: "Warehouse updated." });
   } catch (error) {
     res.status(500).json({ message: "Error updating warehouse", error });
   }
@@ -137,7 +137,7 @@ const deleteWarehouse = async (req, res) => {
     }
 
     await Warehouse.deleteOne({ _id: warehouseId });
-    res.status(200).json({ message: "Warehouse deleted successfully" });
+    res.status(200).json({ message: "Warehouse deleted." });
   } catch (error) {
     res.status(500).json({ message: "Error deleting warehouse", error });
   }

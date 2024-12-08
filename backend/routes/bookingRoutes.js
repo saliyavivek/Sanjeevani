@@ -5,6 +5,8 @@ const {
   cancelBooking,
   getBookingDetails,
   confirmBooking,
+  isBookedByUser,
+  markCompleted,
 } = require("../controllers/bookingController");
 const router = express.Router();
 
@@ -13,5 +15,7 @@ router.post("/", createBooking);
 router.post("/getall", getUserBookings);
 router.delete("/:bookingId", cancelBooking);
 router.put("/:bookingId", confirmBooking);
+router.post("/isBookedByUser", isBookedByUser);
+router.post("/completed/:bookingId", markCompleted);
 
 module.exports = router;

@@ -1,15 +1,24 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Leaf, ArrowRight, Mail, Lock } from "lucide-react";
+// import { toast } from "sonner";
+import {
+  showErrorToast,
+  showLoadingToast,
+  showSuccessToast,
+} from "../components/toast";
 
 const Signin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   // const [role, setRole] = useState("farmer");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    const loadingToastId = showLoadingToast("Logging in the user...");
     const response = await fetch("http://localhost:8080/api/users/signin", {
       method: "POST",
       headers: {
@@ -24,11 +33,18 @@ const Signin = () => {
     if (response.ok) {
       const data = await response.json();
       localStorage.setItem("token", JSON.stringify(data.token));
+      // console.log(data);
+
+      showSuccessToast(data.message, loadingToastId);
+
       if (data.role === "farmer") {
         navigate("/warehouses/search");
       } else {
         navigate("/owner/dashboard");
       }
+    } else {
+      const error = await response.json();
+      showErrorToast(error.message, loadingToastId);
     }
   };
 

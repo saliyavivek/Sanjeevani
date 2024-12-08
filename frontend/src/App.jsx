@@ -13,6 +13,9 @@ import { useLocation } from "react-router-dom";
 import BookWarehouse from "./pages/BookWarehouse";
 import MyBookings from "./pages/MyBookings";
 import BookingDetails from "./pages/BookingDetails";
+import { Toaster } from "sonner";
+import { ToastContainer } from "./components/toast";
+import BookingRequests from "./pages/BookingRequests";
 
 const AppRoutes = () => {
   const location = useLocation(); // Get the current location
@@ -34,6 +37,7 @@ const AppRoutes = () => {
         <Route path="/book/warehouse" element={<BookWarehouse />} />
         <Route path="/bookings" element={<MyBookings />} />
         <Route path="/booking/:id" element={<BookingDetails />} />
+        <Route path="/requests" element={<BookingRequests />} />
       </Routes>
     </>
   );
@@ -42,7 +46,18 @@ const AppRoutes = () => {
 function App() {
   return (
     <BrowserRouter>
-      <AppRoutes /> {/* Use the new AppRoutes component */}
+      {/* <Toaster
+        position="bottom-center"
+        toastOptions={{
+          style: {
+            fontSize: "16px",
+            whiteSpace: "nowrap",
+            width: "100%",
+          },
+        }}
+      /> */}
+      <ToastContainer />
+      <AppRoutes />
     </BrowserRouter>
   );
 }

@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import ReviewModal from "../components/ReviewModal";
 import ReviewList from "../components/ReviewList";
+import { showErrorToast, showSuccessToast } from "../components/toast";
 
 const StorageDetail = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,6 +16,7 @@ const StorageDetail = () => {
 
   const [user, setUser] = useState({});
   const [reviews, setReviews] = useState([]);
+  const [booked, setIsBooked] = useState(false);
   const navigate = useNavigate();
 
   const fetchCurrentUser = async () => {
@@ -31,10 +33,37 @@ const StorageDetail = () => {
     }
   };
 
+  const fetchBookingStatus = async () => {
+    const response = await fetch(
+      "http://localhost:8080/api/bookings/isBookedByUser",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          userId: user.userId,
+          warehouseId: warehouse._id,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    // if (!response.ok) {
+    //   console.error("Failed to fetch booking status.");
+    //   return;
+    // }
+    const data = await response.json();
+
+    setIsBooked(data.message === true);
+  };
+
   useEffect(() => {
     fetchCurrentUser();
     fetchReviews();
   }, []);
+
+  useEffect(() => {
+    fetchBookingStatus();
+  }, [user]);
 
   const handleSubmit = async (reviewData) => {
     const url = editingReview
@@ -56,9 +85,12 @@ const StorageDetail = () => {
     });
 
     if (!response.ok) {
-      console.error("Failed to submit review");
+      showErrorToast("Failed to add review.");
+      // console.error("Failed to submit review");
       return;
     }
+    const data = await response.json();
+    showSuccessToast(data.message);
 
     setIsModalOpen(false);
     setEditingReview(null);
@@ -83,6 +115,8 @@ const StorageDetail = () => {
       return;
     }
 
+    const data = await response.json();
+    showSuccessToast(data.message);
     fetchReviews();
   };
 
@@ -227,7 +261,16 @@ const StorageDetail = () => {
                 onClick={() =>
                   navigate("/book/warehouse", { state: { warehouse } })
                 }
-                className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700"
+                className={`w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 ${
+                  warehouse.availability === "booked" ||
+                  warehouse.availability === "maintenance"
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
+                disabled={
+                  warehouse.availability === "booked" ||
+                  warehouse.availability === "maintenance"
+                }
               >
                 {warehouse.availability === "available"
                   ? "Book Now"
@@ -262,7 +305,8 @@ const StorageDetail = () => {
           onDeleteReview={handleDeleteReview}
         />
 
-        {user.userId !== warehouse.ownerId._id && (
+        {/* {console.log(booked)} */}
+        {booked && user.userId !== warehouse.ownerId._id && (
           <div className="flex justify-center items-center">
             <button
               onClick={() => setIsModalOpen(true)}
@@ -270,6 +314,11 @@ const StorageDetail = () => {
             >
               Add Review
             </button>
+          </div>
+        )}
+        {!booked && user.userId !== warehouse.ownerId._id && (
+          <div className="flex justify-center items-center">
+            Book this storage to add reviews.
           </div>
         )}
       </div>

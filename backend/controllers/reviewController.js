@@ -12,7 +12,7 @@ const addReview = async (req, res) => {
     });
     await addedReview.save();
     res.status(201).json({
-      message: "Review added successfully.",
+      message: "Review added.",
       addedReview,
     });
   } catch (error) {
@@ -53,9 +53,7 @@ const updateReview = async (req, res) => {
       return res.status(404).json({ message: "Review not found" });
     }
 
-    res
-      .status(201)
-      .json({ message: "Review updated successfully", updatedReview });
+    res.status(201).json({ message: "Review updated.", updatedReview });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: error });
@@ -71,9 +69,7 @@ const deleteReview = async (req, res) => {
     if (!deletedReview) {
       return res.status(404).json({ message: "Review not found" });
     }
-    res
-      .status(201)
-      .json({ message: "Review deleted successfully", deletedReview });
+    res.status(201).json({ message: "Review deleted.", deletedReview });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: error });

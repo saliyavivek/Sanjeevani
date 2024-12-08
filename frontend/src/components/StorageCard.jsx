@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { MoreVertical, Edit, Trash2 } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import DeleteConfirmModal from "./DeleteConfirmModal";
+import { showLoadingToast, showSuccessToast } from "./toast";
 
 const StorageCard = ({ warehouse, onDelete }) => {
   const navigate = useNavigate();
   const [showDropdown, setShowDropdown] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [user, setUser] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleEdit = (e) => {
     e.stopPropagation();
@@ -22,6 +24,8 @@ const StorageCard = ({ warehouse, onDelete }) => {
   };
 
   const handleDelete = async () => {
+    setIsLoading(true);
+    const loadingToastId = showLoadingToast("Deleting your warehouse...");
     try {
       const response = await fetch(
         "http://localhost:8080/api/warehouses/delete",
@@ -34,11 +38,13 @@ const StorageCard = ({ warehouse, onDelete }) => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data.message);
+        showSuccessToast(data.message, loadingToastId);
+        // console.log(data.message);
         onDelete();
         // navigate("/listings");
       } else {
         const errorData = await response.json();
+        showSuccessToast(errorData.message, loadingToastId);
         console.error("Error deleting warehouse:", errorData);
       }
     } catch (error) {

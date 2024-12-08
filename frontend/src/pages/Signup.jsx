@@ -9,6 +9,11 @@ import {
   Phone,
   Camera,
 } from "lucide-react";
+import {
+  showErrorToast,
+  showLoadingToast,
+  showSuccessToast,
+} from "../components/toast";
 
 const Signup = () => {
   const [name, setName] = useState("");
@@ -17,11 +22,15 @@ const Signup = () => {
   const [phno, setPhno] = useState("");
   const [role, setRole] = useState("farmer");
   const [profilePicture, setProfilePicture] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    const loadingToastId = showLoadingToast("Registering the user...");
+
     const formData = new FormData();
     formData.append("name", name);
     formData.append("email", email);
@@ -39,11 +48,17 @@ const Signup = () => {
     if (response.ok) {
       const data = await response.json();
       localStorage.setItem("token", JSON.stringify(data.token));
+
+      showSuccessToast(data.message, loadingToastId);
+
       if (data.role === "farmer") {
         navigate("/warehouse/search");
       } else {
         navigate("/owner/dashboard");
       }
+    } else {
+      const error = await response.json();
+      showErrorToast(error.message, loadingToastId);
     }
   };
 

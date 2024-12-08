@@ -24,7 +24,7 @@ const StatusBadge = ({ status }) => {
 };
 
 const BookingCard = ({ booking, navigate }) => (
-  <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all hover:shadow-md hover:scale-[1.02]">
+  <div className="max-w-[350px] bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all hover:shadow-md hover:scale-[1.02]">
     <div className="relative h-48 overflow-hidden">
       <img
         src={booking.warehouseId.images[0]}
@@ -107,9 +107,9 @@ const MyBookings = () => {
   }, [token]);
   return (
     <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">My Bookings</h1>
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
           {loading
             ? Array.from({ length: 2 }).map(
                 (

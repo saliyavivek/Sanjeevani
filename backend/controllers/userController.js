@@ -13,6 +13,7 @@ const getToken = (newUser) => {
       email: newUser.email,
       name: newUser.name,
       role: newUser.role,
+      avatar: newUser.avatar,
     },
     process.env.JWT_SECRET,
     { expiresIn: "1h" }
@@ -26,7 +27,9 @@ const signup = async (req, res) => {
 
     const existingUser = await User.findOne({ email: validatedData.email });
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      return res
+        .status(400)
+        .json({ message: "User with the given email already exists." });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -43,7 +46,7 @@ const signup = async (req, res) => {
     const token = getToken(newUser);
 
     res.status(201).json({
-      message: "User registered successfully",
+      message: "User registered.",
       token,
       userId: newUser._id,
       role: newUser.role,
@@ -60,7 +63,9 @@ const signin = async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: "User doesn't exists." });
+      return res
+        .status(400)
+        .json({ message: "User with the given email doesn't exists." });
     }
     // if (user && user.role !== role) {
     //   return res
@@ -77,7 +82,7 @@ const signin = async (req, res) => {
     // console.log(user);
 
     res.json({
-      message: "User logged in successfully",
+      message: "User logged in.",
       token,
       userId: user._id,
       role: user.role,

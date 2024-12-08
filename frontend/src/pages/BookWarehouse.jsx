@@ -10,6 +10,7 @@ import "leaflet/dist/leaflet.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { jwtDecode } from "jwt-decode";
+import { toast } from "sonner";
 
 const theme = createTheme({
   palette: {
@@ -86,7 +87,10 @@ const BookWarehouse = () => {
       });
       if (response.ok) {
         const data = await response.json();
-        console.log(data.message, data.booking);
+
+        toast.success("Make a payment to proceed.");
+
+        // console.log(data.message, data.booking);
         navigate(`/booking/${data.booking._id}`);
       }
     } catch (error) {

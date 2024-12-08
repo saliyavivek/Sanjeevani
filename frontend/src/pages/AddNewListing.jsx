@@ -13,13 +13,19 @@ import { jwtDecode } from "jwt-decode";
 import useAuth from "../hooks/useAuth";
 import { useDropzone } from "react-dropzone";
 import { useLocation, useNavigate } from "react-router-dom";
+import {
+  showErrorToast,
+  showLoadingToast,
+  showSuccessToast,
+} from "../components/toast";
 
 const AddNewListing = () => {
   useAuth();
   const location = useLocation();
   const { existingWarehouse } = location.state || {};
   const warehouseId = location.state?.existingWarehouse?._id;
-  console.log(warehouseId);
+  const [isLoading, setIsLoading] = useState(false);
+  // console.log(warehouseId);
 
   const navigate = useNavigate();
   const [imagePreview, setImagePreview] = useState(null);
@@ -152,6 +158,11 @@ const AddNewListing = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setIsLoading(true);
+    const loadingToastId = showLoadingToast(
+      warehouseId ? "Updating your warehouse..." : "Listing your warehouse..."
+    );
+
     const formDataToSend = new FormData();
     formDataToSend.append("ownerId", currentUserId);
 
@@ -204,10 +215,12 @@ const AddNewListing = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data.message);
+        showSuccessToast(data.message, loadingToastId);
+        // console.log(data.message);
         navigate("/listings");
       } else {
         const errorData = await response.json();
+        showErrorToast(errorData.message, loadingToastId);
         console.error("Error saving warehouse:", errorData);
       }
     } catch (error) {
