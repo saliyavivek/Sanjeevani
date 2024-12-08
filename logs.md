@@ -74,9 +74,22 @@
 - Create new Booking schema.
 - Designed BookWarehouse page, used material ui date picker for the good look of the page.
 
+---
+
 ### Date: 05-12-2024
 
 **Tasks Completed:**
 
 - Did some minor improvements to enhance user experience.
 - Conditionally showing buttons on Storage Details page based on the user's role.
+
+---
+
+### Date: 08-12-2024
+
+**Tasks Completed:**
+
+- Added a new feature: Reviews
+- User can add reviews on warehouses and can share their experience.
+- Generating an invoice when user makes payment.
+- Integrated `react-hot-toast` library for showing on-screen notification popups.
