@@ -88,9 +88,81 @@ const signin = async (req, res) => {
       role: user.role,
     });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: error });
+    // console.log(error.errors[0].message);
+    return res.status(500).json({ message: error.errors[0].message });
   }
 };
 
-module.exports = { signup, signin };
+const getUserDetails = async (req, res) => {
+  try {
+    // console.log(req.body);
+
+    const userId = req.body.userId;
+    if (!userId) {
+      return res.status(400).json({ message: "user id is required." });
+    }
+
+    const user = await User.findOne({ _id: userId });
+    if (!user) {
+      return res.status(400).json({ message: "user does not found." });
+    }
+    // console.log(user);
+
+    return res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching user details." });
+  }
+};
+
+const updateUserDetails = async (req, res) => {
+  const { userId } = req.params;
+  const updates = req.body;
+
+  console.log(userId, updates);
+
+  try {
+    const user = await User.findByIdAndUpdate(userId, updates, {
+      new: true,
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json(user); // Send back the updated user
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ error: "Failed to update user" });
+  }
+};
+
+const updateUserAvatar = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const avatarUrl = req.file ? req.file.path : null;
+    // console.log(userId, req.file);
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { avatar: avatarUrl },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json({ avatarUrl });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to update profile picture" });
+  }
+};
+
+module.exports = {
+  signup,
+  signin,
+  getUserDetails,
+  updateUserDetails,
+  updateUserAvatar,
+};

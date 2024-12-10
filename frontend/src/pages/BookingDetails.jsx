@@ -15,6 +15,8 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import generateInvoice from "../utils/generateInvoice";
 import { toast } from "sonner";
 import { showErrorToast, showSuccessToast } from "../components/toast";
+import useAuth from "../hooks/useAuth";
+import { jwtDecode } from "jwt-decode";
 
 const StatusBadge = ({ status }) => {
   const statusStyles = {
@@ -60,9 +62,27 @@ const BookingDetails = () => {
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [booking, setBooking] = useState(null);
   const [warehouseId, setWarehouseId] = useState("");
+  const [userId, setUserId] = useState("");
   // const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
+  // const token = useAuth();
+
+  // console.log(token);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    // console.log(token);
+
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        setUserId(decodedToken.userId);
+      } catch (error) {
+        console.error("Invalid token", error);
+        localStorage.removeItem("token");
+      }
+    }
+  }, []);
 
   const fetchBookingDetails = async () => {
     try {
@@ -96,6 +116,7 @@ const BookingDetails = () => {
       method: "PUT",
       body: JSON.stringify({
         warehouseId,
+        userId,
       }),
       headers: {
         "Content-Type": "application/json",

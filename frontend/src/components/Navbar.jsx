@@ -18,8 +18,9 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-  const [role, setRole] = useState("");
+  // const [role, setRole] = useState("");
   const [user, setUser] = useState(null);
+  const [userId, setUserId] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
   const profileDropdownRef = useRef(null);
@@ -31,14 +32,47 @@ const Navbar = () => {
     if (storedToken) {
       try {
         const decodedToken = jwtDecode(storedToken);
-        setRole(decodedToken.role);
-        setUser(decodedToken);
+        // setRole(decodedToken.role);
+        setUserId(decodedToken.userId);
+
+        // console.log(user);
       } catch (error) {
         console.error("Invalid token", error);
         localStorage.removeItem("token");
       }
     }
   }, []);
+
+  const fetchUserDetails = async () => {
+    try {
+      console.log(userId);
+      if (userId) {
+        const response = await fetch("http://localhost:8080/api/users", {
+          method: "POST",
+          body: JSON.stringify({
+            userId,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        // console.log(response);
+        if (!response.ok) {
+          console.log("Something went wrong.");
+          return;
+        }
+        const data = await response.json();
+        // console.log(data);
+
+        setUser(data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    fetchUserDetails();
+  }, [userId]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -59,7 +93,7 @@ const Navbar = () => {
   function handleLogout() {
     try {
       localStorage.removeItem("token");
-      setRole("");
+      // setRole("");
       setUser(null);
       setIsLogoutModalOpen(false);
       setIsProfileDropdownOpen(false);
@@ -91,7 +125,7 @@ const Navbar = () => {
       </button>
       {isProfileDropdownOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-[1050]">
-          {role === "farmer" ? (
+          {user.role === "farmer" ? (
             <>
               <a
                 href="/farmer/dashboard"
@@ -112,7 +146,7 @@ const Navbar = () => {
                 My Bookings
               </a>
             </>
-          ) : role === "owner" ? (
+          ) : user.role === "owner" ? (
             <>
               <a
                 href="/owner/dashboard"
@@ -175,7 +209,7 @@ const Navbar = () => {
 
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex items-center space-x-6">
-          {role === "farmer" && (
+          {user?.role === "farmer" && (
             <>
               <a
                 href="/farmer/dashboard"
@@ -197,7 +231,7 @@ const Navbar = () => {
               </a>
             </>
           )}
-          {role === "owner" && (
+          {user?.role === "owner" && (
             <>
               <a
                 href="/owner/dashboard"
@@ -279,7 +313,7 @@ const Navbar = () => {
                   <span className="text-lg font-medium">{user.name}</span>
                 </div>
               )}
-              {role === "farmer" && (
+              {user?.role === "farmer" && (
                 <>
                   <a
                     href="/farmer/dashboard"
@@ -301,7 +335,7 @@ const Navbar = () => {
                   </a>
                 </>
               )}
-              {role === "owner" && (
+              {user?.role === "owner" && (
                 <>
                   <a
                     href="/owner/dashboard"
@@ -333,6 +367,11 @@ const Navbar = () => {
                     Notifications
                   </a>
                   <a
+                    onClick={() => {
+                      navigate("/settings/list", {
+                        state: { existingWarehouse: warehouse },
+                      });
+                    }}
                     href="/settings"
                     className="text-lg font-medium text-gray-700 hover:text-green-600 transition-colors flex items-center"
                   >

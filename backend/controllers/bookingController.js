@@ -90,7 +90,28 @@ const getBookingDetails = async (req, res) => {
 
 const confirmBooking = async (req, res) => {
   try {
-    // console.log(req.body.warehouseId);
+    // console.log(req.body);
+    const pendingBooking = await Booking.find({
+      warehouseId: req.body.warehouseId,
+      status: "pending",
+      userId: { $ne: req.body.userId },
+    });
+    // console.log(pendingBooking);
+
+    if (pendingBooking.length > 0) {
+      const deletedBooking = await Booking.deleteMany({
+        _id: { $in: pendingBooking.map((booking) => booking._id) },
+      });
+    }
+
+    const warehouse = await Warehouse.findById(req.body.warehouseId);
+    warehouse.bookings = warehouse.bookings.filter(
+      (bookingId) =>
+        !pendingBooking
+          .map((booking) => booking._id.toString())
+          .includes(bookingId.toString())
+    );
+    await warehouse.save();
 
     const booking = await Booking.findByIdAndUpdate(
       req.params.bookingId,
@@ -160,11 +181,9 @@ const markCompleted = async (req, res) => {
 
     console.log(booking);
 
-    res
-      .status(200)
-      .json({
-        message: "Booking completed and warehouse is now available to book",
-      });
+    res.status(200).json({
+      message: "Booking completed and warehouse is now available to book",
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }

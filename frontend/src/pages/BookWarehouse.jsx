@@ -11,6 +11,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { jwtDecode } from "jwt-decode";
 import { toast } from "sonner";
+import { showErrorToast, showSuccessToast } from "../components/toast";
 
 const theme = createTheme({
   palette: {
@@ -88,10 +89,13 @@ const BookWarehouse = () => {
       if (response.ok) {
         const data = await response.json();
 
-        toast.success("Make a payment to proceed.");
+        showSuccessToast("Make a payment to proceed.");
 
         // console.log(data.message, data.booking);
         navigate(`/booking/${data.booking._id}`);
+      } else {
+        const error = await response.json();
+        showErrorToast(error.message);
       }
     } catch (error) {
       console.log(error);
