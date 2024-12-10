@@ -93,3 +93,13 @@
 - User can add reviews on warehouses and can share their experience.
 - Generating an invoice when user makes payment.
 - Integrated `react-hot-toast` library for showing on-screen notification popups.
+
+---
+
+### Date: 10-12-2024
+
+**Tasks Completed:**
+
+- Categorize User Bookings into 3 sections: Past, Current and Upcoming.
+- Implemented settings functionality where user can update their profile picture, name, email and phone number.
+- And some minor ui improvements.
