@@ -103,3 +103,12 @@
 - Categorize User Bookings into 3 sections: Past, Current and Upcoming.
 - Implemented settings functionality where user can update their profile picture, name, email and phone number.
 - And some minor ui improvements.
+
+---
+
+### Date: 11-12-2024
+
+**Tasks Completed:**
+
+- Fix some bugs on BookingDetails page regarding cancel booking.
+- Implemented new notifications feature where user gets notified every time they book a warehouse, make a payment or cancel a booking.
