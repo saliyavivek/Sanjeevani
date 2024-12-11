@@ -146,6 +146,12 @@ const BookingDetails = () => {
         `http://localhost:8080/api/bookings/${booking._id}`,
         {
           method: "DELETE",
+          body: JSON.stringify({
+            userId,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
       );
       if (response.ok) {
@@ -277,19 +283,22 @@ const BookingDetails = () => {
                     Complete Payment
                   </button>
                 )}
-                {booking.status !== "cancelled" && (
-                  <button
-                    onClick={() => setIsCancelModalOpen(true)}
-                    disabled={new Date() > new Date(booking.startDate)}
-                    className={`w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors ${
-                      new Date() > new Date(booking.startDate)
-                        ? "opacity-50 cursor-not-allowed"
-                        : ""
-                    }`}
-                  >
-                    Cancel Booking
-                  </button>
-                )}
+
+                <button
+                  onClick={() => setIsCancelModalOpen(true)}
+                  disabled={
+                    booking.status === "active" &&
+                    booking.status === "completed"
+                  }
+                  className={`w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors ${
+                    booking.status === "active" &&
+                    booking.status === "completed"
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
+                >
+                  Cancel Booking
+                </button>
               </div>
             </div>
           </div>

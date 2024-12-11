@@ -45,7 +45,7 @@ const Navbar = () => {
 
   const fetchUserDetails = async () => {
     try {
-      console.log(userId);
+      // console.log(userId);
       if (userId) {
         const response = await fetch("http://localhost:8080/api/users", {
           method: "POST",

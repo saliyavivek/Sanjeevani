@@ -1,5 +1,7 @@
 const Booking = require("../models/Booking");
+const Notification = require("../models/Notification");
 const Warehouse = require("../models/Warehouse");
+const { formatDate } = require("../utils/formatDate");
 
 const createBooking = async (req, res) => {
   try {
@@ -30,6 +32,15 @@ const createBooking = async (req, res) => {
     // warehouse.availability = "booked";
     warehouse.bookings.push(booking._id);
     await warehouse.save();
+
+    const startDateFormatted = formatDate(booking.startDate);
+    const endDateFormatted = formatDate(booking.endDate);
+
+    await Notification.create({
+      userId,
+      content: `Your booking request for ${warehouse.name} from ${startDateFormatted} to ${endDateFormatted} has been submitted. Please complete the payment to confirm your booking.`,
+      type: "booking",
+    });
 
     res.status(201).json({ message: "Booking created successfully", booking });
   } catch (error) {
@@ -64,6 +75,16 @@ const cancelBooking = async (req, res) => {
     await warehouse.save();
 
     await booking.deleteOne();
+
+    const startDateFormatted = formatDate(booking.startDate);
+    const endDateFormatted = formatDate(booking.endDate);
+
+    await Notification.create({
+      userId: req.body.userId,
+      content: `Your booking at ${warehouse.name} from ${startDateFormatted} to ${endDateFormatted} has been canceled.`,
+      type: "booking",
+    });
+
     res.status(200).json({ message: "Booking cancelled successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
@@ -141,6 +162,15 @@ const confirmBooking = async (req, res) => {
       }
     );
     // console.log(warehouse);
+
+    const startDateFormatted = formatDate(booking.startDate);
+    const endDateFormatted = formatDate(booking.endDate);
+
+    await Notification.create({
+      userId: req.body.userId,
+      content: `Your payment for the booking at ${warehouse.name} from ${startDateFormatted} to ${endDateFormatted} has been successfully processed. Your booking is now confirmed.`,
+      type: "booking",
+    });
 
     return res
       .status(200)

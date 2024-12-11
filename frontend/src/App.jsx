@@ -17,6 +17,7 @@ import { Toaster } from "sonner";
 import { ToastContainer } from "./components/toast";
 import BookingRequests from "./pages/BookingRequests";
 import UserSettings from "./pages/UserSettings";
+import NotificationsPage from "./pages/NotificationsPage";
 
 const AppRoutes = () => {
   const location = useLocation(); // Get the current location
@@ -40,6 +41,7 @@ const AppRoutes = () => {
         <Route path="/booking/:id" element={<BookingDetails />} />
         <Route path="/requests" element={<BookingRequests />} />
         <Route path="/settings" element={<UserSettings />} />
+        <Route path="/notifications" element={<NotificationsPage />} />
       </Routes>
     </>
   );
