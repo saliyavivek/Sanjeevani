@@ -14,58 +14,90 @@ import { jwtDecode } from "jwt-decode";
 
 const WarehouseOwnerDashboard = () => {
   const token = useAuth();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [name, setName] = useState("");
+  const [userId, setUserId] = useState(null);
+  const [info, setInfo] = useState([]);
 
   useEffect(() => {
     if (token) {
       const decodedToken = jwtDecode(token);
       setName(decodedToken.name);
-      if (decodedToken.role === "farmer") {
-        navigate("/farmer/dashboard");
-      }
+      setUserId(decodedToken.userId);
     }
-  }, [token, navigate]);
+  }, [token]);
+
+  useEffect(() => {
+    fetchOwnerInfo();
+  }, [userId]);
+
+  const fetchOwnerInfo = async () => {
+    try {
+      if (userId) {
+        const response = await fetch(
+          "http://localhost:8080/api/warehouses/listings",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              user: userId,
+            }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (!response.ok) {
+          console.log("Error while fetching user bookings.");
+          return;
+        }
+        const data = await response.json();
+        setInfo(data.warehouses);
+        // console.log(info);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
       <aside className="w-64 bg-white shadow-md">
-        <div className="p-4">
+        {/* <div className="p-4">
           <h1 className="text-2xl font-bold text-blue-600">FarmStore</h1>
-        </div>
+        </div> */}
         <nav className="mt-6">
           <a
-            href="#"
+            href="/owner/dashboard"
             className="flex items-center px-4 py-2 text-gray-700 bg-gray-100 border-r-4 border-blue-600"
           >
             <BarChart3 className="w-5 h-5 mr-3" />
             Dashboard
           </a>
           <a
-            href="#"
+            href="/listings"
             className="flex items-center px-4 py-2 mt-2 text-gray-600 hover:bg-gray-100 hover:text-gray-700 transition-colors duration-200"
           >
             <Package className="w-5 h-5 mr-3" />
             My Listings
           </a>
-          <a
-            href="#"
+          {/* <a
+            href="/bookings"
             className="flex items-center px-4 py-2 mt-2 text-gray-600 hover:bg-gray-100 hover:text-gray-700 transition-colors duration-200"
           >
             <Calendar className="w-5 h-5 mr-3" />
             Bookings
-          </a>
+          </a> */}
 
           <a
-            href="#"
+            href="/settings"
             className="flex items-center px-4 py-2 mt-2 text-gray-600 hover:bg-gray-100 hover:text-gray-700 transition-colors duration-200"
           >
             <Settings className="w-5 h-5 mr-3" />
             Settings
           </a>
         </nav>
-        <div className="absolute bottom-0 w-64 p-4">
+        {/* <div className="absolute bottom-0 w-64 p-4">
           <a
             href="#"
             className="flex items-center text-gray-600 hover:text-gray-700 transition-colors duration-200"
@@ -73,7 +105,7 @@ const WarehouseOwnerDashboard = () => {
             <LogOut className="w-5 h-5 mr-3" />
             Logout
           </a>
-        </div>
+        </div> */}
       </aside>
 
       {/* Main Content */}
@@ -96,25 +128,54 @@ const WarehouseOwnerDashboard = () => {
             <h3 className="text-xl font-semibold text-gray-700 mb-2">
               Active Listings
             </h3>
-            <p className="text-3xl font-bold text-blue-600">5</p>
+            <p className="text-3xl font-bold text-blue-600">
+              {info && info.length}
+            </p>
           </div>
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-xl font-semibold text-gray-700 mb-2">
               Total Space
             </h3>
-            <p className="text-3xl font-bold text-blue-600">10,000 sq ft</p>
+            <p className="text-3xl font-bold text-blue-600">
+              {info
+                .reduce((acc, curr) => acc + Number(curr.size), 0)
+                .toLocaleString()}{" "}
+              sq ft
+            </p>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">
-              Occupancy Rate
-            </h3>
-            <p className="text-3xl font-bold text-blue-600">75%</p>
-          </div>
+
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-xl font-semibold text-gray-700 mb-2">
               Monthly Revenue
             </h3>
-            <p className="text-3xl font-bold text-green-600">$12,500</p>
+            <p className="text-3xl font-bold text-green-600">
+              ₹
+              {info
+                .filter((listing) => listing.availability === "booked")
+                .reduce((acc, curr) => {
+                  // Ensure bookings is always an array
+                  const bookings = Array.isArray(curr.bookings)
+                    ? curr.bookings
+                    : [curr.bookings];
+
+                  // Calculate revenue for each booking in the array
+                  const revenueForListing = bookings.reduce(
+                    (bookingAcc, booking) => {
+                      const startDate = new Date(booking.startDate);
+                      const endDate = new Date(booking.endDate);
+                      const difference = Math.abs(endDate - startDate);
+                      const days = difference / (1000 * 3600 * 24) + 1; // Inclusive of both start and end date
+                      const pricePerDay = parseFloat(curr.pricePerDay) || 0; // Handle invalid values
+                      return bookingAcc + days * pricePerDay;
+                    },
+                    0
+                  );
+
+                  // Accumulate revenue for all listings
+                  return acc + revenueForListing;
+                }, 0)
+                .toLocaleString()}
+            </p>
           </div>
         </div>
 
@@ -131,50 +192,61 @@ const WarehouseOwnerDashboard = () => {
                   <th className="pb-3">Space</th>
                   <th className="pb-3">From</th>
                   <th className="pb-3">To</th>
+                  <th className="pb-3">Days</th>
                   <th className="pb-3">Status</th>
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-b">
-                  <td className="py-3">John Doe</td>
-                  <td>500 sq ft</td>
-                  <td>May 1, 2023</td>
-                  <td>Aug 1, 2023</td>
-                  <td>
-                    <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm">
-                      Active
-                    </span>
-                  </td>
-                </tr>
-                <tr className="border-b">
-                  <td className="py-3">Jane Smith</td>
-                  <td>750 sq ft</td>
-                  <td>Jun 15, 2023</td>
-                  <td>Sep 15, 2023</td>
-                  <td>
-                    <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-sm">
-                      Pending
-                    </span>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="py-3">Bob Johnson</td>
-                  <td>1000 sq ft</td>
-                  <td>Jul 1, 2023</td>
-                  <td>Oct 1, 2023</td>
-                  <td>
-                    <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm">
-                      Active
-                    </span>
-                  </td>
-                </tr>
+                {info.map((listing) =>
+                  listing.bookings.map((booking) => (
+                    <tr key={booking._id} className="border-b">
+                      <td className="py-3">{booking.userId.name}</td>
+                      <td>{listing.size} sq ft</td>
+                      <td>
+                        {new Date(booking.startDate).toLocaleDateString()}
+                      </td>
+                      <td>{new Date(booking.endDate).toLocaleDateString()}</td>
+                      <td>
+                        {Math.abs(
+                          new Date(booking.endDate) -
+                            new Date(booking.startDate)
+                        ) /
+                          (1000 * 3600 * 24) +
+                          1}
+                      </td>
+                      <td>
+                        <span
+                          className={`bg-${
+                            new Date() < new Date(booking.startDate)
+                              ? "blue"
+                              : new Date() > new Date(booking.endDate)
+                              ? "gray"
+                              : "green"
+                          }-100 text-${
+                            new Date() < new Date(booking.startDate)
+                              ? "blue"
+                              : new Date() > new Date(booking.endDate)
+                              ? "gray"
+                              : "green"
+                          }-800 px-2 py-1 rounded-full text-sm`}
+                        >
+                          {new Date() < new Date(booking.startDate)
+                            ? "upcoming"
+                            : new Date() > new Date(booking.endDate)
+                            ? "completed"
+                            : "active"}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
         </div>
 
         {/* Available Space */}
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        {/* <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="p-6">
             <h3 className="text-xl font-semibold text-gray-700 mb-4">
               Available Space
@@ -189,7 +261,7 @@ const WarehouseOwnerDashboard = () => {
               7,500 sq ft out of 10,000 sq ft occupied
             </p>
           </div>
-        </div>
+        </div> */}
       </main>
     </div>
   );

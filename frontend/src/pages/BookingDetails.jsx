@@ -105,6 +105,7 @@ const BookingDetails = () => {
 
   useEffect(() => {
     fetchBookingDetails();
+    console.log(booking);
   }, [id]);
 
   if (!booking) {
