@@ -107,7 +107,7 @@ const ReviewCard = ({ review, onEdit, onDelete }) => {
 };
 
 const ReviewList = ({ reviews, onEditReview, onDeleteReview }) => {
-  return (
+  return reviews.length > 0 ? (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
       {reviews.map((review, index) => (
         <ReviewCard
@@ -117,6 +117,10 @@ const ReviewList = ({ reviews, onEditReview, onDeleteReview }) => {
           onDelete={onDeleteReview}
         />
       ))}
+    </div>
+  ) : (
+    <div className="flex justify-center text-gray-600">
+      <p>No reviews yet. It will appear below when available.</p>
     </div>
   );
 };

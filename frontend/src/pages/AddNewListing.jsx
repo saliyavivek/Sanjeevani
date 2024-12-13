@@ -36,7 +36,7 @@ const AddNewListing = () => {
     size: "",
     pricePerDay: "",
     description: "",
-    availability: "",
+    availability: "available",
     image: null,
     location: {
       type: "Point",

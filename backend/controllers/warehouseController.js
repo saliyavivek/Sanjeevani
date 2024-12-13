@@ -1,63 +1,49 @@
 const Warehouse = require("../models/Warehouse");
 const Notification = require("../models/Notification");
-const axios = require("axios");
-// const OpenAI = require("openai");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-// const openai = new OpenAI({
-//   apiKey: process.env.OPENAI_API_KEY,
-// });
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+
+const model = genAI.getGenerativeModel({
+  model: "gemini-1.5-flash-latest",
+});
+
+const generationConfig = {
+  temperature: 1,
+  topP: 0.95,
+  topK: 64,
+  maxOutputTokens: 500,
+  responseMimeType: "text/plain",
+};
 
 const generateDescription = async (req, res) => {
-  if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method not allowed" });
-  }
-
-  const { name, size, location } = req.body;
-
   try {
-    const response = await axios.post(
-      "https://api-inference.huggingface.co/models/EleutherAI/gpt-neo-1.3B",
-      {
-        inputs: `Write a detailed, professional warehouse listing for the following:
+    const { name, size, location } = req.body;
+    const chatSession = model.startChat({
+      generationConfig,
+      history: [],
+    });
 
-        Warehouse Name: ${name}  
-        Size: ${size} sq ft  
-        Location: ${location}
+    const prompt = `Write a detailed and professional warehouse listing for the following:
+Warehouse Name: ${name}
+Size: ${size} sq ft
+Location: ${location}
+The description should be engaging, detailed, and attract potential tenants. Avoid using section titles, bullet points, or numbered lists. Focus on creating a narrative that flows smoothly and presents the warehouse's features in a cohesive manner.`;
 
-        The description should include:
-        - Unique location advantages
-        - Key features of the warehouse (size, layout, design)
-        - Security features
-        - Accessibility for logistics
-        - Suitable business uses
+    const result = await chatSession.sendMessage(prompt);
 
-        Make sure the description is between 300-500 words and flows naturally. Focus on creating a compelling and informative narrative that highlights the key selling points.
-        `,
-        parameters: { max_new_tokens: 300, temperature: 0.5, top_p: 0.9 },
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    if (result?.response?.text) {
+      let description = result.response.text();
+      // console.log(description);
 
-    console.log(response);
-
-    let description = response.data[0].generated_text.trim();
-    description = description
-      .split("\n")
-      .filter((line) => line.length > 0)
-      .join("\n\n");
-
-    res.status(200).json({ description });
+      res.status(200).json({ description });
+      return;
+    } else {
+      throw new Error("No response text generated.");
+    }
   } catch (error) {
-    console.error(
-      "Error generating description:",
-      error.response ? error.response.data : error.message
-    );
-    res.status(500).json({ message: "Error generating description" });
+    console.error("Error during AI generation:", error.message);
+    return "An error occurred while generating the description.";
   }
 };
 

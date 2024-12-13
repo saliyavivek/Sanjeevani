@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 import {
-  ArrowUpDown,
   Leaf,
   Menu,
   X,
@@ -8,6 +7,10 @@ import {
   Bell,
   User,
   Settings,
+  LayoutDashboardIcon,
+  UploadIcon,
+  SearchIcon,
+  WarehouseIcon,
 } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -131,18 +134,21 @@ const Navbar = () => {
                 href="/farmer/dashboard"
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
+                <LayoutDashboardIcon className="w-4 h-4 inline-block mr-2" />
                 My Dashboard
               </a>
               <a
                 href="/warehouses/search"
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
+                <SearchIcon className="w-4 h-4 inline-block mr-2" />
                 Search Storage
               </a>
               <a
                 href="/bookings"
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
+                <WarehouseIcon className="w-4 h-4 inline-block mr-2" />
                 My Bookings
               </a>
             </>
@@ -152,12 +158,14 @@ const Navbar = () => {
                 href="/owner/dashboard"
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
+                <LayoutDashboardIcon className="w-4 h-4 inline-block mr-2" />
                 My Dashboard
               </a>
               <a
                 href="/listings"
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
+                <UploadIcon className="w-4 h-4 inline-block mr-2" />
                 Manage Listings
               </a>
               {/* <a
@@ -349,12 +357,12 @@ const Navbar = () => {
                   >
                     Manage Listings
                   </a>
-                  <a
+                  {/* <a
                     href="/requests"
                     className="text-lg font-medium text-gray-700 hover:text-green-600 transition-colors"
                   >
                     Booking Requests
-                  </a>
+                  </a> */}
                 </>
               )}
               {user && (

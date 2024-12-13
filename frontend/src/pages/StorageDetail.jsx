@@ -179,7 +179,7 @@ const StorageDetail = () => {
                 {warehouse.name}
               </h1>
               <p className="mt-2 text-gray-600 flex items-center">
-                <MapPin className="w-4 h-4 mr-2" />
+                <MapPin className="w-4 h-4 mr-1" />
                 {warehouse.location.formattedAddress}
               </p>
             </div>
