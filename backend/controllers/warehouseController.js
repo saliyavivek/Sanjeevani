@@ -1,5 +1,65 @@
 const Warehouse = require("../models/Warehouse");
 const Notification = require("../models/Notification");
+const axios = require("axios");
+// const OpenAI = require("openai");
+
+// const openai = new OpenAI({
+//   apiKey: process.env.OPENAI_API_KEY,
+// });
+
+const generateDescription = async (req, res) => {
+  if (req.method !== "POST") {
+    return res.status(405).json({ message: "Method not allowed" });
+  }
+
+  const { name, size, location } = req.body;
+
+  try {
+    const response = await axios.post(
+      "https://api-inference.huggingface.co/models/EleutherAI/gpt-neo-1.3B",
+      {
+        inputs: `Write a detailed, professional warehouse listing for the following:
+
+        Warehouse Name: ${name}  
+        Size: ${size} sq ft  
+        Location: ${location}
+
+        The description should include:
+        - Unique location advantages
+        - Key features of the warehouse (size, layout, design)
+        - Security features
+        - Accessibility for logistics
+        - Suitable business uses
+
+        Make sure the description is between 300-500 words and flows naturally. Focus on creating a compelling and informative narrative that highlights the key selling points.
+        `,
+        parameters: { max_new_tokens: 300, temperature: 0.5, top_p: 0.9 },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log(response);
+
+    let description = response.data[0].generated_text.trim();
+    description = description
+      .split("\n")
+      .filter((line) => line.length > 0)
+      .join("\n\n");
+
+    res.status(200).json({ description });
+  } catch (error) {
+    console.error(
+      "Error generating description:",
+      error.response ? error.response.data : error.message
+    );
+    res.status(500).json({ message: "Error generating description" });
+  }
+};
 
 const addWarehouse = async (req, res) => {
   const {
@@ -71,13 +131,14 @@ const getMyListings = async (req, res) => {
   try {
     const warehouses = await Warehouse.find({
       ownerId: req.body.user,
-    }).populate({
-      path: "ownerId",
-      path: "bookings",
-      populate: {
-        path: "userId",
-      },
-    });
+    })
+      .populate("ownerId")
+      .populate({
+        path: "bookings",
+        populate: {
+          path: "userId",
+        },
+      });
 
     if (warehouses.length > 0) {
       // console.log(warehouses);
@@ -176,4 +237,5 @@ module.exports = {
   getMyListings,
   editWarehouse,
   deleteWarehouse,
+  generateDescription,
 };

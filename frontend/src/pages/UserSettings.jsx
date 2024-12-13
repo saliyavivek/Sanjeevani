@@ -101,7 +101,10 @@ const UserSettings = () => {
         setUser((prev) => ({ ...prev, avatar: avatarUrl }));
 
         // Show success toast
-        showSuccessToast("Profile picture updated", loadingToastId);
+        showSuccessToast(
+          "Your profile picture has been updated",
+          loadingToastId
+        );
       } catch (error) {
         console.error("Error uploading profile picture:", error);
         showErrorToast("Failed to update profile picture", loadingToastId);
@@ -141,9 +144,13 @@ const UserSettings = () => {
       setEditMode((prev) => ({ ...prev, [field]: false }));
 
       // Show success toast
-      showSuccessToast(
-        `${field.charAt(0).toUpperCase() + field.slice(1)} updated`
-      );
+      if (field === "phoneno") {
+        showSuccessToast("Your phone number has been updated");
+      } else if (field === "name") {
+        showSuccessToast("Your name has been updated");
+      } else if (field === "email") {
+        showSuccessToast("Your email has been updated");
+      }
     } catch (error) {
       console.error("Error updating user details:", error);
       showErrorToast(`Failed to update ${field}`);
@@ -171,6 +178,11 @@ const UserSettings = () => {
             type={type}
             defaultValue={value}
             className="w-full px-3 py-2 mb-4 mt-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 text-base"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSave(field, e.target.value);
+              }
+            }}
           />
           <button
             onClick={() =>

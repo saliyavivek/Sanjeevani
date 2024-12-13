@@ -1,8 +1,9 @@
 const express = require("express");
 const {
   addWarehouse,
-  getAllWarehouses,
   getMyListings,
+  getAllWarehouses,
+  generateDescription,
   editWarehouse,
   deleteWarehouse,
 } = require("../controllers/warehouseController");
@@ -14,5 +15,6 @@ router.post("/add", upload.single("image"), addWarehouse);
 router.put("/edit", upload.single("image"), editWarehouse);
 router.delete("/delete", deleteWarehouse);
 router.post("/listings", getMyListings);
+router.post("/generate-description", generateDescription);
 
 module.exports = router;

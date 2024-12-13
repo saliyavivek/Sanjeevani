@@ -35,6 +35,8 @@ const markAsRead = async (req, res) => {
       },
       { new: true }
     );
+
+    res.status(200).json(updatedNotification);
   } catch (error) {
     res.status(500).json({ message: "Error updating notification", error });
   }

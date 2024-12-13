@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Notification = require("../models/Notification");
 const {
   userRegistrationSchema,
   userLoginSchema,
@@ -129,6 +130,28 @@ const updateUserDetails = async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
+    if (updates.name) {
+      await Notification.create({
+        userId,
+        content: `Your display name has been changed to ${user.name}.`,
+        type: "general",
+      });
+    }
+    if (updates.email) {
+      await Notification.create({
+        userId,
+        content: `Your email address has been updated to ${user.email}.`,
+        type: "general",
+      });
+    }
+    if (updates.phoneno) {
+      await Notification.create({
+        userId,
+        content: `Your phone number has been updated to ${user.phoneno}.`,
+        type: "general",
+      });
+    }
+
     res.status(200).json(user); // Send back the updated user
   } catch (error) {
     console.error("Error updating user:", error);
@@ -151,6 +174,12 @@ const updateUserAvatar = async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
+
+    await Notification.create({
+      userId,
+      content: `Your profile picture has been updated.`,
+      type: "general",
+    });
 
     res.status(200).json({ avatarUrl });
   } catch (error) {

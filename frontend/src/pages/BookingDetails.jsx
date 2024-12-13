@@ -288,11 +288,11 @@ const BookingDetails = () => {
                 <button
                   onClick={() => setIsCancelModalOpen(true)}
                   disabled={
-                    booking.status === "active" &&
+                    booking.status === "active" ||
                     booking.status === "completed"
                   }
                   className={`w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors ${
-                    booking.status === "active" &&
+                    booking.status === "active" ||
                     booking.status === "completed"
                       ? "opacity-50 cursor-not-allowed"
                       : ""

@@ -18,6 +18,7 @@ import {
   showLoadingToast,
   showSuccessToast,
 } from "../components/toast";
+import AIDescriptionGenerator from "../components/AIDescriptionGenerator";
 
 const AddNewListing = () => {
   useAuth();
@@ -255,6 +256,13 @@ const AddNewListing = () => {
     }
   }, []);
 
+  const handleDescriptionGenerated = (generatedDescription) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      description: generatedDescription,
+    }));
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -369,7 +377,7 @@ const AddNewListing = () => {
                   </div>
                 </div>
 
-                <div>
+                {/* <div>
                   <label
                     htmlFor="description"
                     className="block text-sm font-medium text-gray-700"
@@ -387,6 +395,36 @@ const AddNewListing = () => {
                   />
                   <div className="invalid-feedback">
                     Description is required.
+                  </div>
+                </div> */}
+                <div>
+                  <label
+                    htmlFor="description"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Description
+                  </label>
+                  <div className="mt-1 relative">
+                    <textarea
+                      id="description"
+                      name="description"
+                      rows="3"
+                      value={formData.description}
+                      onChange={handleChange}
+                      required
+                      className="form-control block w-full rounded-lg px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    />
+                    <div className="invalid-feedback">
+                      Description is required.
+                    </div>
+                  </div>
+                  <div className="mt-2">
+                    <AIDescriptionGenerator
+                      name={formData.name}
+                      size={formData.size}
+                      location={formData.location.formattedAddress}
+                      onDescriptionGenerated={handleDescriptionGenerated}
+                    />
                   </div>
                 </div>
 

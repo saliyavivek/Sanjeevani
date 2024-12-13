@@ -50,17 +50,18 @@ const NotificationList = () => {
 
   const handleMarkAsRead = async (notificationId) => {
     try {
-      await fetch(
+      const response = await fetch(
         `http://localhost:8080/api/notifications/${notificationId}/mark-as-read`,
         {
           method: "PUT",
         }
       );
-      setNotifications(
-        notifications.map((notif) =>
-          notif._id === notificationId ? { ...notif, isRead: true } : notif
-        )
-      );
+
+      if (!response.ok) {
+        console.log("Error while marking notification as read.");
+        return;
+      }
+      fetchNotifications(userId);
     } catch (error) {
       console.error("Error marking notification as read:", error);
     }
@@ -68,10 +69,12 @@ const NotificationList = () => {
 
   const handleMarkAllAsRead = async () => {
     try {
-      await fetch("/api/notifications/mark-all-as-read", { method: "POST" });
-      setNotifications(
-        notifications.map((notif) => ({ ...notif, isRead: true }))
-      );
+      await fetch("http://localhost:8080/api/notifications/mark-all-as-read", {
+        method: "POST",
+      });
+      // setNotifications(
+      //   notifications.map((notif) => ({ ...notif, isRead: true }))
+      // );
     } catch (error) {
       console.error("Error marking all notifications as read:", error);
     }
@@ -98,7 +101,7 @@ const NotificationList = () => {
           <Bell className="w-6 h-6 mr-2 text-blue-500" />
           Notifications
         </h2>
-        <div className="flex items-center space-x-2">
+        {/* <div className="flex items-center space-x-2">
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
@@ -115,7 +118,7 @@ const NotificationList = () => {
           >
             Mark all as read
           </button>
-        </div>
+        </div> */}
       </div>
       {notifications && notifications.length === 0 ? (
         <div className="text-center py-12">

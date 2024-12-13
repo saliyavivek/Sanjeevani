@@ -160,12 +160,12 @@ const Navbar = () => {
               >
                 Manage Listings
               </a>
-              <a
+              {/* <a
                 href="/requests"
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
                 Booking Requests
-              </a>
+              </a> */}
             </>
           ) : null}
           <a
@@ -245,12 +245,12 @@ const Navbar = () => {
               >
                 Manage Listings
               </a>
-              <a
+              {/* <a
                 href="/requests"
                 className="text-md font-medium text-gray-700 hover:text-green-600 transition-colors"
               >
                 Booking Requests
-              </a>
+              </a> */}
             </>
           )}
         </nav>
