@@ -112,3 +112,12 @@
 
 - Fix some bugs on BookingDetails page regarding cancel booking.
 - Implemented new notifications feature where user gets notified every time they book a warehouse, make a payment or cancel a booking.
+
+---
+
+### Date: 13-12-2024
+
+**Tasks Completed:**
+
+- Integrated Google Gemini AI to generate AI written Description for warehouses based on name, location and price.
+- Added some icons inside profile dropdown menu.
