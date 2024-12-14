@@ -253,12 +253,6 @@ const Navbar = () => {
               >
                 Manage Listings
               </a>
-              {/* <a
-                href="/requests"
-                className="text-md font-medium text-gray-700 hover:text-green-600 transition-colors"
-              >
-                Booking Requests
-              </a> */}
             </>
           )}
         </nav>
@@ -285,18 +279,26 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Mobile Menu Button */}
-        <button
-          onClick={toggleMenu}
-          className="lg:hidden p-2 text-gray-700 hover:text-green-600 transition-colors"
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-        >
-          {isMenuOpen ? (
-            <X className="h-6 w-6" />
+        {/* Mobile View */}
+        <div className="lg:hidden flex items-center">
+          {user ? (
+            <div onClick={() => setIsMenuOpen(true)} className="cursor-pointer">
+              <img
+                src={user.avatar}
+                alt={user.name[0].toUpperCase()}
+                className="w-10 h-10 rounded-full object-cover"
+              />
+            </div>
           ) : (
-            <Menu className="h-6 w-6" />
+            <button
+              onClick={toggleMenu}
+              className="p-2 text-gray-700 hover:text-green-600 transition-colors"
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            >
+              <Menu className="h-6 w-6" />
+            </button>
           )}
-        </button>
+        </div>
 
         {/* Mobile Menu */}
         {isMenuOpen && (
@@ -312,11 +314,11 @@ const Navbar = () => {
               {user && (
                 <div className="flex items-center space-x-2 mb-4">
                   <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-white text-lg font-semibold">
-                    {user.name ? (
-                      user.name[0].toUpperCase()
-                    ) : (
-                      <User className="w-6 h-6" />
-                    )}
+                    <img
+                      src={user.avatar}
+                      alt={user.name[0].toUpperCase()}
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
                   </div>
                   <span className="text-lg font-medium">{user.name}</span>
                 </div>
@@ -357,12 +359,6 @@ const Navbar = () => {
                   >
                     Manage Listings
                   </a>
-                  {/* <a
-                    href="/requests"
-                    className="text-lg font-medium text-gray-700 hover:text-green-600 transition-colors"
-                  >
-                    Booking Requests
-                  </a> */}
                 </>
               )}
               {user && (
@@ -375,11 +371,6 @@ const Navbar = () => {
                     Notifications
                   </a>
                   <a
-                    onClick={() => {
-                      navigate("/settings/list", {
-                        state: { existingWarehouse: warehouse },
-                      });
-                    }}
                     href="/settings"
                     className="text-lg font-medium text-gray-700 hover:text-green-600 transition-colors flex items-center"
                   >

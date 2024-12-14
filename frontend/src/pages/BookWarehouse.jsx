@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { MapPin } from "lucide-react";
+import { ArrowLeft, MapPin } from "lucide-react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -111,6 +111,18 @@ const BookWarehouse = () => {
               {/* Booking Form Section */}
               <div className="p-12 lg:p-24 flex items-center">
                 <div className="w-full max-w-lg">
+                  <div className="flex items-center gap-4 mb-8">
+                    <button
+                      onClick={() => navigate(-1)}
+                      className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors duration-200"
+                      aria-label="Go back"
+                    >
+                      <ArrowLeft className="h-5 w-5 text-gray-600" />
+                    </button>
+                    <h1 className="text-3xl font-semibold text-gray-900">
+                      Confirm Dates
+                    </h1>
+                  </div>
                   <div className="mb-8">
                     <h1 className="text-[48px] font-bold text-gray-900 tracking-tight">
                       ₹{warehouse.pricePerDay.toLocaleString()}

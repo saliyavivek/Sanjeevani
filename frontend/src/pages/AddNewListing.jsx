@@ -264,7 +264,7 @@ const AddNewListing = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white-50">
       {/* Header */}
       {/* <div className="p-4 border-b bg-white">
         <div className="max-w-[1400px] mx-auto">
@@ -280,14 +280,22 @@ const AddNewListing = () => {
 
       {/* Main Content */}
       <div className="max-w-[1400px] mx-auto p-4">
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex items-center gap-2 mb-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 rounded-full hover:bg-gray-50 transition-colors duration-200"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="h-5 w-5 text-gray-600" />
+          </button>
+          <h1 className="text-2xl font-semibold text-gray-900">
+            {existingWarehouse ? "Edit this Listing" : "Add New Listing"}
+          </h1>
+        </div>
+        <div className="flex flex-col-reverse lg:flex-row gap-8">
           {/* Left Column - Form */}
           <div className="flex-1 lg:max-w-[600px]">
-            <div className="bg-white rounded-xl shadow-sm p-6">
-              <h1 className="text-2xl font-semibold text-gray-900 mb-6">
-                {existingWarehouse ? "Edit this Listing" : "Add New Listing"}
-              </h1>
-
+            <div className="bg-white rounded-xl  p-6">
               <form
                 onSubmit={handleSubmit}
                 className="space-y-6 needs-validation"
@@ -528,7 +536,7 @@ const AddNewListing = () => {
 
           {/* Right Column - Map */}
           <div className="flex-1 lg:max-w-[800px]">
-            <div className="bg-white rounded-xl shadow-sm p-6 h-[calc(100vh-140px)] sticky top-4">
+            <div className="bg-white rounded-xl p-3 h-[calc(100vh-140px)] sticky top-4">
               <div className="h-full rounded-lg overflow-hidden">
                 <MapContainer
                   center={formData.location.coordinates.slice().reverse()} // Reverse coordinates for map center

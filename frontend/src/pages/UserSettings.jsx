@@ -1,11 +1,19 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Camera, User, ChevronRight, X, Loader2 } from "lucide-react";
+import {
+  Camera,
+  User,
+  ChevronRight,
+  X,
+  Loader2,
+  ArrowLeft,
+} from "lucide-react";
 import {
   showSuccessToast,
   showErrorToast,
   showLoadingToast,
 } from "../components/toast";
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 const UserSettings = () => {
   const [loading, setLoading] = useState(false);
@@ -18,6 +26,7 @@ const UserSettings = () => {
     password: false,
   });
   const fileInputRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -217,8 +226,17 @@ const UserSettings = () => {
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Personal info</h1>
+        <div className="flex items-center gap-4 mb-8">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 rounded-full hover:bg-gray-50 transition-colors duration-200"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="h-5 w-5 text-gray-600" />
+          </button>
+          <h1 className="text-3xl font-semibold text-gray-900">
+            Personal info
+          </h1>
         </div>
 
         <div className="mb-8">

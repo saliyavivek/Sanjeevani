@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { format, isFuture, isPast, isToday } from "date-fns";
-import { MapPin, Calendar, Package, ChevronRight, Clock } from "lucide-react";
+import {
+  MapPin,
+  Calendar,
+  Package,
+  ChevronRight,
+  Clock,
+  ArrowLeft,
+} from "lucide-react";
 import useAuth from "../hooks/useAuth";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
@@ -105,7 +112,7 @@ const MyBookings = () => {
   }, [token]);
 
   const categorizeBookings = () => {
-    const now = new Date();
+    // const now = new Date();
     return {
       past: bookings.filter((booking) => isPast(new Date(booking.endDate))),
       current: bookings.filter(
@@ -128,7 +135,7 @@ const MyBookings = () => {
       className={`px-4 py-2 font-medium text-sm rounded-md transition-colors ${
         isActive
           ? "bg-emerald-100 text-emerald-800"
-          : "text-gray-500 hover:text-gray-700"
+          : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
       }`}
       onClick={onClick}
     >
@@ -137,9 +144,18 @@ const MyBookings = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-white-50 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">My Bookings</h1>
+        <div className="flex items-center gap-4 mb-8">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 rounded-full hover:bg-gray-50 transition-colors duration-200"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="h-5 w-5 text-gray-600" />
+          </button>
+          <h1 className="text-3xl font-semibold text-gray-900">My Bookings</h1>
+        </div>
         <div className="flex space-x-4 mb-8">
           <TabButton
             label="Current"

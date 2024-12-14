@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import StorageCard from "../components/StorageCard";
 import StorageCardSkeleton from "../components/StorageCardSkeleton";
 import useAuth from "../hooks/useAuth";
-import { SlidersHorizontal } from "lucide-react";
+import { ArrowLeft, SlidersHorizontal } from "lucide-react";
 import FilterModal from "../components/FilterModal";
+import { useNavigate } from "react-router-dom";
 
 export default function BrowseStorage() {
   useAuth();
@@ -11,6 +12,7 @@ export default function BrowseStorage() {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [filteredWarehouses, setFilteredWarehouses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   const fetchStorages = async () => {
     setIsLoading(true);
@@ -56,9 +58,18 @@ export default function BrowseStorage() {
     <div className="min-h-screen bg-white py-8">
       <div className="max-w-[1400px] mx-auto px-4">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">
-            Available Storage Spaces
-          </h1>
+          <div className="flex items-center gap-4 mb-8">
+            <button
+              onClick={() => navigate(-1)}
+              className="p-2 rounded-full hover:bg-gray-50 transition-colors duration-200"
+              aria-label="Go back"
+            >
+              <ArrowLeft className="h-5 w-5 text-gray-600" />
+            </button>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Available Storage Spaces
+            </h1>
+          </div>
           <div>
             <button
               className="flex justify-center items-center mb-8 gap-2 hover:bg-gray-100 rounded-md h-10 px-3 py-2"

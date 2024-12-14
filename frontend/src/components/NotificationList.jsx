@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import NotificationItem from "./NotificationItem";
-import { Bell, Filter, CheckSquare } from "lucide-react";
+import { Bell, Filter, CheckSquare, ArrowLeft } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 const NotificationList = () => {
   const [notifications, setNotifications] = useState([
@@ -20,6 +21,7 @@ const NotificationList = () => {
   const [filter, setFilter] = useState("all");
   const [userId, setUserId] = useState(null);
   const token = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserIdAndNotifications = async () => {
@@ -95,30 +97,18 @@ const NotificationList = () => {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-lg max-w-2xl mx-auto">
-      <div className="flex items-center justify-between p-4 border-b border-gray-200">
-        <h2 className="text-xl font-semibold text-gray-800 flex items-center">
-          <Bell className="w-6 h-6 mr-2 text-blue-500" />
+    <div className="bg-white rounded-lg max-w-2xl mx-auto">
+      <div className="flex items-center justify-start p-4 border-b border-gray-200">
+        <button
+          onClick={() => navigate(-1)}
+          className="p-2 rounded-full hover:bg-gray-50 transition-colors duration-200"
+          aria-label="Go back"
+        >
+          <ArrowLeft className="h-5 w-5 text-gray-600" />
+        </button>
+        <h2 className="text-2xl ml-4 font-semibold text-gray-800 flex items-center">
           Notifications
         </h2>
-        {/* <div className="flex items-center space-x-2">
-          <select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            className="text-sm border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-          >
-            <option value="all">All</option>
-            <option value="unread">Unread</option>
-            <option value="booking">Bookings</option>
-            <option value="general">General</option>
-          </select>
-          <button
-            onClick={handleMarkAllAsRead}
-            className="text-sm text-blue-600 hover:text-blue-700 focus:outline-none transition-colors duration-200"
-          >
-            Mark all as read
-          </button>
-        </div> */}
       </div>
       {notifications && notifications.length === 0 ? (
         <div className="text-center py-12">

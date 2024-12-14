@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { Grid, MapPin, Share2, User } from "lucide-react";
+import { ArrowLeft, Grid, MapPin, Share2, User } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -146,6 +146,16 @@ const StorageDetail = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="flex items-center gap-4 mb-8">
+        <button
+          onClick={() => navigate(-1)}
+          className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors duration-200"
+          aria-label="Go back"
+        >
+          <ArrowLeft className="h-5 w-5 text-gray-600" />
+        </button>
+        <h1 className="text-3xl font-bold text-gray-900">{warehouse.name}</h1>
+      </div>
       {/* Image Grid */}
       <div className="relative">
         <div className="relative overflow-hidden">
@@ -317,7 +327,7 @@ const StorageDetail = () => {
           </div>
         )}
         {!booked && user.userId !== warehouse.ownerId._id && (
-          <div className="flex justify-center items-center">
+          <div className="flex justify-center items-center text-gray-600">
             Book this storage to add reviews.
           </div>
         )}

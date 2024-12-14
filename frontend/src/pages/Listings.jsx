@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import StorageCard from "../components/StorageCard";
 import useAuth from "../hooks/useAuth";
-import { PlusCircle } from "lucide-react";
+import { ArrowLeft, PlusCircle } from "lucide-react";
 import StorageCardSkeleton from "../components/StorageCardSkeleton";
 
 export default function Listings() {
@@ -51,9 +51,20 @@ export default function Listings() {
     <div className="min-h-screen bg-white py-8">
       <div className="max-w-[1400px] mx-auto px-4">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Your listings</h1>
+          <div className="flex items-center gap-2 mb-8">
+            <button
+              onClick={() => navigate(-1)}
+              className="p-2 rounded-full hover:bg-gray-50 transition-colors duration-200"
+              aria-label="Go back"
+            >
+              <ArrowLeft className="h-5 w-5 text-gray-600" />
+            </button>
+            <h1 className="text-3xl font-semibold text-gray-900">
+              Your listings
+            </h1>
+          </div>
           <a href="/warehouse/list">
-            <button className="bg-emerald-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-emerald-700 transition-colors duration-200">
+            <button className="bg-emerald-600 text-white px-3 py-2 mb-6 rounded-lg flex items-center hover:bg-emerald-700 transition-colors duration-200">
               <PlusCircle className="w-5 h-5 mr-2" />
               Add New Listing
             </button>

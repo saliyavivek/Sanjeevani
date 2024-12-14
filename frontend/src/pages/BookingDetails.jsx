@@ -9,6 +9,7 @@ import {
   User,
   Clock,
   Check,
+  ArrowLeft,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -191,14 +192,23 @@ const BookingDetails = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-white-50 py-12">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">
-          Booking Details
-        </h1>
+        <div className="flex items-center gap-4 mb-8">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 rounded-full hover:bg-gray-50 transition-colors duration-200"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="h-5 w-5 text-gray-600" />
+          </button>
+          <h1 className="text-3xl font-semibold text-gray-900">
+            Booking Details
+          </h1>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="md:col-span-2">
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div className="bg-white rounded-lg overflow-hidden">
               <div className="p-6">
                 <div className="flex justify-between items-start mb-4">
                   <h2 className="text-2xl font-semibold text-gray-900">
@@ -244,7 +254,11 @@ const BookingDetails = () => {
               <div className="border-t border-gray-200 mt-6 pt-6 px-6 pb-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
-                    <User className="w-10 h-10 p-2 bg-gray-100 rounded-full" />
+                    <img
+                      src={booking.warehouseId.ownerId.avatar}
+                      alt={booking.warehouseId.ownerId.name}
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
                     <div>
                       <p className="font-semibold">
                         {booking.warehouseId.ownerId.name}
@@ -265,8 +279,9 @@ const BookingDetails = () => {
               </div>
             </div>
           </div>
+
           <div>
-            <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="bg-white rounded-lg p-6">
               <h3 className="text-xl font-semibold mb-4">Price Details</h3>
               <div className="flex justify-between items-center mb-4">
                 <span>Total Price</span>
