@@ -14,6 +14,8 @@ const StorageDetail = () => {
   const location = useLocation();
   const { warehouse } = location.state;
 
+  // console.log(warehouse);
+
   const [user, setUser] = useState({});
   const [reviews, setReviews] = useState([]);
   const [booked, setIsBooked] = useState(false);
@@ -149,7 +151,7 @@ const StorageDetail = () => {
       <div className="flex items-center gap-4 mb-8">
         <button
           onClick={() => navigate(-1)}
-          className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors duration-200"
+          className="p-2 rounded-full hover:bg-gray-50 transition-colors duration-200"
           aria-label="Go back"
         >
           <ArrowLeft className="h-5 w-5 text-gray-600" />

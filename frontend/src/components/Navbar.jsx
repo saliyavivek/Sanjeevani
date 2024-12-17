@@ -113,7 +113,7 @@ const Navbar = () => {
         onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
         className="flex items-center space-x-2 focus:outline-none"
       >
-        <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-white text-lg font-semibold">
+        <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-white text-lg font-semibold hover:shadow-lg">
           {/* {user?.name ? (
             user.name[0].toUpperCase()
           ) : (

@@ -146,7 +146,7 @@ const WarehouseOwnerDashboard = () => {
 
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-xl font-semibold text-gray-700 mb-2">
-              Monthly Revenue
+              Total Revenue
             </h3>
             <p className="text-3xl font-bold text-green-600">
               ₹

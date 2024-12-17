@@ -6,6 +6,14 @@ const {
 } = require("../validationSchemas/zodUser");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
+const fs = require("fs");
+const path = require("path");
+
+function generateToken() {
+  return crypto.randomBytes(32).toString("hex");
+}
 
 const getToken = (newUser) => {
   return jwt.sign(
@@ -188,10 +196,81 @@ const updateUserAvatar = async (req, res) => {
   }
 };
 
+const requestPasswordReset = async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return res.status(404).json({ message: "Email not found" });
+  }
+
+  const token = generateToken();
+  const expiresAt = Date.now() + 15 * 60 * 1000; // 15 minutes expiry
+
+  await User.updateOne(
+    { email },
+    { resetToken: token, resetTokenExpiry: expiresAt }
+  );
+
+  // Send the email
+  const transporter = nodemailer.createTransport({
+    service: "gmail", // Use your email provider
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  });
+
+  const resetLink = `http://localhost:5173/reset-password?token=${token}`;
+  const templatePath = path.join(__dirname, "../utils/emailTemplate.html");
+  const htmlTemplate = fs.readFileSync(templatePath, "utf8");
+  const htmlContent = htmlTemplate
+    .replace("${resetLink}", resetLink)
+    .replace("${name}", user.name);
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: "Reset your password",
+    text: `You requested a password reset. Use the following link to reset your password: ${resetLink}`,
+    html: htmlContent,
+  };
+
+  await transporter.sendMail(mailOptions);
+
+  res.status(200).json({ message: "Password reset link sent to your email" });
+};
+
+const resetPassword = async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  const user = await User.findOne({
+    resetToken: token,
+    resetTokenExpiry: { $gt: Date.now() }, // Check expiry
+  });
+
+  if (!user) {
+    return res.status(400).json({ message: "Invalid or expired token" });
+  }
+
+  // Hash the new password
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+  // Update the password and remove the reset token
+  user.password = hashedPassword;
+  user.resetToken = undefined;
+  user.resetTokenExpiry = undefined;
+  await user.save();
+
+  res.status(200).json({ message: "Password successfully reset" });
+};
+
 module.exports = {
   signup,
   signin,
   getUserDetails,
   updateUserDetails,
   updateUserAvatar,
+  requestPasswordReset,
+  resetPassword,
 };

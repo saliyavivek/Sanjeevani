@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Leaf, ArrowRight, Mail, Lock } from "lucide-react";
-// import { toast } from "sonner";
+import PasswordResetModal from "../components/PasswordResetModal";
 import {
   showErrorToast,
   showLoadingToast,
@@ -12,7 +12,7 @@ const Signin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  // const [role, setRole] = useState("farmer");
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -27,13 +27,11 @@ const Signin = () => {
       body: JSON.stringify({
         email,
         password,
-        // role,
       }),
     });
     if (response.ok) {
       const data = await response.json();
       localStorage.setItem("token", JSON.stringify(data.token));
-      // console.log(data);
 
       showSuccessToast(data.message, loadingToastId);
 
@@ -46,6 +44,7 @@ const Signin = () => {
       const error = await response.json();
       showErrorToast(error.message, loadingToastId);
     }
+    setIsLoading(false);
   };
 
   return (
@@ -85,12 +84,21 @@ const Signin = () => {
             </div>
 
             <div className="space-y-2">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password
-              </label>
+              <div className="flex items-center justify-between">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Password
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setIsResetModalOpen(true)}
+                  className="text-sm font-medium text-emerald-600 hover:text-emerald-500"
+                >
+                  Forgot password?
+                </button>
+              </div>
               <div className="relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="h-5 w-5 text-gray-400" aria-hidden="true" />
@@ -106,49 +114,19 @@ const Signin = () => {
               </div>
             </div>
 
-            {/* <div className="space-y-2">
-              <span className="block text-sm font-medium text-gray-700">
-                I am a
-              </span>
-              <div className="flex space-x-4">
-                <div className="flex gap-4">
-                  <label className="flex items-center gap-1 form-check">
-                    <input
-                      type="radio"
-                      className="form-check-input form-radio text-emerald-600 focus:ring-emerald-500"
-                      name="role"
-                      value="farmer"
-                      checked={role === "farmer"}
-                      onChange={(e) => setRole(e.target.value)}
-                    />
-                    <span className="form-check-label text-md font-medium text-gray-700">
-                      Farmer
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-1 form-check">
-                    <input
-                      type="radio"
-                      className="form-check-input form-radio text-emerald-600 focus:ring-emerald-500"
-                      name="role"
-                      value="owner"
-                      checked={role === "owner"}
-                      onChange={(e) => setRole(e.target.value)}
-                      style={{ accentColor: "#3b82f6" }}
-                    />
-                    <span className="form-check-label text-md font-medium text-gray-700">
-                      Warehouse Owner
-                    </span>
-                  </label>
-                </div>
-              </div>
-            </div> */}
-
             <button
               type="submit"
+              disabled={isLoading}
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition duration-150 ease-in-out"
             >
-              Sign In
-              <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
+              {isLoading ? (
+                "Signing In..."
+              ) : (
+                <>
+                  Sign In
+                  <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
+                </>
+              )}
             </button>
           </form>
 
@@ -173,6 +151,11 @@ const Signin = () => {
           </p>
         </div>
       </div>
+
+      <PasswordResetModal
+        isOpen={isResetModalOpen}
+        onClose={() => setIsResetModalOpen(false)}
+      />
     </div>
   );
 };

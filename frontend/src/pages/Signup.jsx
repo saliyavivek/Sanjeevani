@@ -39,6 +39,9 @@ const Signup = () => {
     formData.append("role", role);
     if (profilePicture) {
       formData.append("profilePicture", profilePicture);
+    } else {
+      showErrorToast("Please upload your profile picture.", loadingToastId);
+      return;
     }
 
     const response = await fetch("http://localhost:8080/api/users/signup", {
@@ -52,7 +55,7 @@ const Signup = () => {
       showSuccessToast(data.message, loadingToastId);
 
       if (data.role === "farmer") {
-        navigate("/warehouse/search");
+        navigate("/warehouses/search");
       } else {
         navigate("/owner/dashboard");
       }
@@ -114,7 +117,7 @@ const Signup = () => {
                 />
               </div>
               <p className="block text-sm font-medium text-gray-700">
-                Profile Picture
+                Choose a profile picture
               </p>
             </div>
 

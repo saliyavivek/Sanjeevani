@@ -18,6 +18,7 @@ import { ToastContainer } from "./components/toast";
 // import BookingRequests from "./pages/BookingRequests";
 import UserSettings from "./pages/UserSettings";
 import NotificationsPage from "./pages/NotificationsPage";
+import ResetPassword from "./pages/ResetPassword";
 
 const AppRoutes = () => {
   const location = useLocation(); // Get the current location
@@ -28,13 +29,13 @@ const AppRoutes = () => {
       {location.pathname !== "/" && <Navbar />}
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/warehouses/search" element={<BrowseStorage />} />
         <Route path="/owner/dashboard" element={<WarehouseOwnerDashboard />} />
         <Route path="/farmer/dashboard" element={<FarmerDashboard />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
-        <Route path="/warehouse/list" element={<AddNewListing />} />
         <Route path="/warehouse/:id" element={<StorageDetail />} />
+        <Route path="/warehouse/list" element={<AddNewListing />} />
+        <Route path="/warehouses/search" element={<BrowseStorage />} />
         <Route path="/listings" element={<Listings />} />
         <Route path="/book/warehouse" element={<BookWarehouse />} />
         <Route path="/bookings" element={<MyBookings />} />
@@ -42,6 +43,7 @@ const AppRoutes = () => {
         {/* <Route path="/requests" element={<BookingRequests />} /> */}
         <Route path="/settings" element={<UserSettings />} />
         <Route path="/notifications" element={<NotificationsPage />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
       </Routes>
     </>
   );

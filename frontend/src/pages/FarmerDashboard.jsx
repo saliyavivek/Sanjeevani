@@ -114,13 +114,13 @@ const FarmerDashboard = () => {
         </h2>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-xl font-semibold text-gray-700 mb-2">
               Active Bookings
             </h3>
             <p className="text-3xl font-bold text-green-600">
-              {info.length > 0 && info.length}
+              {info.length > 0 ? info.length : 0}
             </p>
           </div>
           <div className="bg-white rounded-lg shadow p-6">
@@ -148,6 +148,17 @@ const FarmerDashboard = () => {
               }
             </p>
           </div>
+          <div className="bg-white rounded-lg shadow p-6">
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">
+              Total Expense
+            </h3>
+            <p className="text-3xl font-bold text-green-600">
+              ₹
+              {info
+                .reduce((acc, curr) => acc + curr.totalPrice, 0)
+                .toLocaleString()}
+            </p>
+          </div>
         </div>
 
         {/* Recent Bookings */}
@@ -164,6 +175,7 @@ const FarmerDashboard = () => {
                   <th className="pb-3">Space</th>
                   <th className="pb-3">From</th>
                   <th className="pb-3">To</th>
+                  <th className="pb-3">Days</th>
                 </tr>
               </thead>
               <tbody>
@@ -199,6 +211,36 @@ const FarmerDashboard = () => {
                       <a href={`/booking/${booking._id}`}>
                         {new Date(booking.endDate).toLocaleDateString()}
                       </a>
+                    </td>
+                    <td>
+                      {Math.abs(
+                        new Date(booking.endDate) - new Date(booking.startDate)
+                      ) /
+                        (1000 * 3600 * 24) +
+                        1}
+                    </td>
+                    <td>
+                      <span
+                        className={`bg-${
+                          new Date() < new Date(booking.startDate)
+                            ? "blue"
+                            : new Date() > new Date(booking.endDate)
+                            ? "gray"
+                            : "green"
+                        }-100 text-${
+                          new Date() < new Date(booking.startDate)
+                            ? "blue"
+                            : new Date() > new Date(booking.endDate)
+                            ? "gray"
+                            : "green"
+                        }-800 px-2 py-1 rounded-full text-sm`}
+                      >
+                        {new Date() < new Date(booking.startDate)
+                          ? "upcoming"
+                          : new Date() > new Date(booking.endDate)
+                          ? "completed"
+                          : "active"}
+                      </span>
                     </td>
                   </tr>
                 ))}

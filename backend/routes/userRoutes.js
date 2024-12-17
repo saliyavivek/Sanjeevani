@@ -6,6 +6,8 @@ const {
   getUserDetails,
   updateUserDetails,
   updateUserAvatar,
+  requestPasswordReset,
+  resetPassword,
 } = require("../controllers/userController");
 const upload = require("../middlewares/multer");
 
@@ -14,5 +16,7 @@ router.patch("/:userId", updateUserDetails);
 router.put("/:userId/avatar", upload.single("avatar"), updateUserAvatar);
 router.post("/signup", upload.single("profilePicture"), signup);
 router.post("/signin", signin);
+router.post("/request-password-reset", requestPasswordReset);
+router.post("/reset-password", resetPassword);
 
 module.exports = router;

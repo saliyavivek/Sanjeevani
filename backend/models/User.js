@@ -12,6 +12,8 @@ const userSchema = new Schema({
   },
   phoneno: String,
   avatar: String,
+  resetToken: { type: String, default: null },
+  resetTokenExpiry: { type: Date, default: null },
 });
 
 const User = mongoose.model("User", userSchema);
