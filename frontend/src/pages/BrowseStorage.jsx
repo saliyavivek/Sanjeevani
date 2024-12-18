@@ -66,7 +66,7 @@ export default function BrowseStorage() {
             >
               <ArrowLeft className="h-5 w-5 text-gray-600" />
             </button>
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-3xl font-semibold text-gray-900">
               Available Storage Spaces
             </h1>
           </div>

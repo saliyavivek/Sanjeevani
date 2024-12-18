@@ -56,6 +56,15 @@ const getUserBookings = async (req, res) => {
         path: "ownerId",
       },
     });
+
+    const currentDate = new Date();
+    bookings.forEach(async (booking) => {
+      if (new Date(booking.endDate) < currentDate) {
+        booking.status = "completed";
+        await booking.save();
+      }
+    });
+
     res.status(200).json(bookings);
   } catch (error) {
     res.status(500).json({ message: "Server error", error });

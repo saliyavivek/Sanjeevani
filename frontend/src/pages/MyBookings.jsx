@@ -43,9 +43,11 @@ const BookingCard = ({ booking, navigate }) => (
       </div>
     </div>
     <div className="p-6">
+      {/* <a href={`/warehouse/${booking.warehouseId._id}`}> */}
       <h3 className="text-xl font-semibold text-gray-900 mb-2">
         {booking.warehouseId.name}
       </h3>
+      {/* </a> */}
       <p className="text-gray-500 flex items-center mb-4">
         <MapPin className="w-4 h-4 mr-1 flex-shrink-0" />
         <span className="truncate">
@@ -101,6 +103,8 @@ const MyBookings = () => {
       );
       if (response.ok) {
         const data = await response.json();
+        // console.log(data);
+
         setBookings(data);
       }
       setLoading(false);

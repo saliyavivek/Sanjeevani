@@ -1,6 +1,7 @@
 const Warehouse = require("../models/Warehouse");
 const Notification = require("../models/Notification");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const Booking = require("../models/Booking");
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
@@ -112,6 +113,39 @@ const getAllWarehouses = async (req, res) => {
     return res.status(500).json({ message: error });
   }
 };
+
+// const getAllWarehouses = async (req, res) => {
+//   try {
+//     const warehouses = await Warehouse.find({}).populate("ownerId");
+
+//     if (warehouses.length > 0) {
+//       // Create an array of promises for saving warehouses
+//       const savePromises = warehouses.map(async (warehouse) => {
+//         for (const bookingId of warehouse.bookings) {
+//           const booking = await Booking.findById(bookingId);
+//           console.log(booking);
+//           if (booking && booking.status === "completed") {
+//             console.log("inside if", booking);
+
+//             warehouse.availability = "available";
+//             break; // Exit the loop once we find a completed booking
+//           }
+//         }
+//         return warehouse.save(); // Return the save promise
+//       });
+
+//       // Wait for all save operations to complete
+//       await Promise.all(savePromises);
+
+//       return res.status(201).send({ warehouses });
+//     } else {
+//       return res.status(500).send({ message: "No warehouses found." });
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(500).json({ message: error });
+//   }
+// };
 
 const getMyListings = async (req, res) => {
   try {

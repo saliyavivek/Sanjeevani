@@ -4,6 +4,7 @@ import StorageCard from "../components/StorageCard";
 import useAuth from "../hooks/useAuth";
 import { ArrowLeft, PlusCircle } from "lucide-react";
 import StorageCardSkeleton from "../components/StorageCardSkeleton";
+import { useNavigate } from "react-router-dom";
 
 export default function Listings() {
   useAuth();
@@ -11,6 +12,7 @@ export default function Listings() {
   const [warehouses, setWarehouses] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const fetchStorages = async () => {
     const storedToken = localStorage.getItem("token");
