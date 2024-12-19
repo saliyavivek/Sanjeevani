@@ -115,19 +115,25 @@ const MyBookings = () => {
     fetchBookings();
   }, [token]);
 
+  const normalizeDate = (date) => {
+    const normalizedDate = new Date(date);
+    normalizedDate.setHours(0, 0, 0, 0);
+    return normalizedDate;
+  };
+
   const categorizeBookings = () => {
-    // const now = new Date();
+    const today = normalizeDate(new Date());
     return {
-      past: bookings.filter((booking) => isPast(new Date(booking.endDate))),
+      past: bookings.filter(
+        (booking) => normalizeDate(booking.endDate) < today
+      ),
       current: bookings.filter(
         (booking) =>
-          (isToday(new Date(booking.startDate)) ||
-            isPast(new Date(booking.startDate))) &&
-          (isToday(new Date(booking.endDate)) ||
-            isFuture(new Date(booking.endDate)))
+          normalizeDate(booking.startDate) <= today &&
+          normalizeDate(booking.endDate) >= today
       ),
-      upcoming: bookings.filter((booking) =>
-        isFuture(new Date(booking.startDate))
+      upcoming: bookings.filter(
+        (booking) => normalizeDate(booking.startDate) > today
       ),
     };
   };

@@ -58,6 +58,29 @@ const FarmerDashboard = () => {
     }
   };
 
+  const normalizeDate = (date) => {
+    const normalizedDate = new Date(date);
+    normalizedDate.setHours(0, 0, 0, 0);
+    return normalizedDate;
+  };
+
+  const categorizeBookings = () => {
+    const today = normalizeDate(new Date());
+    return {
+      past: info.filter((booking) => normalizeDate(booking.endDate) < today),
+      current: info.filter(
+        (booking) =>
+          normalizeDate(booking.startDate) <= today &&
+          normalizeDate(booking.endDate) >= today
+      ),
+      upcoming: info.filter(
+        (booking) => normalizeDate(booking.startDate) > today
+      ),
+    };
+  };
+
+  const { past, current, upcoming } = categorizeBookings();
+
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
@@ -140,12 +163,13 @@ const FarmerDashboard = () => {
             </h3>
             <p className="text-3xl font-bold text-yellow-600">
               {
-                info.filter(
-                  (booking) =>
-                    new Date(booking.endDate) - new Date() <=
-                      2 * 24 * 60 * 60 * 1000 &&
-                    new Date(booking.endDate) > new Date()
-                ).length
+                info.filter((booking) => {
+                  const endDate = normalizeDate(booking.endDate);
+                  const now = normalizeDate(new Date());
+                  return (
+                    endDate >= now && endDate - now <= 2 * 24 * 60 * 60 * 1000
+                  );
+                }).length
               }
             </p>
           </div>
@@ -177,6 +201,7 @@ const FarmerDashboard = () => {
                   <th className="pb-3">From</th>
                   <th className="pb-3">To</th>
                   <th className="pb-3">Days</th>
+                  <th className="pb-3">Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -223,24 +248,24 @@ const FarmerDashboard = () => {
                     <td>
                       <span
                         className={`bg-${
-                          new Date() < new Date(booking.startDate)
+                          upcoming.includes(booking)
                             ? "blue"
-                            : new Date() > new Date(booking.endDate)
-                            ? "gray"
-                            : "green"
+                            : current.includes(booking)
+                            ? "green"
+                            : "gray"
                         }-100 text-${
-                          new Date() < new Date(booking.startDate)
+                          upcoming.includes(booking)
                             ? "blue"
-                            : new Date() > new Date(booking.endDate)
-                            ? "gray"
-                            : "green"
+                            : current.includes(booking)
+                            ? "green"
+                            : "gray"
                         }-800 px-2 py-1 rounded-full text-sm`}
                       >
-                        {new Date() < new Date(booking.startDate)
+                        {upcoming.includes(booking)
                           ? "upcoming"
-                          : new Date() > new Date(booking.endDate)
-                          ? "completed"
-                          : "active"}
+                          : current.includes(booking)
+                          ? "active"
+                          : "completed"}
                       </span>
                     </td>
                   </tr>

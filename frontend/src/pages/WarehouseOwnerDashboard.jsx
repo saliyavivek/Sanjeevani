@@ -59,6 +59,49 @@ const WarehouseOwnerDashboard = () => {
     }
   };
 
+  const normalizeDate = (date) => {
+    const normalizedDate = new Date(date);
+    normalizedDate.setHours(0, 0, 0, 0);
+    return normalizedDate;
+  };
+
+  const categorizeBookings = () => {
+    const today = normalizeDate(new Date());
+    return {
+      past: info.reduce(
+        (acc, warehouse) =>
+          acc.concat(
+            warehouse.bookings.filter(
+              (booking) => normalizeDate(booking.endDate) < today
+            )
+          ),
+        []
+      ),
+      current: info.reduce(
+        (acc, warehouse) =>
+          acc.concat(
+            warehouse.bookings.filter(
+              (booking) =>
+                normalizeDate(booking.startDate) <= today &&
+                normalizeDate(booking.endDate) >= today
+            )
+          ),
+        []
+      ),
+      upcoming: info.reduce(
+        (acc, warehouse) =>
+          acc.concat(
+            warehouse.bookings.filter(
+              (booking) => normalizeDate(booking.startDate) > today
+            )
+          ),
+        []
+      ),
+    };
+  };
+
+  const { past, current, upcoming } = categorizeBookings();
+
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
@@ -217,24 +260,24 @@ const WarehouseOwnerDashboard = () => {
                       <td>
                         <span
                           className={`bg-${
-                            new Date() < new Date(booking.startDate)
+                            upcoming.includes(booking)
                               ? "blue"
-                              : new Date() > new Date(booking.endDate)
-                              ? "gray"
-                              : "green"
+                              : current.includes(booking)
+                              ? "green"
+                              : "gray"
                           }-100 text-${
-                            new Date() < new Date(booking.startDate)
+                            upcoming.includes(booking)
                               ? "blue"
-                              : new Date() > new Date(booking.endDate)
-                              ? "gray"
-                              : "green"
+                              : current.includes(booking)
+                              ? "green"
+                              : "gray"
                           }-800 px-2 py-1 rounded-full text-sm`}
                         >
-                          {new Date() < new Date(booking.startDate)
+                          {upcoming.includes(booking)
                             ? "upcoming"
-                            : new Date() > new Date(booking.endDate)
-                            ? "completed"
-                            : "active"}
+                            : current.includes(booking)
+                            ? "active"
+                            : "completed"}
                         </span>
                       </td>
                     </tr>
