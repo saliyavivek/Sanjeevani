@@ -4,6 +4,7 @@ import { Bell, Filter, CheckSquare, ArrowLeft } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import { showErrorToast, showSuccessToast } from "./toast";
 
 const NotificationList = () => {
   const [notifications, setNotifications] = useState([
@@ -63,22 +64,40 @@ const NotificationList = () => {
         console.log("Error while marking notification as read.");
         return;
       }
+      showSuccessToast("Notification marked as read.");
       fetchNotifications(userId);
     } catch (error) {
       console.error("Error marking notification as read:", error);
+      showErrorToast("Error while marking notification as read.");
     }
   };
 
   const handleMarkAllAsRead = async () => {
     try {
-      await fetch("http://localhost:8080/api/notifications/mark-all-as-read", {
-        method: "POST",
-      });
+      const response = await fetch(
+        "http://localhost:8080/api/notifications/mark-all-as-read",
+        {
+          method: "PUT",
+          body: JSON.stringify({
+            userId,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (!response.ok) {
+        console.log("Error while marking all notifications as read.");
+        return;
+      }
+      showSuccessToast("All notifications marked as read.");
+      fetchNotifications(userId);
       // setNotifications(
       //   notifications.map((notif) => ({ ...notif, isRead: true }))
       // );
     } catch (error) {
       console.error("Error marking all notifications as read:", error);
+      showErrorToast("Error while marking notification as read.");
     }
   };
 
@@ -98,7 +117,7 @@ const NotificationList = () => {
 
   return (
     <div className="bg-white rounded-lg max-w-2xl mx-auto">
-      <div className="flex items-center justify-start p-4 border-b border-gray-200">
+      <div className="flex items-center justify-between p-4 border-b border-gray-200">
         <button
           onClick={() => navigate(-1)}
           className="p-2 rounded-full hover:bg-gray-50 transition-colors duration-200"
@@ -109,6 +128,12 @@ const NotificationList = () => {
         <h2 className="text-2xl ml-4 font-semibold text-gray-800 flex items-center">
           Notifications
         </h2>
+        <button
+          className="text-sm font-semibold text-gray-600 hover:text-gray-700 justify-self-end"
+          onClick={handleMarkAllAsRead}
+        >
+          Mark all as read
+        </button>
       </div>
       {notifications && notifications.length === 0 ? (
         <div className="text-center py-12">

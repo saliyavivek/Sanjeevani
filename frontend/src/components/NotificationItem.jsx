@@ -5,6 +5,8 @@ import {
   CheckCircle,
   Briefcase,
   MessageSquare,
+  PartyPopper,
+  Ban,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
@@ -28,6 +30,14 @@ const NotificationItem = ({ notification, onMarkAsRead }) => {
       case "payment":
         return (
           <Briefcase className="w-10 h-10 p-2 bg-yellow-100 text-yellow-600 rounded-full" />
+        );
+      case "celebration":
+        return (
+          <PartyPopper className="w-10 h-10 p-2 bg-emerald-100 text-emerald-600 rounded-full" />
+        );
+      case "cancel":
+        return (
+          <Ban className="w-10 h-10 p-2 bg-red-100 text-red-600 rounded-full" />
         );
       default:
         return (

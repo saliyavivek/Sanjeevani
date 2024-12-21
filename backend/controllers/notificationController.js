@@ -42,7 +42,26 @@ const markAsRead = async (req, res) => {
   }
 };
 
+const markAllAsRead = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    if (!userId) {
+      return res.status(400).json({ message: "User id is required" });
+    }
+    const updatedNotifications = await Notification.updateMany(
+      { userId, isRead: false },
+      { isRead: true },
+      { new: true }
+    );
+
+    res.status(200).json(updatedNotifications);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating notification", error });
+  }
+};
+
 module.exports = {
   fetchNotification,
   markAsRead,
+  markAllAsRead,
 };

@@ -1,6 +1,7 @@
 const Booking = require("../models/Booking");
 const Notification = require("../models/Notification");
 const Warehouse = require("../models/Warehouse");
+const User = require("../models/User");
 const { formatDate } = require("../utils/formatDate");
 
 const createBooking = async (req, res) => {
@@ -48,6 +49,12 @@ const createBooking = async (req, res) => {
   }
 };
 
+const normalizeDate = (date) => {
+  const normalizedDate = new Date(date);
+  normalizedDate.setHours(0, 0, 0, 0);
+  return normalizedDate;
+};
+
 const getUserBookings = async (req, res) => {
   try {
     const bookings = await Booking.find({ userId: req.body.userId }).populate({
@@ -57,9 +64,9 @@ const getUserBookings = async (req, res) => {
       },
     });
 
-    const currentDate = new Date();
+    const currentDate = normalizeDate(new Date());
     bookings.forEach(async (booking) => {
-      if (new Date(booking.endDate) < currentDate) {
+      if (normalizeDate(booking.endDate) < currentDate) {
         booking.status = "completed";
         await booking.save();
       }
@@ -83,6 +90,8 @@ const cancelBooking = async (req, res) => {
     );
     await warehouse.save();
 
+    const user = await User.findById(req.body.userId);
+
     await booking.deleteOne();
 
     const startDateFormatted = formatDate(booking.startDate);
@@ -92,6 +101,12 @@ const cancelBooking = async (req, res) => {
       userId: req.body.userId,
       content: `Your booking at ${warehouse.name} from ${startDateFormatted} to ${endDateFormatted} has been canceled.`,
       type: "booking",
+    });
+
+    await Notification.create({
+      userId: warehouse.ownerId,
+      content: `Oops, the booking was canceled for ${warehouse.name} by ${user.name}. Don't worry! Keep the warehouse ready for future bookings!`,
+      type: "cancel",
     });
 
     res.status(200).json({ message: "Booking cancelled successfully" });
@@ -129,7 +144,7 @@ const confirmBooking = async (req, res) => {
     // console.log(pendingBooking);
 
     if (pendingBooking.length > 0) {
-      const deletedBooking = await Booking.deleteMany({
+      await Booking.deleteMany({
         _id: { $in: pendingBooking.map((booking) => booking._id) },
       });
     }
@@ -179,6 +194,12 @@ const confirmBooking = async (req, res) => {
       userId: req.body.userId,
       content: `Your payment for the booking at ${warehouse.name} from ${startDateFormatted} to ${endDateFormatted} has been successfully processed. Your booking is now confirmed.`,
       type: "booking",
+    });
+
+    await Notification.create({
+      userId: warehouse.ownerId,
+      content: `Your warehouse ${warehouse.name} has been booked by ${booking.userId.name} from ${startDateFormatted} to ${endDateFormatted}.`,
+      type: "celebration",
     });
 
     return res

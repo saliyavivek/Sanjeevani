@@ -169,10 +169,21 @@ const WarehouseOwnerDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-xl font-semibold text-gray-700 mb-2">
-              Active Listings
+              Total Listings
             </h3>
             <p className="text-3xl font-bold text-blue-600">
               {info && info.length}
+            </p>
+          </div>
+          <div className="bg-white rounded-lg shadow p-6">
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">
+              Active Bookings
+            </h3>
+            <p className="text-3xl font-bold text-blue-600">
+              {
+                info.filter((booking) => booking.availability === "booked")
+                  .length
+              }
             </p>
           </div>
           <div className="bg-white rounded-lg shadow p-6">
@@ -231,7 +242,8 @@ const WarehouseOwnerDashboard = () => {
             <table className="w-full">
               <thead>
                 <tr className="text-left text-gray-500 border-b">
-                  <th className="pb-3">Farmer</th>
+                  <th className="pb-3">Warehouse</th>
+                  <th className="pb-3">Booked by</th>
                   <th className="pb-3">Space</th>
                   <th className="pb-3">From</th>
                   <th className="pb-3">To</th>
@@ -240,9 +252,11 @@ const WarehouseOwnerDashboard = () => {
                 </tr>
               </thead>
               <tbody>
+                {/* {console.log(info[0].name)} */}
                 {info.map((listing) =>
                   listing.bookings.map((booking) => (
                     <tr key={booking._id} className="border-b">
+                      <td className="py-3">{listing.name}</td>
                       <td className="py-3">{booking.userId.name}</td>
                       <td>{listing.size} sq ft</td>
                       <td>
