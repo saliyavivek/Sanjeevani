@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Star, MoreVertical, Dot } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import ReviewOptionsMenu from "./ReviewOptionsMenu";
+import { formatDistanceToNow } from "date-fns";
 
 const ReviewCard = ({ review, onEdit, onDelete }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -27,6 +28,24 @@ const ReviewCard = ({ review, onEdit, onDelete }) => {
 
   const isCurrentUserReview = currentUser === review.userId._id;
 
+  const calculateDuration = (dateString) => {
+    const currentDate = new Date();
+    const targetDate = new Date(dateString);
+    const difference = currentDate - targetDate;
+
+    const totalDays = difference / (1000 * 60 * 60 * 24);
+    const totalMonths = difference / (1000 * 60 * 60 * 24 * 30);
+    const totalYears = difference / (1000 * 60 * 60 * 24 * 365);
+
+    if (currentDate.getMonth() === targetDate.getMonth()) {
+      return `${Math.round(totalDays)} day(s)`;
+    } else if (totalMonths < 12) {
+      return `${Math.round(totalMonths)} month(s)`;
+    } else {
+      return `${Math.round(totalYears)} year(s)`;
+    }
+  };
+
   return (
     <div className="mb-8 relative">
       <div className="flex items-center mb-4">
@@ -46,7 +65,9 @@ const ReviewCard = ({ review, onEdit, onDelete }) => {
         <div className="ml-4 flex-grow">
           <h3 className="font-semibold text-gray-900">{review.userId.name}</h3>
           <div className="flex items-center text-sm text-black-500">
-            <span>1 year on Sanjeevani</span>
+            <span>
+              {calculateDuration(review.userId.createdAt)} on Sanjeevani
+            </span>
           </div>
         </div>
         {isCurrentUserReview && (
@@ -81,9 +102,9 @@ const ReviewCard = ({ review, onEdit, onDelete }) => {
             />
           ))}
         </div>
-        <span className="ml-1 text-xs">&#x2022;</span>
-        <span className="ml-1 text-sm text-gray-500">
-          {new Date(review.createdAt).toLocaleDateString()}
+        <div className="ml-1 h-[2px] w-[2px] rounded bg-[#6A6A6A]"></div>
+        <span className="ml-1 text-xs text-gray-500">
+          {formatDistanceToNow(new Date(review.createdAt), { addSuffix: true })}
         </span>
       </div>
 

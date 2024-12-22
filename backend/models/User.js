@@ -12,6 +12,11 @@ const userSchema = new Schema({
   },
   phoneno: String,
   avatar: String,
+  address: String,
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
   resetToken: { type: String, default: null },
   resetTokenExpiry: { type: Date, default: null },
 });

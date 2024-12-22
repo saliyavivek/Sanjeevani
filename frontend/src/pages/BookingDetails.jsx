@@ -14,9 +14,9 @@ import {
 import { format } from "date-fns";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import generateInvoice from "../utils/generateInvoice";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 import { showErrorToast, showSuccessToast } from "../components/toast";
-import useAuth from "../hooks/useAuth";
+// import useAuth from "../hooks/useAuth";
 import { jwtDecode } from "jwt-decode";
 
 const StatusBadge = ({ status }) => {
@@ -110,7 +110,7 @@ const BookingDetails = () => {
   }, [id]);
 
   if (!booking) {
-    return <div>Loading...</div>; // Render loading state
+    return null; // Render loading state
   }
 
   const handlePayment = async () => {
@@ -168,27 +168,33 @@ const BookingDetails = () => {
     }
   };
 
-  const handleBookingCompleted = async (req, res) => {
-    try {
-      const response = await fetch(
-        `http://localhost:8080/api/bookings/completed/${booking._id}`,
-        {
-          method: "POST",
-          body: JSON.stringify({
-            warehouseId,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data.message);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  // const handleBookingCompleted = async (req, res) => {
+  //   try {
+  //     const response = await fetch(
+  //       `http://localhost:8080/api/bookings/completed/${booking._id}`,
+  //       {
+  //         method: "POST",
+  //         body: JSON.stringify({
+  //           warehouseId,
+  //         }),
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       console.log(data.message);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const normalizeDate = (date) => {
+    const normalizedDate = new Date(date);
+    normalizedDate.setHours(0, 0, 0, 0);
+    return normalizedDate;
   };
 
   return (
@@ -220,9 +226,11 @@ const BookingDetails = () => {
                     <StatusBadge status={booking.status} />
                   )} */}
                   {booking.status !== "pending" &&
-                  new Date(booking.startDate) > new Date() ? (
+                  normalizeDate(booking.startDate) >
+                    normalizeDate(new Date()) ? (
                     <StatusBadge status="upcoming" />
-                  ) : new Date() > new Date(booking.endDate) ? (
+                  ) : normalizeDate(new Date()) >
+                    normalizeDate(booking.endDate) ? (
                     <StatusBadge status="completed" />
                   ) : (
                     <StatusBadge status={booking.status} />

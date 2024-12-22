@@ -146,6 +146,24 @@ const StorageDetail = () => {
     }
   };
 
+  const calculateDuration = (dateString) => {
+    const currentDate = new Date();
+    const targetDate = new Date(dateString);
+    const difference = currentDate - targetDate;
+
+    const totalDays = difference / (1000 * 60 * 60 * 24);
+    const totalMonths = difference / (1000 * 60 * 60 * 24 * 30);
+    const totalYears = difference / (1000 * 60 * 60 * 24 * 365);
+
+    if (currentDate.getMonth() === targetDate.getMonth()) {
+      return `${Math.round(totalDays)} day(s)`;
+    } else if (totalMonths < 12) {
+      return `${Math.round(totalMonths)} month(s)`;
+    } else {
+      return `${Math.round(totalYears)} year(s)`;
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <div className="flex items-center gap-4 mb-8">
@@ -156,11 +174,13 @@ const StorageDetail = () => {
         >
           <ArrowLeft className="h-5 w-5 text-gray-600" />
         </button>
-        <h1 className="text-3xl font-bold text-gray-900">{warehouse.name}</h1>
+        <h1 className="text-3xl font-semibold text-gray-900">
+          {warehouse.name}
+        </h1>
       </div>
       {/* Image Grid */}
-      <div className="relative">
-        <div className="relative overflow-hidden">
+      <div>
+        <div className="overflow-hidden">
           <img
             src={warehouse.images[0]}
             alt="Main storage view"
@@ -201,8 +221,14 @@ const StorageDetail = () => {
           </div>
 
           <div className="mt-6 pb-6 border-b">
-            <div className="flex items-center gap-4">
-              <User className="w-10 h-10 p-2 bg-gray-100 rounded-full" />
+            <div className="flex items-center gap-2">
+              <a href={`/users/show/${warehouse.ownerId._id}`}>
+                <img
+                  src={warehouse.ownerId.avatar}
+                  alt={warehouse.ownerId.name}
+                  className="w-10 h-10 object-cover rounded-full"
+                />
+              </a>
               <div>
                 <p className="font-medium">
                   Listed by{" "}
@@ -210,7 +236,9 @@ const StorageDetail = () => {
                     ? "you"
                     : warehouse.ownerId.name}
                 </p>
-                <p className="text-gray-600">Storage Owner</p>
+                <p className="text-gray-600">
+                  {calculateDuration(warehouse.ownerId.createdAt)} on Sanjeevani
+                </p>
               </div>
             </div>
           </div>

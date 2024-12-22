@@ -19,6 +19,8 @@ import { ToastContainer } from "./components/toast";
 import UserSettings from "./pages/UserSettings";
 import NotificationsPage from "./pages/NotificationsPage";
 import ResetPassword from "./pages/ResetPassword";
+import "./App.css";
+import HostProfile from "./pages/HostProfile";
 
 const AppRoutes = () => {
   const location = useLocation(); // Get the current location
@@ -44,6 +46,7 @@ const AppRoutes = () => {
         <Route path="/settings" element={<UserSettings />} />
         <Route path="/notifications" element={<NotificationsPage />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/users/show/:id" element={<HostProfile />} />
       </Routes>
     </>
   );

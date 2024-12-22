@@ -8,6 +8,7 @@ import {
   User,
   Phone,
   Camera,
+  MapPin,
 } from "lucide-react";
 import {
   showErrorToast,
@@ -19,6 +20,7 @@ const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [address, setAddress] = useState("");
   const [phno, setPhno] = useState("");
   const [role, setRole] = useState("farmer");
   const [profilePicture, setProfilePicture] = useState(null);
@@ -35,6 +37,7 @@ const Signup = () => {
     formData.append("name", name);
     formData.append("email", email);
     formData.append("password", password);
+    formData.append("address", address);
     formData.append("phoneno", phno);
     formData.append("role", role);
     if (profilePicture) {
@@ -189,6 +192,31 @@ const Signup = () => {
 
             <div className="space-y-2">
               <label
+                htmlFor="address"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Address
+              </label>
+              <div className="relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <MapPin
+                    className="h-5 w-5 text-gray-400"
+                    aria-hidden="true"
+                  />
+                </div>
+                <input
+                  id="address"
+                  type="text"
+                  required
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                  placeholder="State, Country"
+                  onChange={(e) => setAddress(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label
                 htmlFor="phone"
                 className="block text-sm font-medium text-gray-700"
               >
@@ -203,7 +231,7 @@ const Signup = () => {
                   type="tel"
                   required
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
-                  placeholder="+1 (555) 000-0000"
+                  placeholder="+91 987654321"
                   onChange={(e) => setPhno(e.target.value)}
                 />
               </div>

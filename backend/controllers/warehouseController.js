@@ -99,44 +99,12 @@ const addWarehouse = async (req, res) => {
   }
 };
 
-const getAllWarehouses = async (req, res) => {
-  try {
-    const warehouses = await Warehouse.find({}).populate("ownerId");
-
-    if (warehouses.length > 0) {
-      return res.status(201).send({ warehouses });
-    } else {
-      return res.status(500).send({ message: "No warehouses found." });
-    }
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: error });
-  }
-};
-
 // const getAllWarehouses = async (req, res) => {
 //   try {
 //     const warehouses = await Warehouse.find({}).populate("ownerId");
+//     console.log(warehouses[0].bookings);
 
 //     if (warehouses.length > 0) {
-//       // Create an array of promises for saving warehouses
-//       const savePromises = warehouses.map(async (warehouse) => {
-//         for (const bookingId of warehouse.bookings) {
-//           const booking = await Booking.findById(bookingId);
-//           console.log(booking);
-//           if (booking && booking.status === "completed") {
-//             console.log("inside if", booking);
-
-//             warehouse.availability = "available";
-//             break; // Exit the loop once we find a completed booking
-//           }
-//         }
-//         return warehouse.save(); // Return the save promise
-//       });
-
-//       // Wait for all save operations to complete
-//       await Promise.all(savePromises);
-
 //       return res.status(201).send({ warehouses });
 //     } else {
 //       return res.status(500).send({ message: "No warehouses found." });
@@ -146,6 +114,56 @@ const getAllWarehouses = async (req, res) => {
 //     return res.status(500).json({ message: error });
 //   }
 // };
+
+const getAllWarehouses = async (req, res) => {
+  try {
+    const warehouses = await Warehouse.find({}).populate("ownerId");
+
+    if (warehouses.length > 0) {
+      const updatePromises = warehouses.map(async (warehouse) => {
+        const bookings = await Booking.find({
+          _id: { $in: warehouse.bookings },
+        });
+
+        // Check if all bookings are completed
+        const allBookingsCompleted = bookings.every(
+          (booking) => booking.status === "completed"
+        );
+
+        if (allBookingsCompleted && warehouse.availability !== "available") {
+          warehouse.availability = "available";
+          return warehouse.save(); // Save the updated warehouse
+        } else if (
+          !allBookingsCompleted &&
+          warehouse.availability !== "booked"
+        ) {
+          warehouse.availability = "booked"; // Ensure availability reflects reality
+          return warehouse.save();
+        }
+
+        return null; // No changes needed
+      });
+
+      // Wait for all save operations to complete
+      await Promise.all(updatePromises);
+
+      // Fetch updated warehouses to send in response
+      const updatedWarehouses = await Warehouse.find({}).populate("ownerId");
+
+      return res
+        .status(201)
+        .send({
+          message: "Warehouses updated successfully.",
+          warehouses: updatedWarehouses,
+        });
+    } else {
+      return res.status(500).send({ message: "No warehouses found." });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: error });
+  }
+};
 
 const getMyListings = async (req, res) => {
   try {

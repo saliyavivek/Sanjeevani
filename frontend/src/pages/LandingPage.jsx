@@ -153,7 +153,7 @@ const LandingPage = () => {
                 solutions. Protect your crops and maximize your profits.
               </p>
               <div className="mt-10 sm:flex">
-                <div className="rounded-md flex">
+                <div className="mt-3 sm:mt-0 sm:ml-3">
                   <a
                     href={
                       !isLoggedIn

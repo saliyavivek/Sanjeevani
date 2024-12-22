@@ -75,81 +75,85 @@ const StorageCard = ({ warehouse, onDelete }) => {
   return (
     <>
       <div
-        className="group relative flex flex-col cursor-pointer"
+        className="group flex flex-col cursor-pointer"
         onClick={handleClick}
         onMouseLeave={() => setShowDropdown(false)}
       >
-        <div className="relative w-full overflow-hidden rounded-lg">
-          <img
-            src={warehouse.images[0] || "/placeholder.svg?height=300&width=400"}
-            alt={warehouse.name}
-            className="object-cover transition-transform group-hover:scale-105 h-80 w-full"
-          />
-        </div>
-        <h3 className="mt-2 text-lg font-semibold text-gray-900">
-          {warehouse.name}
-        </h3>
-        <p className="text-md text-black-600">
-          {/* Listed by{" "}
-          {warehouse.ownerId._id === user ? "you" : warehouse.ownerId.name} */}
-          <span className="font-medium">₹{warehouse.pricePerDay}</span> day
-        </p>
-        <p
-          className={`mt-1 text-sm ${
-            warehouse.availability === "available"
-              ? "text-green-600"
-              : warehouse.availability === "booked"
-              ? "text-red-600"
-              : "text-yellow-600"
-          }`}
-        >
-          {warehouse.availability === "available"
-            ? "Available"
-            : warehouse.availability === "booked"
-            ? "Sold Out"
-            : "Under Maintenance"}
-        </p>
-
-        {/* 3-dot menu */}
-        {warehouse.ownerId._id === user && (
-          <div
-            className="absolute top-2 right-2 transition-opacity"
-            onMouseEnter={() => setShowDropdown(true)}
-          >
-            <button
-              onClick={(e) => e.stopPropagation()}
-              className="p-1 bg-white rounded-full shadow-md hover:bg-gray-100"
-            >
-              <MoreVertical className="w-5 h-5 text-gray-600" />
-            </button>
-
-            {/* Dropdown menu */}
-            {showDropdown && (
-              <div
-                className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10"
-                onMouseEnter={() => setShowDropdown(true)}
-                onMouseLeave={() => setShowDropdown(false)}
-              >
-                <div className="py-1">
-                  <button
-                    onClick={handleEdit}
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                  >
-                    <Edit className="w-4 h-4 mr-2" />
-                    Edit this listing
-                  </button>
-                  <button
-                    onClick={handleDeleteClick}
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                  >
-                    <Trash2 className="w-4 h-4 mr-2" />
-                    Delete this listing
-                  </button>
-                </div>
-              </div>
-            )}
+        <div className="relative w-full">
+          <div className="w-full overflow-hidden rounded-lg">
+            <img
+              src={
+                warehouse.images[0] || "/placeholder.svg?height=300&width=400"
+              }
+              alt={warehouse.name}
+              className="object-cover transition-transform group-hover:scale-105 h-80 w-full"
+            />
           </div>
-        )}
+          <h3 className="mt-2 text-lg font-semibold text-gray-900">
+            {warehouse.name}
+          </h3>
+          <p className="text-md text-black-600">
+            {/* Listed by{" "}
+          {warehouse.ownerId._id === user ? "you" : warehouse.ownerId.name} */}
+            <span className="font-medium">₹{warehouse.pricePerDay}</span> day
+          </p>
+          <p
+            className={`mt-1 text-sm ${
+              warehouse.availability === "available"
+                ? "text-green-600"
+                : warehouse.availability === "booked"
+                ? "text-red-600"
+                : "text-yellow-600"
+            }`}
+          >
+            {warehouse.availability === "available"
+              ? "Available"
+              : warehouse.availability === "booked"
+              ? "Sold Out"
+              : "Under Maintenance"}
+          </p>
+
+          {/* 3-dot menu */}
+          {warehouse.ownerId._id === user && (
+            <div
+              className="absolute top-2 right-2 transition-opacity z-[60]"
+              onMouseEnter={() => setShowDropdown(true)}
+            >
+              <button
+                onClick={(e) => e.stopPropagation()}
+                className="p-1 bg-white rounded-full shadow-md hover:bg-gray-100"
+              >
+                <MoreVertical className="w-5 h-5 text-gray-600" />
+              </button>
+
+              {/* Dropdown menu */}
+              {showDropdown && (
+                <div
+                  className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-[70]"
+                  onMouseEnter={() => setShowDropdown(true)}
+                  onMouseLeave={() => setShowDropdown(false)}
+                >
+                  <div className="py-1">
+                    <button
+                      onClick={handleEdit}
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                    >
+                      <Edit className="w-4 h-4 mr-2" />
+                      Edit this listing
+                    </button>
+                    <button
+                      onClick={handleDeleteClick}
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Delete this listing
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Delete Confirmation Modal */}
