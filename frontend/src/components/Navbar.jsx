@@ -27,6 +27,7 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const profileDropdownRef = useRef(null);
+  const [hasUnread, setHasUnread] = useState(false);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -111,7 +112,9 @@ const Navbar = () => {
     <div ref={profileDropdownRef} className="relative">
       <button
         onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-        className="flex items-center space-x-2 focus:outline-none"
+        className={`flex items-center space-x-2 focus:outline-none ${
+          hasUnread ? "profile-pic green-dot" : ""
+        }`}
       >
         <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-white text-lg font-semibold hover:shadow-lg">
           {/* {user?.name ? (
@@ -178,7 +181,9 @@ const Navbar = () => {
           ) : null}
           <a
             href="/notifications"
-            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ${
+              hasUnread ? "dropdown green-dot" : ""
+            }`}
           >
             <Bell className="w-4 h-4 inline-block mr-2" />
             Notifications
@@ -201,6 +206,19 @@ const Navbar = () => {
       )}
     </div>
   );
+
+  useEffect(() => {
+    const eventSource = new EventSource(
+      `http://localhost:8080/api/notifications/unread/${userId}`
+    );
+
+    eventSource.onmessage = (event) => {
+      const newNotifications = JSON.parse(event.data);
+      setHasUnread(true);
+    };
+
+    return () => eventSource.close();
+  }, [userId]);
 
   return (
     <header className="border-b z-[1000]">

@@ -7,12 +7,14 @@ import { jwtDecode } from "jwt-decode";
 import ReviewModal from "../components/ReviewModal";
 import ReviewList from "../components/ReviewList";
 import { showErrorToast, showSuccessToast } from "../components/toast";
+import ShareModal from "../components/ShareModal";
 
 const StorageDetail = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingReview, setEditingReview] = useState(null);
   const location = useLocation();
   const { warehouse } = location.state;
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   // console.log(warehouse);
 
@@ -215,9 +217,17 @@ const StorageDetail = () => {
                 {warehouse.location.formattedAddress}
               </p>
             </div>
-            <button className="p-2 hover:bg-gray-100 rounded-full">
+            <button
+              className="p-2 hover:bg-gray-100 rounded-full"
+              onClick={() => setIsShareModalOpen(true)}
+            >
               <Share2 className="w-5 h-5" />
             </button>
+            <ShareModal
+              isOpen={isShareModalOpen}
+              onClose={() => setIsShareModalOpen(false)}
+              listing={warehouse}
+            />
           </div>
 
           <div className="mt-6 pb-6 border-b">
