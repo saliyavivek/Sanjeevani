@@ -72,6 +72,14 @@ const StorageCard = ({ warehouse, onDelete }) => {
     }
   }, []);
 
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(price);
+  };
+
   return (
     <>
       <div
@@ -79,7 +87,11 @@ const StorageCard = ({ warehouse, onDelete }) => {
         onClick={handleClick}
         onMouseLeave={() => setShowDropdown(false)}
       >
-        <div className="relative w-full">
+        <div
+          className={`${
+            window.location.pathname === "/warehouses/search" ? "" : "relative"
+          } w-full`}
+        >
           <div className="w-full overflow-hidden rounded-lg">
             <img
               src={
@@ -89,29 +101,38 @@ const StorageCard = ({ warehouse, onDelete }) => {
               className="object-cover transition-transform group-hover:scale-105 h-80 w-full"
             />
           </div>
-          <h3 className="mt-2 text-lg font-semibold text-gray-900">
-            {warehouse.name}
-          </h3>
-          <p className="text-md text-black-600">
-            {/* Listed by{" "}
+          <div className="p-1 space-y-1">
+            <h3 className="text-lg font-medium text-gray-900 line-clamp-1">
+              {warehouse.name}
+            </h3>
+            <p className="text-md text-black-600">
+              {/* Listed by{" "}
           {warehouse.ownerId._id === user ? "you" : warehouse.ownerId.name} */}
-            <span className="font-medium">₹{warehouse.pricePerDay}</span> day
-          </p>
-          <p
-            className={`mt-1 text-sm ${
-              warehouse.availability === "available"
-                ? "text-green-600"
-                : warehouse.availability === "booked"
-                ? "text-red-600"
-                : "text-yellow-600"
-            }`}
-          >
-            {warehouse.availability === "available"
-              ? "Available"
-              : warehouse.availability === "booked"
-              ? "Sold Out"
-              : "Under Maintenance"}
-          </p>
+              <span className="text-lg font-semibold">
+                {formatPrice(warehouse.pricePerDay)}
+              </span>
+              <span className="text-sm text-gray-500"> /day</span>
+            </p>
+            <div className="flex flex-wrap gap-2 text-sm text-gray-500">
+              <span>{warehouse.size} sq ft</span>
+              <span>•</span>
+              <p
+                className={`${
+                  warehouse.availability === "available"
+                    ? "text-green-600"
+                    : warehouse.availability === "booked"
+                    ? "text-red-600"
+                    : "text-yellow-600"
+                }`}
+              >
+                {warehouse.availability === "available"
+                  ? "Available"
+                  : warehouse.availability === "booked"
+                  ? "Sold Out"
+                  : "Under Maintenance"}
+              </p>
+            </div>
+          </div>
 
           {/* 3-dot menu */}
           {warehouse.ownerId._id === user && (

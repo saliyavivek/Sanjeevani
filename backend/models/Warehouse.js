@@ -16,6 +16,12 @@ const warehouseSchema = new Schema({
     type: String,
     trim: true,
   },
+  facilities: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
   size: {
     type: String,
     required: true,
