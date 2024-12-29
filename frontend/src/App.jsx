@@ -21,6 +21,7 @@ import NotificationsPage from "./pages/NotificationsPage";
 import ResetPassword from "./pages/ResetPassword";
 import "./App.css";
 import HostProfile from "./pages/HostProfile";
+import FarmerProfile from "./pages/FarmerProfile";
 
 const AppRoutes = () => {
   const location = useLocation(); // Get the current location
@@ -46,7 +47,8 @@ const AppRoutes = () => {
         <Route path="/settings" element={<UserSettings />} />
         <Route path="/notifications" element={<NotificationsPage />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/users/show/:id" element={<HostProfile />} />
+        <Route path="/users/o/show/:id" element={<HostProfile />} />
+        <Route path="/users/f/show/:id" element={<FarmerProfile />} />
       </Routes>
     </>
   );

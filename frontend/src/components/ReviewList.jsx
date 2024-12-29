@@ -50,17 +50,19 @@ const ReviewCard = ({ review, onEdit, onDelete }) => {
     <div className="mb-8 relative">
       <div className="flex items-center mb-4">
         <div className="relative">
-          {review.userId.avatar ? (
-            <img
-              src={review.userId.avatar}
-              alt={`${review.userId.name}'s profile`}
-              className="w-12 h-12 rounded-full object-cover"
-            />
-          ) : (
-            <div className="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center text-white text-lg font-semibold">
-              {review.userId.name.charAt(0)}
-            </div>
-          )}
+          <a href={`/users/f/show/${review.userId._id}`}>
+            {review.userId.avatar ? (
+              <img
+                src={review.userId.avatar}
+                alt={`${review.userId.name}'s profile`}
+                className="w-12 h-12 rounded-full object-cover"
+              />
+            ) : (
+              <div className="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center text-white text-lg font-semibold">
+                {review.userId.name.charAt(0)}
+              </div>
+            )}
+          </a>
         </div>
         <div className="ml-4 flex-grow">
           <h3 className="font-semibold text-gray-900">{review.userId.name}</h3>
@@ -103,12 +105,12 @@ const ReviewCard = ({ review, onEdit, onDelete }) => {
           ))}
         </div>
         <div className="ml-1 h-[2px] w-[2px] rounded bg-[#6A6A6A]"></div>
-        <span className="ml-1 text-xs text-gray-500">
+        <span className="ml-1 text-sm text-gray-800 font-semibold">
           {formatDistanceToNow(new Date(review.createdAt), { addSuffix: true })}
         </span>
       </div>
 
-      <div className="text-gray-700">
+      <div className="text-base text-gray-900">
         {shouldShowMore && !isExpanded ? (
           <>
             <p>{review.review.slice(0, 150)}...</p>

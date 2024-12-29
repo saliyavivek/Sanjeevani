@@ -63,6 +63,10 @@ const markAllAsRead = async (req, res) => {
 const getUnreadNotifications = async (req, res) => {
   const { userId } = req.params;
 
+  if (!userId || userId === "null") {
+    return res.status(400).json({ message: "Valid User ID is required" });
+  }
+
   // Set SSE headers
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");

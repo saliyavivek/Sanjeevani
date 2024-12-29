@@ -78,7 +78,7 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters }) => {
           {/* Price Range */}
           <div>
             <h3 className="text-lg font-semibold mb-4">Price range</h3>
-            <p className="text-sm text-gray-600 mb-3">Monthly price in ₹</p>
+            <p className="text-sm text-gray-600 mb-3">Per day in ₹</p>
             <div className="space-y-6">
               <div className="flex gap-4">
                 <div className="flex-1">

@@ -67,21 +67,21 @@ const HostProfile = () => {
   };
 
   const fetchListings = async () => {
-    const response = await fetch(
-      "http://localhost:8080/api/warehouses/listings",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          user: id,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await fetch("http://localhost:8080/api/bookings/getall", {
+      method: "POST",
+      body: JSON.stringify({
+        userId: id,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     if (response.ok) {
       const data = await response.json();
-      setWarehouses(data.warehouses);
+      setWarehouses(data);
+      // console.log(warehouses);
+
+      // console.log(data);
     }
   };
   useEffect(() => {
@@ -121,7 +121,9 @@ const HostProfile = () => {
         >
           <ArrowLeft className="h-5 w-5 text-gray-600" />
         </button>
-        <h1 className="text-3xl font-semibold text-gray-900">Meet your host</h1>
+        <h1 className="text-3xl font-semibold text-gray-900">
+          {user.role === "owner" ? "Meet your host" : `Know ${user.name}`}
+        </h1>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Left Column - Profile Info */}
@@ -138,14 +140,20 @@ const HostProfile = () => {
             </div>
             <div className="mt-4">
               <h1 className="text-2xl font-semibold">{user.name}</h1>
-              <p className="text-gray-600">Host</p>
+              <p className="text-gray-600">
+                {user.role === "owner"
+                  ? "Host"
+                  : `${warehouses.length} bookings till now`}
+              </p>
             </div>
             <div className="mt-4">
               <div className="flex items-center text-lg">
                 <span className="font-semibold">
                   {calculateDuration(user.createdAt)}
                 </span>
-                <span className="ml-1 text-gray-600">hosting</span>
+                <span className="ml-1 text-gray-600">
+                  {user.role === "owner" ? "hosting" : "on Sanjeevani"}
+                </span>
               </div>
             </div>
           </div>
@@ -173,7 +181,8 @@ const HostProfile = () => {
         <div className="space-y-8">
           {/* About Section */}
           <div>
-            <h2 className="text-2xl font-semibold mb-4">About {user.name}</h2>
+            <h2 className="text-2xl font-semibold mb-2">About {user.name}</h2>
+            <p className="text-gray-600 mb-3">{user.about ? user.about : ""}</p>
             <div className="flex items-center text-gray-600">
               <MapPin className="w-5 h-5 mr-2" />
               Lives in {user.address}
@@ -183,25 +192,25 @@ const HostProfile = () => {
           {/* Listings Section */}
           <div>
             <h2 className="text-2xl font-semibold mb-4">
-              {user.name}'s listings
+              {user.name}'s recent bookings
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {warehouses.map((listing) => (
+              {warehouses.slice(0, 6).map((listing) => (
                 <a href={`/warehouse/${listing._id}`}>
                   <div key={listing._id} className="group cursor-pointer">
                     <div className="relative aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
                       <img
-                        src={listing.images[0]}
-                        alt={listing.title}
+                        src={listing.warehouseId.images[0]}
+                        alt={listing.warehouseId.title}
                         className="w-full h-[122px] object-cover group-hover:scale-105 transition-transform duration-200"
                       />
                     </div>
                     <div className="mt-2">
                       <p className="font-medium text-gray-900">
-                        {listing.name}
+                        {listing.warehouseId.name}
                       </p>
                       <p className="text-gray-600 text-sm truncate">
-                        {listing.description}
+                        {listing.warehouseId.description}
                       </p>
                     </div>
                   </div>

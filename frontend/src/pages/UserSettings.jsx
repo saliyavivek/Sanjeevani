@@ -18,12 +18,18 @@ import { useNavigate } from "react-router-dom";
 const UserSettings = () => {
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState(null);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    phoneno: "",
+    about: "",
+  });
   const [editMode, setEditMode] = useState({
     name: false,
     email: false,
     phoneno: false,
     password: false,
+    about: false,
   });
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
@@ -159,6 +165,8 @@ const UserSettings = () => {
         showSuccessToast("Your name has been updated");
       } else if (field === "email") {
         showSuccessToast("Your email has been updated");
+      } else if (field === "about") {
+        showSuccessToast("Your about section has been updated");
       }
     } catch (error) {
       console.error("Error updating user details:", error);
@@ -293,6 +301,69 @@ const UserSettings = () => {
             field="phoneno"
             type="tel"
           />
+          {/* Add About Me section */}
+          <div className="py-4 border-b border-gray-200">
+            {editMode.about || !user.about ? (
+              <>
+                <div className="flex justify-between items-center">
+                  <p className="text-base font-medium text-gray-900">About</p>
+                  {user.about && (
+                    <button
+                      onClick={() =>
+                        setEditMode((prev) => ({ ...prev, about: false }))
+                      }
+                      className="text-sm text-gray-900 hover:underline"
+                    >
+                      Cancel
+                    </button>
+                  )}
+                </div>
+                <textarea
+                  defaultValue={user.about}
+                  placeholder="Tell us about yourself..."
+                  className="w-full px-3 py-2 mb-4 mt-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 text-base min-h-[100px] resize-none"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && e.metaKey) {
+                      handleSave("about", e.target.value);
+                    }
+                  }}
+                />
+                <button
+                  onClick={() =>
+                    handleSave(
+                      "about",
+                      document.querySelector("textarea").value
+                    )
+                  }
+                  disabled={loading}
+                  className="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 text-base font-medium"
+                >
+                  {loading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    "Save"
+                  )}
+                </button>
+              </>
+            ) : (
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="text-base font-medium text-gray-900">About</p>
+                  <p className="text-base text-gray-500 whitespace-pre-wrap">
+                    {user.about}
+                  </p>
+                </div>
+                <button
+                  onClick={() =>
+                    setEditMode((prev) => ({ ...prev, about: true }))
+                  }
+                  className="text-sm text-gray-900 hover:underline self-start"
+                >
+                  Edit
+                </button>
+              </div>
+            )}
+          </div>
           {/* <InputField
             label="Password"
             value="••••••••"

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { ArrowLeft, Grid, MapPin, Share2, User } from "lucide-react";
+import { ArrowLeft, Grid, MapPin, Share2, Star, User } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -8,6 +8,7 @@ import ReviewModal from "../components/ReviewModal";
 import ReviewList from "../components/ReviewList";
 import { showErrorToast, showSuccessToast } from "../components/toast";
 import ShareModal from "../components/ShareModal";
+import AllReviewsModal from "../components/AllReviews";
 
 const StorageDetail = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,6 +22,8 @@ const StorageDetail = () => {
   const [user, setUser] = useState({});
   const [reviews, setReviews] = useState([]);
   const [booked, setIsBooked] = useState(false);
+  const [isAllReviewModalOpen, setIsAllReviewModalOpen] = useState(false);
+  const [reviewStats, setReviewStats] = useState({});
   const navigate = useNavigate();
 
   const fetchCurrentUser = async () => {
@@ -143,6 +146,25 @@ const StorageDetail = () => {
 
       const data = await response.json();
       setReviews(data.reviews);
+
+      const totalReviews = data.reviews.length;
+      const ratingCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+      let totalRating = 0;
+
+      data.reviews.forEach((review) => {
+        totalRating += review.ratings;
+        ratingCounts[review.ratings] = (ratingCounts[review.ratings] || 0) + 1;
+      });
+
+      const averageRating = totalReviews
+        ? (totalRating / totalReviews).toFixed(2)
+        : 0;
+
+      setReviewStats({
+        averageRating: parseFloat(averageRating),
+        totalReviews: totalReviews,
+        ratingCounts: ratingCounts,
+      });
     } catch (error) {
       console.error("Error fetching reviews", error);
     }
@@ -165,6 +187,18 @@ const StorageDetail = () => {
       return `${Math.round(totalYears)} year(s)`;
     }
   };
+
+  // const reviewStats = {
+  //   averageRating: 4.87,
+  //   totalReviews: 210,
+  //   ratingCounts: {
+  //     5: 180,
+  //     4: 20,
+  //     3: 5,
+  //     2: 3,
+  //     1: 2,
+  //   },
+  // };
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
@@ -232,7 +266,7 @@ const StorageDetail = () => {
 
           <div className="mt-6 pb-6 border-b">
             <div className="flex items-center gap-2">
-              <a href={`/users/show/${warehouse.ownerId._id}`}>
+              <a href={`/users/o/show/${warehouse.ownerId._id}`}>
                 <img
                   src={warehouse.ownerId.avatar}
                   alt={warehouse.ownerId.name}
@@ -336,7 +370,7 @@ const StorageDetail = () => {
 
       {/* Review */}
       <div>
-        <p className="text-2xl font-semibold mb-4 flex items-center justify-center pt-4">
+        <p className="text-2xl font-semibold mb-5 flex items-center justify-center pt-4">
           Reviews
         </p>
 
@@ -353,6 +387,23 @@ const StorageDetail = () => {
           reviews={reviews}
           onEditReview={handleEditReview}
           onDeleteReview={handleDeleteReview}
+        />
+
+        {reviews && reviews.length > 0 && (
+          <button
+            onClick={() => setIsAllReviewModalOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800"
+          >
+            <Star className="h-5 w-5" />
+            {reviewStats.averageRating} ({reviewStats.totalReviews} reviews)
+          </button>
+        )}
+
+        <AllReviewsModal
+          isOpen={isAllReviewModalOpen}
+          onClose={() => setIsAllReviewModalOpen(false)}
+          reviews={reviews}
+          stats={reviewStats}
         />
 
         {/* {console.log(booked)} */}
