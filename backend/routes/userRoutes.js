@@ -8,6 +8,7 @@ const {
   updateUserAvatar,
   requestPasswordReset,
   resetPassword,
+  deleteAccount,
 } = require("../controllers/userController");
 const upload = require("../middlewares/multer");
 
@@ -18,5 +19,6 @@ router.post("/signup", upload.single("profilePicture"), signup);
 router.post("/signin", signin);
 router.post("/request-password-reset", requestPasswordReset);
 router.post("/reset-password", resetPassword);
+router.post("/delete-account", deleteAccount);
 
 module.exports = router;

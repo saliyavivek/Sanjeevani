@@ -10,6 +10,9 @@ const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const fs = require("fs");
 const path = require("path");
+const Warehouse = require("../models/Warehouse");
+const Booking = require("../models/Booking");
+const Review = require("../models/Review");
 
 function generateToken() {
   return crypto.randomBytes(32).toString("hex");
@@ -265,6 +268,27 @@ const resetPassword = async (req, res) => {
   res.status(200).json({ message: "Password successfully reset" });
 };
 
+const deleteAccount = async (req, res) => {
+  try {
+    const userId = req.body.userId;
+
+    await Warehouse.deleteMany({ ownerId: userId });
+    await Booking.deleteMany({ userId: userId });
+    await Notification.deleteMany({ userId: userId });
+    await Review.deleteMany({ userId: userId });
+
+    const user = await User.findByIdAndDelete(userId);
+    // console.log("user deleted", user);
+
+    res
+      .status(200)
+      .json({ message: "Your account has been deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to delete account" });
+  }
+};
+
 module.exports = {
   signup,
   signin,
@@ -273,4 +297,5 @@ module.exports = {
   updateUserAvatar,
   requestPasswordReset,
   resetPassword,
+  deleteAccount,
 };

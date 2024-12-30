@@ -14,6 +14,7 @@ import {
 } from "../components/toast";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import DeleteAccountModal from "../components/DeleteAccountModal";
 
 const UserSettings = () => {
   const [loading, setLoading] = useState(false);
@@ -33,6 +34,7 @@ const UserSettings = () => {
   });
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -54,7 +56,7 @@ const UserSettings = () => {
 
   const fetchUserDetails = async () => {
     try {
-      console.log(userId);
+      // console.log(userId);
       if (userId) {
         const response = await fetch("http://localhost:8080/api/users", {
           method: "POST",
@@ -231,6 +233,41 @@ const UserSettings = () => {
     </div>
   );
 
+  const handleDeleteAccount = async () => {
+    // console.log("deleting account of", userId);
+    setIsDeleteModalOpen(false);
+
+    try {
+      const response = await fetch(
+        "http://localhost:8080/api/users/delete-account",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId,
+          }),
+        }
+      );
+      if (!response.ok) {
+        console.log("Error while deleting the user.");
+        return;
+      }
+
+      const data = await response.json();
+      // console.log(data);
+
+      // alert(data.message);
+      localStorage.removeItem("token");
+      showSuccessToast(data.message);
+      navigate("/signin");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to delete account. Please try again.");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -363,6 +400,26 @@ const UserSettings = () => {
                 </button>
               </div>
             )}
+          </div>
+          <div className="py-4">
+            <a
+              onClick={() => setIsDeleteModalOpen(true)}
+              className="text-red-600 hover:underline cursor-pointer"
+            >
+              Delete account
+            </a>
+            {/* <button
+              onClick={() => setIsDeleteModalOpen(true)}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            >
+              Delete Account
+            </button> */}
+
+            <DeleteAccountModal
+              isOpen={isDeleteModalOpen}
+              onClose={() => setIsDeleteModalOpen(false)}
+              onConfirmDelete={handleDeleteAccount}
+            />
           </div>
           {/* <InputField
             label="Password"

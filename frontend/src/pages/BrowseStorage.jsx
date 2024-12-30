@@ -38,13 +38,18 @@ export default function BrowseStorage() {
     console.log("Applied filters:", filters);
     const filtered = warehouses.filter((warehouse) => {
       const withinPriceRange =
-        warehouse.pricePerDay >= filters.priceRange.min &&
-        warehouse.pricePerDay <= filters.priceRange.max;
+        filters.priceRange.min === 0 ||
+        filters.priceRange.max === 0 ||
+        (warehouse.pricePerDay >= filters.priceRange.min &&
+          warehouse.pricePerDay <= filters.priceRange.max);
       const withinSizeRange =
-        warehouse.size >= filters.sizeRange.min &&
-        warehouse.size <= filters.sizeRange.max;
+        filters.sizeRange.min === 0 ||
+        filters.sizeRange.max === 0 ||
+        (warehouse.size >= filters.sizeRange.min &&
+          warehouse.size <= filters.sizeRange.max);
       const availabilityMatch =
-        filters.availability === "all" || filters.availability === "available";
+        filters.availability === "all" ||
+        warehouse.availability === filters.availability;
 
       return withinPriceRange && withinSizeRange && availabilityMatch;
     });

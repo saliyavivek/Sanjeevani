@@ -4,12 +4,12 @@ import { X, SlidersHorizontal } from "lucide-react";
 const FilterModal = ({ isOpen, onClose, onApplyFilters }) => {
   const [filters, setFilters] = useState({
     priceRange: {
-      min: 1000,
-      max: 50000,
+      min: 0,
+      max: 0,
     },
     sizeRange: {
-      min: 100,
-      max: 5000,
+      min: 0,
+      max: 0,
     },
     availability: "all",
   });
@@ -39,15 +39,14 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters }) => {
   const handleClearAll = () => {
     setFilters({
       priceRange: {
-        min: 1000,
-        max: 50000,
+        min: 0,
+        max: 0,
       },
       sizeRange: {
-        min: 100,
-        max: 5000,
+        min: 0,
+        max: 0,
       },
       availability: "all",
-      sortBy: "recommended",
     });
   };
 
@@ -124,7 +123,6 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters }) => {
                   value={filters.sizeRange.min}
                   onChange={handleSizeChange}
                   className="w-full border rounded-lg p-2 mt-1"
-                  placeholder="100"
                 />
               </div>
               <div className="flex-1">
@@ -135,7 +133,6 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters }) => {
                   value={filters.sizeRange.max}
                   onChange={handleSizeChange}
                   className="w-full border rounded-lg p-2 mt-1"
-                  placeholder="5000"
                 />
               </div>
             </div>
