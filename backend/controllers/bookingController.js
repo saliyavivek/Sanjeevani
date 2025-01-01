@@ -224,30 +224,30 @@ const isBookedByUser = async (req, res) => {
   return res.status(201).json({ message: true });
 };
 
-const markCompleted = async (req, res) => {
-  try {
-    const booking = await Booking.findById(req.params.bookingId);
-    if (!booking) return res.status(404).json({ message: "Booking not found" });
+// const markCompleted = async (req, res) => {
+//   try {
+//     const booking = await Booking.findById(req.params.bookingId);
+//     if (!booking) return res.status(404).json({ message: "Booking not found" });
 
-    const warehouse = await Warehouse.findById(req.body.warehouseId);
-    if (!warehouse)
-      return res.status(404).json({ message: "Booked warehouse not found" });
+//     const warehouse = await Warehouse.findById(req.body.warehouseId);
+//     if (!warehouse)
+//       return res.status(404).json({ message: "Booked warehouse not found" });
 
-    warehouse.availability === "available";
-    await warehouse.save();
+//     warehouse.availability === "available";
+//     await warehouse.save();
 
-    booking.status = "completed";
-    await booking.save();
+//     booking.status = "completed";
+//     await booking.save();
 
-    console.log(booking);
+//     console.log(booking);
 
-    res.status(200).json({
-      message: "Booking completed and warehouse is now available to book",
-    });
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error });
-  }
-};
+//     res.status(200).json({
+//       message: "Booking completed and warehouse is now available to book",
+//     });
+//   } catch (error) {
+//     res.status(500).json({ message: "Server error", error });
+//   }
+// };
 
 module.exports = {
   createBooking,
@@ -256,5 +256,5 @@ module.exports = {
   getBookingDetails,
   confirmBooking,
   isBookedByUser,
-  markCompleted,
+  // markCompleted,
 };

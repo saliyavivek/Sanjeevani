@@ -31,52 +31,64 @@ const StatusBadge = ({ status }) => {
 };
 
 const BookingCard = ({ booking, navigate }) => (
-  <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all hover:shadow-md">
-    <div className="relative h-48 overflow-hidden">
-      <img
-        src={booking.warehouseId.images[0]}
-        alt={booking.warehouseId.name}
-        className="w-full h-full object-cover transition-transform hover:scale-110 duration-300"
-      />
-      <div className="absolute top-4 right-4">
-        <StatusBadge status={booking.status} />
+  <div
+    onClick={() => navigate(`/booking/${booking._id}`)}
+    className="flex flex-col bg-white overflow-hidden cursor-pointer group"
+  >
+    {/* Image Container */}
+    <div className="p-3">
+      <div className="relative aspect-[1/1] overflow-hidden border-[12px] border-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
+        <img
+          src={
+            booking.warehouseId.images[0] ||
+            "/placeholder.svg?height=400&width=400"
+          }
+          alt={booking.warehouseId.name}
+          className="w-full h-full object-cover transition-transform duration-300 rounded-xl"
+        />
+        <div className="absolute top-4 right-4">
+          <StatusBadge status={booking.status} />
+        </div>
       </div>
     </div>
-    <div className="p-6">
-      {/* <a href={`/warehouse/${booking.warehouseId._id}`}> */}
-      <h3 className="text-xl font-semibold text-gray-900 mb-2">
-        {booking.warehouseId.name}
-      </h3>
-      {/* </a> */}
-      <p className="text-gray-500 flex items-center mb-4">
-        <MapPin className="w-4 h-4 mr-1 flex-shrink-0" />
-        <span className="truncate">
-          {booking.warehouseId.location.formattedAddress}
-        </span>
-      </p>
-      <div className="flex items-center text-gray-600 mb-2">
-        <Calendar className="w-4 h-4 mr-2 flex-shrink-0" />
-        <span className="text-sm">
-          {format(new Date(booking.startDate), "MMM d, yyyy")} -{" "}
-          {format(new Date(booking.endDate), "MMM d, yyyy")}
-        </span>
-      </div>
-      <div className="flex items-center text-gray-600 mb-4">
-        <Package className="w-4 h-4 mr-2 flex-shrink-0" />
-        <span className="text-sm">{booking.warehouseId.size} sq ft.</span>
-      </div>
-      <div className="flex justify-between items-center">
-        <span className="text-2xl font-bold text-gray-900">
+
+    {/* Content */}
+    <div className="px-4 py-3 flex flex-col flex-1">
+      <div className="flex justify-between items-start mb-2">
+        <h3 className="text-lg font-medium text-gray-900">
+          {booking.warehouseId.name}
+        </h3>
+        <span className="text-lg font-medium">
           ₹{booking.totalPrice.toLocaleString()}
         </span>
-        <button
-          onClick={() => navigate(`/booking/${booking._id}`)}
-          className="text-emerald-600 hover:text-emerald-700 font-medium flex items-center transition-colors"
-        >
-          View Details
-          <ChevronRight className="w-4 h-4 ml-1" />
-        </button>
       </div>
+
+      <div className="space-y-2 text-gray-500 flex-1">
+        <p className="flex items-center text-sm">
+          <MapPin className="w-4 h-4 mr-2 flex-shrink-0" />
+          <span className="line-clamp-1">
+            {booking.warehouseId.location.formattedAddress}
+          </span>
+        </p>
+
+        <div className="flex items-center text-sm">
+          <Calendar className="w-4 h-4 mr-2 flex-shrink-0" />
+          <span>
+            {format(new Date(booking.startDate), "MMM d")} -{" "}
+            {format(new Date(booking.endDate), "MMM d, yyyy")}
+          </span>
+        </div>
+
+        <div className="flex items-center text-sm">
+          <Package className="w-4 h-4 mr-2 flex-shrink-0" />
+          <span>{booking.warehouseId.size} sq ft.</span>
+        </div>
+      </div>
+
+      {/* <div className="mt-4 flex items-center text-gray-900 text-sm font-medium group-hover:underline">
+        View details
+        <ChevronRight className="w-4 h-4 ml-1" />
+      </div> */}
     </div>
   </div>
 );
@@ -205,7 +217,7 @@ const MyBookings = () => {
                 </p>
               </div>
             ) : (
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {categorizedBookings[activeTab].map((booking) => (
                   <BookingCard
                     key={booking._id}

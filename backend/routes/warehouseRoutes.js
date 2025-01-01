@@ -9,8 +9,9 @@ const {
 } = require("../controllers/warehouseController");
 const router = express.Router();
 const upload = require("../middlewares/multer");
+const { checkIsCompleted } = require("../middlewares/checkIsCompleted");
 
-router.get("/", getAllWarehouses);
+router.get("/", checkIsCompleted, getAllWarehouses);
 router.post("/add", upload.single("image"), addWarehouse);
 router.put("/edit", upload.single("image"), editWarehouse);
 router.delete("/delete", deleteWarehouse);
