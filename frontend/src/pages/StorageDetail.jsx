@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { ArrowLeft, Grid, MapPin, Share2, Star, User } from "lucide-react";
+import {
+  ArrowLeft,
+  Grid,
+  Heart,
+  MapPin,
+  Share2,
+  Star,
+  User,
+} from "lucide-react";
 import "leaflet/dist/leaflet.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -200,6 +208,96 @@ const StorageDetail = () => {
   //   },
   // };
 
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  const handleFavorite = async (e) => {
+    try {
+      e.stopPropagation();
+      setIsFavorite(!isFavorite);
+
+      const response = await fetch(
+        `http://localhost:8080/api/wishlists/add/${warehouse._id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user.userId,
+          }),
+        }
+      );
+      if (!response.ok) {
+        console.log("Couldn't wishlist this warehouse currently.");
+        return;
+      }
+      const data = await response.json();
+      // console.log(data);
+
+      showSuccessToast(data.message);
+    } catch (error) {
+      showErrorToast("Couldn't wishlist this warehouse currently.");
+    }
+  };
+
+  const checkIsWishlisted = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/wishlists/checkStatus/${warehouse._id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user.userId,
+          }),
+        }
+      );
+      if (!response.ok) {
+        console.log("Couldn't fetch wishlist status.");
+        return;
+      }
+      const data = await response.json();
+
+      if (data.wishlisted) {
+        setIsFavorite(true);
+      }
+    } catch (error) {
+      showErrorToast("Couldn't wishlist this warehouse currently.");
+    }
+  };
+
+  useEffect(() => {
+    checkIsWishlisted();
+  }, [warehouse._id, user.userId]);
+
+  const handleRemoveFavorite = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/wishlists/remove/${warehouse._id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user.userId,
+          }),
+        }
+      );
+      if (!response.ok) {
+        console.log("Couldn't remove warehouse from wishlist.");
+        return;
+      }
+      const data = await response.json();
+      showSuccessToast(data.message);
+      setIsFavorite(false);
+    } catch (error) {
+      showErrorToast("Couldn't wishlist this warehouse currently.");
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <div className="flex items-center gap-4 mb-8">
@@ -251,12 +349,27 @@ const StorageDetail = () => {
                 {warehouse.location.formattedAddress}
               </p>
             </div>
-            <button
-              className="p-2 hover:bg-gray-100 rounded-full"
-              onClick={() => setIsShareModalOpen(true)}
-            >
-              <Share2 className="w-5 h-5" />
-            </button>
+            <div>
+              <button
+                className="p-2 hover:bg-gray-100 rounded-full"
+                onClick={() => setIsShareModalOpen(true)}
+              >
+                <Share2 className="w-5 h-5" />
+              </button>
+              <button
+                onClick={isFavorite ? handleRemoveFavorite : handleFavorite}
+                className="p-2 hover:bg-gray-100 rounded-full"
+              >
+                <Heart
+                  className={`w-5 h-5 ${
+                    isFavorite
+                      ? "fill-red-500 stroke-red-500"
+                      : "stroke-gray-900"
+                  }`}
+                />
+              </button>
+            </div>
+
             <ShareModal
               isOpen={isShareModalOpen}
               onClose={() => setIsShareModalOpen(false)}

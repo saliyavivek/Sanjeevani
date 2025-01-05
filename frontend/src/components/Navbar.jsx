@@ -13,6 +13,7 @@ import {
   WarehouseIcon,
   Sun,
   Moon,
+  Heart,
 } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -119,11 +120,6 @@ const Navbar = () => {
         }`}
       >
         <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-white text-lg font-semibold hover:shadow-lg">
-          {/* {user?.name ? (
-            user.name[0].toUpperCase()
-          ) : (
-            <User className="w-6 h-6" />
-          )} */}
           <img
             src={user.avatar}
             alt={user.name[0].toUpperCase()}
@@ -133,6 +129,25 @@ const Navbar = () => {
       </button>
       {isProfileDropdownOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-[1050]">
+          <a
+            href={`/users/${user.role === "farmer" ? "f" : "o"}/show/${
+              user._id
+            }`}
+          >
+            <div className="flex px-3 py-2 gap-1 items-center">
+              <img
+                src={user.avatar}
+                alt={user.name[0].toUpperCase()}
+                className="w-10 h-10 rounded-full object-cover"
+              />
+              <div>
+                <a className="px-2 text-sm text-gray-700 hover:bg-gray-10">
+                  {user.name}
+                </a>
+                <p className="px-2 text-xs text-gray-600">{user.email}</p>
+              </div>
+            </div>
+          </a>
           {user.role === "farmer" ? (
             <>
               <a
@@ -181,6 +196,13 @@ const Navbar = () => {
               </a> */}
             </>
           ) : null}
+          <a
+            href="/wishlists"
+            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          >
+            <Heart className="w-4 h-4 inline-block mr-2" />
+            Wishlists
+          </a>
           <a
             href="/notifications"
             className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ${

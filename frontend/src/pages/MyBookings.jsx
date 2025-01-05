@@ -37,7 +37,7 @@ const BookingCard = ({ booking, navigate }) => (
   >
     {/* Image Container */}
     <div className="p-3">
-      <div className="relative aspect-[1/1] overflow-hidden border-[12px] border-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
+      <div className="relative aspect-[1/1] overflow-hidden border-[6px] border-white rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
         <img
           src={
             booking.warehouseId.images[0] ||

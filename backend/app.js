@@ -7,6 +7,7 @@ const warehouseRouter = require("./routes/warehouseRoutes");
 const bookingRouter = require("./routes/bookingRoutes");
 const reviewRouter = require("./routes/reviewRoutes");
 const notificationRouter = require("./routes/notificationRoutes");
+const wishlistRouter = require("./routes/wishlistRoutes");
 const cors = require("cors");
 const app = express();
 
@@ -22,6 +23,7 @@ app.use("/api/warehouses", warehouseRouter);
 app.use("/api/bookings", bookingRouter);
 app.use("/api/reviews", reviewRouter);
 app.use("/api/notifications", notificationRouter);
+app.use("/api/wishlists", wishlistRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is up and listening to port ${PORT}`);

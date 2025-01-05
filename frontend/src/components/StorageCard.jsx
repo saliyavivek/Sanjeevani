@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { MoreVertical, Edit, Trash2 } from "lucide-react";
+import { MoreVertical, Edit, Trash2, Heart } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import DeleteConfirmModal from "./DeleteConfirmModal";
 import { showLoadingToast, showSuccessToast } from "./toast";
