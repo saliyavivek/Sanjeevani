@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import WishlistCard from "../components/WishlistCard";
 import { jwtDecode } from "jwt-decode";
-import { showSuccessToast } from "../components/toast";
+import { showErrorToast, showSuccessToast } from "../components/toast";
+import { Heart } from "lucide-react";
 
 const Wishlists = () => {
   const [userId, setUserId] = useState(null);
@@ -21,7 +22,7 @@ const Wishlists = () => {
   }, []);
 
   const fetchWishlists = async () => {
-    console.log(userId);
+    console.log("inside fetch");
 
     try {
       const response = await fetch(
@@ -64,10 +65,11 @@ const Wishlists = () => {
       }
       const data = await response.json();
       showSuccessToast(data.message);
-      setIsFavorite(false);
+      // setIsFavorite(false);
       fetchWishlists();
     } catch (error) {
-      showErrorToast("Couldn't wishlist this warehouse currently.");
+      console.log("Couldn't remove wishlist currently.");
+      // showErrorToast("Couldn't remove this warehouse from wishlist.");
     }
   };
 
@@ -83,6 +85,16 @@ const Wishlists = () => {
             onRemove={handleRemoveWishlist}
           />
         ))}
+      </div>
+      <div className="py-40 flex flex-column justify-center items-center">
+        <Heart className="mx-auto h-12 w-12 text-gray-400" />
+        <h3 className="mt-2 text-sm font-medium text-gray-900">No wishlists</h3>
+        <p className="mt-1 text-sm text-gray-500">
+          You don't have any wislist at the moment.{" "}
+          <a className="underline hover:text-black" href="/warehouses/search">
+            Start exploring
+          </a>
+        </p>
       </div>
     </div>
   );

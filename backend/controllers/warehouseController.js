@@ -150,12 +150,10 @@ const getAllWarehouses = async (req, res) => {
       // Fetch updated warehouses to send in response
       const updatedWarehouses = await Warehouse.find({}).populate("ownerId");
 
-      return res
-        .status(201)
-        .send({
-          message: "Warehouses updated successfully.",
-          warehouses: updatedWarehouses,
-        });
+      return res.status(201).send({
+        message: "Warehouses updated successfully.",
+        warehouses: updatedWarehouses,
+      });
     } else {
       return res.status(500).send({ message: "No warehouses found." });
     }
@@ -269,6 +267,32 @@ const deleteWarehouse = async (req, res) => {
   }
 };
 
+const uploadImage = async (req, res) => {
+  try {
+    // console.log(req);
+
+    const { id } = req.params;
+    // const imageUrl = req.file ? req.file.path : null;
+
+    const warehouse = await Warehouse.findById(id);
+
+    if (!warehouse) {
+      return res.status(404).json({ message: "Warehouse not found" });
+    }
+
+    if (req.files) {
+      req.files.forEach((file) => {
+        warehouse.images.push(file.path);
+      });
+    }
+
+    await warehouse.save();
+    res.status(200).json({ message: "Image uploaded successfully." });
+  } catch (error) {
+    res.status(500).json({ message: "Error uploading image", error });
+  }
+};
+
 module.exports = {
   addWarehouse,
   getAllWarehouses,
@@ -276,4 +300,5 @@ module.exports = {
   editWarehouse,
   deleteWarehouse,
   generateDescription,
+  uploadImage,
 };

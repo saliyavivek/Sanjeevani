@@ -157,7 +157,7 @@ const LandingPage = () => {
                   <a
                     href={
                       !isLoggedIn
-                        ? "/signup"
+                        ? "/signin"
                         : role === "owner"
                         ? "/owner/dashboard"
                         : "/warehouses/search"

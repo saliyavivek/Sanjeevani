@@ -16,11 +16,11 @@ const WishlistCard = ({ wishlist, onRemove }) => {
     if (totalDays < 1) {
       return `Today`;
     } else if (currentDate.getMonth() === targetDate.getMonth()) {
-      return `${Math.round(totalDays)} day`;
+      return `${Math.round(totalDays)} days ago`;
     } else if (totalMonths < 12) {
-      return `${Math.round(totalMonths)} month`;
+      return `${Math.round(totalMonths)} months ago`;
     } else {
-      return `${Math.round(totalYears)} year`;
+      return `${Math.round(totalYears)} years ago`;
     }
   };
 

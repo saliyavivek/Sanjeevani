@@ -128,7 +128,10 @@ const Navbar = () => {
         </div>
       </button>
       {isProfileDropdownOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-[1050]">
+        <div
+          className="right-0 mt-2 w-52 bg-white rounded-md shadow-lg py-1 z-50" // Ensure z-index is high
+          style={{ position: "absolute" }}
+        >
           <a
             href={`/users/${user.role === "farmer" ? "f" : "o"}/show/${
               user._id

@@ -5,6 +5,7 @@ import {
   Grid,
   Heart,
   MapPin,
+  Plus,
   Share2,
   Star,
   User,
@@ -17,6 +18,9 @@ import ReviewList from "../components/ReviewList";
 import { showErrorToast, showSuccessToast } from "../components/toast";
 import ShareModal from "../components/ShareModal";
 import AllReviewsModal from "../components/AllReviews";
+import ImageGrid from "../components/ImageGrid";
+import PhotoGallery from "../components/PhotoGallery";
+import UploadModal from "../components/UploadModal";
 
 const StorageDetail = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,6 +28,7 @@ const StorageDetail = () => {
   const location = useLocation();
   const { warehouse } = location.state;
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   // console.log(warehouse);
 
@@ -298,6 +303,42 @@ const StorageDetail = () => {
     }
   };
 
+  const [showGallery, setShowGallery] = useState(false);
+
+  const handleUpload = async (files) => {
+    // console.log(file);
+
+    try {
+      const formData = new FormData();
+      files.forEach((file) => {
+        formData.append("image", file); // Adjust the key name if your backend expects something else
+      });
+
+      // Debugging: Log FormData contents
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
+
+      const response = await fetch(
+        `http://localhost:8080/api/warehouses/${warehouse._id}/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        console.error("Failed to upload image.");
+        return;
+      }
+
+      const data = await response.json();
+      console.log(data.message);
+      // Optionally, update the state with the new image URL
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+  };
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <div className="flex items-center gap-4 mb-8">
@@ -315,19 +356,26 @@ const StorageDetail = () => {
       {/* Image Grid */}
       <div>
         <div className="overflow-hidden">
-          <img
-            src={warehouse.images[0]}
-            alt="Main storage view"
-            className="w-full h-[500px] object-cover rounded-xl"
+          <ImageGrid
+            images={warehouse.images}
+            onShowAllPhotos={() => setShowGallery(true)}
+            onAddMoreImages={() => setIsUploadModalOpen(true)}
+            isOwner={warehouse.ownerId._id === user.userId ? true : false}
           />
         </div>
-        {/* <button
-          onClick={() => setShowAllPhotos(true)}
-          className="absolute bottom-4 right-4 bg-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-md hover:bg-gray-50"
-        >
-          <Grid className="w-4 h-4" />
-          Show all photos
-        </button> */}
+        {isUploadModalOpen && (
+          <UploadModal
+            isOpen={isUploadModalOpen}
+            onClose={() => setIsUploadModalOpen(false)}
+            onUpload={handleUpload}
+          />
+        )}
+        {showGallery && (
+          <PhotoGallery
+            images={warehouse.images}
+            onClose={() => setShowGallery(false)}
+          />
+        )}
       </div>
 
       {/* Details Section */}

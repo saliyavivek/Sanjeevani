@@ -6,6 +6,7 @@ const {
   generateDescription,
   editWarehouse,
   deleteWarehouse,
+  uploadImage,
 } = require("../controllers/warehouseController");
 const router = express.Router();
 const upload = require("../middlewares/multer");
@@ -17,5 +18,6 @@ router.put("/edit", upload.single("image"), editWarehouse);
 router.delete("/delete", deleteWarehouse);
 router.post("/listings", getMyListings);
 router.post("/generate-description", generateDescription);
+router.post("/:id/upload", upload.array("image"), uploadImage);
 
 module.exports = router;
