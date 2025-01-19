@@ -96,13 +96,13 @@ const StorageCard = ({ warehouse, onDelete }) => {
         <div className="w-full">
           {" "}
           {/* relative is causing the issue with dropdown hiding behind the card */}
-          <div className="w-full overflow-hidden rounded-lg">
+          <div className="w-full overflow-hidden rounded-lg z-[-500]">
             {/* relative is causing the issue with dropdown hiding behind the card */}
 
             <img
               src={warehouse.images[currentImageIndex] || "/placeholder.svg"}
               alt={warehouse.name}
-              className="object-cover h-80 w-full"
+              className="object-cover h-80 w-full z-[-500]"
             />
           </div>
           <div className="p-1 space-y-1">
@@ -138,18 +138,21 @@ const StorageCard = ({ warehouse, onDelete }) => {
           {/* Dropdown Menu */}
           {warehouse.ownerId._id === user && (
             <div
-              className="absolute top-2 right-2 transition-opacity z-[60]"
+              className="absolute top-2 right-2 transition-opacity z-[40]"
               onMouseEnter={() => setShowDropdown(true)}
             >
               <button
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowDropdown(!showDropdown);
+                }}
                 className="p-1 bg-white rounded-full shadow-md hover:bg-gray-100"
               >
                 <MoreVertical className="w-5 h-5 text-gray-600" />
               </button>
               {showDropdown && (
                 <div
-                  className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-[70]"
+                  className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-[50]"
                   onMouseEnter={() => setShowDropdown(true)}
                   onMouseLeave={() => setShowDropdown(false)}
                 >

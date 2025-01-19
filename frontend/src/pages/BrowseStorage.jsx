@@ -63,7 +63,7 @@ export default function BrowseStorage() {
     <div className="min-h-screen bg-white py-8">
       <div className="max-w-[1400px] mx-auto px-4">
         <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center gap-4 mb-8">
+          <div className="flex items-center gap-2 md:gap-4 mb-8">
             <button
               onClick={() => navigate(-1)}
               className="p-2 rounded-full hover:bg-gray-50 transition-colors duration-200"
@@ -71,13 +71,13 @@ export default function BrowseStorage() {
             >
               <ArrowLeft className="h-5 w-5 text-gray-600" />
             </button>
-            <h1 className="text-3xl font-semibold text-gray-900">
+            <h1 className="text-xl font-semibold text-gray-900 md:text-3xl">
               Available Storage Spaces
             </h1>
           </div>
           <div>
             <button
-              className="flex justify-center items-center mb-8 gap-2 hover:bg-gray-100 rounded-md h-10 px-3 py-2"
+              className="flex justify-center items-center mb-8 gap-2 hover:bg-gray-100 rounded-md h-10 px-1 md:px-3 py-2"
               onClick={() => setIsFilterModalOpen(true)}
             >
               <SlidersHorizontal className="w-5 h-5" />

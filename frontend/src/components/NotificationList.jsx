@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import NotificationItem from "./NotificationItem";
-import { Bell, Filter, CheckSquare, ArrowLeft } from "lucide-react";
+import { Bell, ArrowLeft } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +19,6 @@ const NotificationList = () => {
     },
   ]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("all");
   const [userId, setUserId] = useState(null);
   const token = useAuth();
   const navigate = useNavigate();
@@ -41,8 +40,6 @@ const NotificationList = () => {
         `http://localhost:8080/api/notifications/${userId}`
       );
       const data = await response.json();
-      // console.log(data);
-
       setNotifications(data);
       setLoading(false);
     } catch (error) {
@@ -92,20 +89,11 @@ const NotificationList = () => {
       }
       showSuccessToast("All notifications marked as read.");
       fetchNotifications(userId);
-      // setNotifications(
-      //   notifications.map((notif) => ({ ...notif, isRead: true }))
-      // );
     } catch (error) {
       console.error("Error marking all notifications as read:", error);
       showErrorToast("Error while marking notification as read.");
     }
   };
-
-  // const filteredNotifications = notifications?.filter((notif) => {
-  //   if (filter === "all") return true;
-  //   if (filter === "unread") return !notif.isRead;
-  //   return notif.type === filter;
-  // });
 
   if (loading) {
     return (
@@ -116,7 +104,7 @@ const NotificationList = () => {
   }
 
   return (
-    <div className="bg-white rounded-lg max-w-2xl mx-auto">
+    <div className="bg-white rounded-lg shadow-md max-w-2xl mx-auto">
       <div className="flex items-center justify-between p-4 border-b border-gray-200">
         <button
           onClick={() => navigate(-1)}
@@ -125,11 +113,11 @@ const NotificationList = () => {
         >
           <ArrowLeft className="h-5 w-5 text-gray-600" />
         </button>
-        <h2 className="text-2xl ml-4 font-semibold text-gray-800 flex items-center">
+        <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 flex items-center">
           Notifications
         </h2>
         <button
-          className="text-sm font-semibold text-gray-600 hover:text-gray-700 justify-self-end"
+          className="text-xs sm:text-sm font-semibold text-gray-600 hover:text-gray-700"
           onClick={handleMarkAllAsRead}
         >
           Mark all as read
@@ -137,8 +125,10 @@ const NotificationList = () => {
       </div>
       {notifications && notifications.length === 0 ? (
         <div className="text-center py-12">
-          <Bell className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-500 text-lg">No notifications to display</p>
+          <Bell className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mx-auto mb-4" />
+          <p className="text-gray-500 text-base sm:text-lg">
+            No notifications to display
+          </p>
         </div>
       ) : (
         <div className="max-h-[calc(100vh-200px)] overflow-y-auto">
@@ -151,7 +141,9 @@ const NotificationList = () => {
               />
             ))
           ) : (
-            <p>No notifications available</p>
+            <p className="p-4 text-center text-gray-500">
+              No notifications available
+            </p>
           )}
         </div>
       )}

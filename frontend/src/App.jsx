@@ -30,7 +30,11 @@ const AppRoutes = () => {
   return (
     <>
       {/* Conditionally render Navbar based on the current path */}
-      {location.pathname !== "/" && <Navbar />}
+      {location.pathname !== "/" && (
+        <>
+          <Navbar />
+        </>
+      )}
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/owner/dashboard" element={<WarehouseOwnerDashboard />} />

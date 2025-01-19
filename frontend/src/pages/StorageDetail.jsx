@@ -30,8 +30,6 @@ const StorageDetail = () => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
-  // console.log(warehouse);
-
   const [user, setUser] = useState({});
   const [reviews, setReviews] = useState([]);
   const [booked, setIsBooked] = useState(false);
@@ -67,10 +65,6 @@ const StorageDetail = () => {
         },
       }
     );
-    // if (!response.ok) {
-    //   console.error("Failed to fetch booking status.");
-    //   return;
-    // }
     const data = await response.json();
 
     setIsBooked(data.message === true);
@@ -106,7 +100,6 @@ const StorageDetail = () => {
 
     if (!response.ok) {
       showErrorToast("Failed to add review.");
-      // console.error("Failed to submit review");
       return;
     }
     const data = await response.json();
@@ -201,18 +194,6 @@ const StorageDetail = () => {
     }
   };
 
-  // const reviewStats = {
-  //   averageRating: 4.87,
-  //   totalReviews: 210,
-  //   ratingCounts: {
-  //     5: 180,
-  //     4: 20,
-  //     3: 5,
-  //     2: 3,
-  //     1: 2,
-  //   },
-  // };
-
   const [isFavorite, setIsFavorite] = useState(false);
 
   const handleFavorite = async (e) => {
@@ -237,7 +218,6 @@ const StorageDetail = () => {
         return;
       }
       const data = await response.json();
-      // console.log(data);
 
       showSuccessToast(data.message);
     } catch (error) {
@@ -306,18 +286,11 @@ const StorageDetail = () => {
   const [showGallery, setShowGallery] = useState(false);
 
   const handleUpload = async (files) => {
-    // console.log(file);
-
     try {
       const formData = new FormData();
       files.forEach((file) => {
-        formData.append("image", file); // Adjust the key name if your backend expects something else
+        formData.append("image", file);
       });
-
-      // Debugging: Log FormData contents
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-      }
 
       const response = await fetch(
         `http://localhost:8080/api/warehouses/${warehouse._id}/upload`,
@@ -334,28 +307,49 @@ const StorageDetail = () => {
 
       const data = await response.json();
       console.log(data.message);
-      // Optionally, update the state with the new image URL
     } catch (error) {
       console.error("Error uploading image:", error);
     }
   };
+
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <div className="flex items-center gap-4 mb-8">
-        <button
-          onClick={() => navigate(-1)}
-          className="p-2 rounded-full hover:bg-gray-50 transition-colors duration-200"
-          aria-label="Go back"
-        >
-          <ArrowLeft className="h-5 w-5 text-gray-600" />
-        </button>
-        <h1 className="text-3xl font-semibold text-gray-900">
-          {warehouse.name}
-        </h1>
+    <div className="max-w-6xl mx-auto px-4 py-4 sm:py-8">
+      <div className="flex items-center justify-between md:gap-4 gap-2 mb-4 sm:mb-8">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigate(-1)}
+            className="md:p-2 mt-[2.5px] rounded-full hover:bg-gray-50 transition-colors duration-200"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="h-5 w-5 text-gray-600" />
+          </button>
+          <h1 className="text-xl sm:text-3xl font-semibold text-gray-900">
+            {warehouse.name}
+          </h1>
+        </div>
+        <div className="flex shrink md:hidden">
+          <button
+            className="p-2 hover:bg-gray-100 rounded-full"
+            onClick={() => setIsShareModalOpen(true)}
+          >
+            <Share2 className="w-5 h-5" />
+          </button>
+          <button
+            onClick={isFavorite ? handleRemoveFavorite : handleFavorite}
+            className="p-2 hover:bg-gray-100 rounded-full"
+          >
+            <Heart
+              className={`w-5 h-5 ${
+                isFavorite ? "fill-red-500 stroke-red-500" : "stroke-gray-900"
+              }`}
+            />
+          </button>
+        </div>
       </div>
+
       {/* Image Grid */}
-      <div>
-        <div className="overflow-hidden">
+      <div className="mb-6">
+        <div className="overflow-hidden rounded-lg">
           <ImageGrid
             images={warehouse.images}
             onShowAllPhotos={() => setShowGallery(true)}
@@ -380,24 +374,26 @@ const StorageDetail = () => {
 
       {/* Details Section */}
       <div
-        className={
+        className={`mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-12 ${
           warehouse.ownerId._id !== user.userId
-            ? "mt-8 grid grid-cols-1 lg:grid-cols-3 gap-12 border-b pb-5"
-            : "mt-8 grid grid-cols-1 lg:grid-cols-1 gap-12"
-        }
+            ? "border-b pb-6"
+            : "lg:grid-cols-2"
+        }`}
       >
         <div className="lg:col-span-2">
-          <div className="flex justify-between items-start">
+          <div className="flex justify-between items-start mb-4">
             <div>
-              <h1 className="text-3xl font-semibold text-gray-900">
+              <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">
                 {warehouse.name}
               </h1>
-              <p className="mt-2 text-gray-600 flex items-center">
-                <MapPin className="w-4 h-4 mr-1" />
-                {warehouse.location.formattedAddress}
+              <p className="mt-2 text-sm sm:text-base text-gray-600 flex items-start md:items-center">
+                <MapPin className="w-4 h-4 mr-1 mt-1 flex-shrink-0" />
+                <span className="break-words">
+                  {warehouse.location.formattedAddress}
+                </span>
               </p>
             </div>
-            <div>
+            <div className="flex md:flex hidden">
               <button
                 className="p-2 hover:bg-gray-100 rounded-full"
                 onClick={() => setIsShareModalOpen(true)}
@@ -417,19 +413,19 @@ const StorageDetail = () => {
                 />
               </button>
             </div>
-
-            <ShareModal
-              isOpen={isShareModalOpen}
-              onClose={() => setIsShareModalOpen(false)}
-              listing={warehouse}
-            />
           </div>
 
-          <div className="mt-6 pb-6 border-b">
+          <ShareModal
+            isOpen={isShareModalOpen}
+            onClose={() => setIsShareModalOpen(false)}
+            listing={warehouse}
+          />
+
+          <div className="py-4 border-t border-b">
             <div className="flex items-center gap-2">
               <a href={`/users/o/show/${warehouse.ownerId._id}`}>
                 <img
-                  src={warehouse.ownerId.avatar}
+                  src={warehouse.ownerId.avatar || "/placeholder.svg"}
                   alt={warehouse.ownerId.name}
                   className="w-10 h-10 object-cover rounded-full"
                 />
@@ -441,15 +437,15 @@ const StorageDetail = () => {
                     ? "you"
                     : warehouse.ownerId.name}
                 </p>
-                <p className="text-gray-600">
+                <p className="text-sm text-gray-600">
                   {calculateDuration(warehouse.ownerId.createdAt)} on Sanjeevani
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="py-6 border-b">
-            <h2 className="text-xl font-semibold mb-4">
+          <div className="py-4 border-b">
+            <h2 className="text-xl font-semibold mb-2">
               About this storage space
             </h2>
             <p className="text-gray-600 leading-relaxed">
@@ -457,8 +453,8 @@ const StorageDetail = () => {
             </p>
           </div>
 
-          <div className="py-6">
-            <h2 className="text-xl font-semibold mb-4">Storage Details</h2>
+          <div className="py-4">
+            <h2 className="text-xl font-semibold mb-2">Storage Details</h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="font-medium">Size</p>
@@ -476,16 +472,16 @@ const StorageDetail = () => {
 
         <div className="lg:col-span-1">
           {warehouse.ownerId._id !== user.userId && (
-            <div className="sticky top-8 bg-white p-6 rounded-xl border shadow-sm">
-              <div className="flex justify-between items-center mb-6">
+            <div className="sticky top-8 bg-white p-4 sm:p-6 rounded-xl border shadow-sm">
+              <div className="flex justify-between items-center mb-4 sm:mb-6">
                 <div>
-                  <p className="text-2xl font-semibold">
+                  <p className="text-xl sm:text-2xl font-semibold">
                     ₹{warehouse.pricePerDay}
                   </p>
-                  <p className="text-gray-600">per day</p>
+                  <p className="text-sm text-gray-600">per day</p>
                 </div>
                 <span
-                  className={`px-3 py-1 rounded-full text-sm ${
+                  className={`px-3 py-1 rounded-full text-xs sm:text-sm ${
                     warehouse.availability === "available"
                       ? "bg-green-100 text-green-800"
                       : warehouse.availability === "booked"
@@ -501,12 +497,11 @@ const StorageDetail = () => {
                 </span>
               </div>
 
-              {/* <a href="/book/warehouse"> */}
               <button
                 onClick={() =>
                   navigate("/book/warehouse", { state: { warehouse } })
                 }
-                className={`w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 ${
+                className={`w-full bg-blue-600 text-white py-2 sm:py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors ${
                   warehouse.availability === "booked" ||
                   warehouse.availability === "maintenance"
                     ? "opacity-50 cursor-not-allowed"
@@ -523,17 +518,14 @@ const StorageDetail = () => {
                   ? "Booked"
                   : "Under Maintenance"}
               </button>
-              {/* </a> */}
             </div>
           )}
         </div>
       </div>
 
       {/* Review */}
-      <div>
-        <p className="text-2xl font-semibold mb-5 flex items-center justify-center pt-4">
-          Reviews
-        </p>
+      <div className="mt-8">
+        <p className="text-2xl font-semibold mb-5 text-center">Reviews</p>
 
         <ReviewModal
           isOpen={isModalOpen}
@@ -551,13 +543,15 @@ const StorageDetail = () => {
         />
 
         {reviews && reviews.length > 0 && (
-          <button
-            onClick={() => setIsAllReviewModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800"
-          >
-            <Star className="h-5 w-5" />
-            {reviewStats.averageRating} ({reviewStats.totalReviews} reviews)
-          </button>
+          <div className="flex justify-center mt-4">
+            <button
+              onClick={() => setIsAllReviewModalOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 text-sm sm:text-base"
+            >
+              <Star className="h-4 w-4 sm:h-5 sm:w-5" />
+              {reviewStats.averageRating} ({reviewStats.totalReviews} reviews)
+            </button>
+          </div>
         )}
 
         <AllReviewsModal
@@ -567,19 +561,18 @@ const StorageDetail = () => {
           stats={reviewStats}
         />
 
-        {/* {console.log(booked)} */}
         {booked && user.userId !== warehouse.ownerId._id && (
-          <div className="flex justify-center items-center">
+          <div className="flex justify-center items-center mt-4">
             <button
               onClick={() => setIsModalOpen(true)}
-              className="py-2 px-4 rounded hover:bg-gray-100"
+              className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               Add Review
             </button>
           </div>
         )}
         {!booked && user.userId !== warehouse.ownerId._id && (
-          <div className="flex justify-center items-center text-gray-600">
+          <div className="flex justify-center items-center mt-4 text-gray-600 text-sm sm:text-base">
             Book this storage to add reviews.
           </div>
         )}
@@ -590,12 +583,12 @@ const StorageDetail = () => {
         <h2 className="text-xl font-semibold mb-4">
           Where your storage will be
         </h2>
-        <p className="mb-4 text-gray-600">
+        <p className="mb-4 text-sm sm:text-base text-gray-600">
           {warehouse.location.city && `${warehouse.location.city}, `}
           {warehouse.location.state && `${warehouse.location.state}, `}
           {warehouse.location.country}
         </p>
-        <div className="h-[400px] rounded-xl overflow-hidden">
+        <div className="h-[300px] sm:h-[400px] rounded-xl overflow-hidden">
           <MapContainer
             center={warehouse.location.coordinates.slice().reverse()}
             zoom={13}

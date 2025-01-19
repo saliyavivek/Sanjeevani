@@ -7,6 +7,8 @@ import {
   Settings,
   PlusCircle,
   LogOut,
+  Menu,
+  X,
 } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -14,10 +16,10 @@ import { jwtDecode } from "jwt-decode";
 
 const WarehouseOwnerDashboard = () => {
   const token = useAuth();
-  // const navigate = useNavigate();
   const [name, setName] = useState("");
   const [userId, setUserId] = useState(null);
   const [info, setInfo] = useState([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (token) {
@@ -52,7 +54,6 @@ const WarehouseOwnerDashboard = () => {
         }
         const data = await response.json();
         setInfo(data.warehouses);
-        // console.log(info);
       }
     } catch (error) {
       console.log(error);
@@ -102,13 +103,26 @@ const WarehouseOwnerDashboard = () => {
 
   const { past, current, upcoming } = categorizeBookings();
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
+      {/* Mobile Header */}
+      <header className="lg:hidden bg-white shadow-md p-4 flex justify-between items-center">
+        <h1 className="text-2xl font-bold text-blue-600">FarmStore</h1>
+        <button onClick={toggleSidebar} className="text-gray-600">
+          {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </header>
+
       {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-md">
-        {/* <div className="p-4">
-          <h1 className="text-2xl font-bold text-blue-600">FarmStore</h1>
-        </div> */}
+      <aside
+        className={`${
+          isSidebarOpen ? "block" : "hidden"
+        } lg:block w-full lg:w-64 bg-white shadow-md`}
+      >
         <nav className="mt-6">
           <a
             href="/owner/dashboard"
@@ -124,14 +138,6 @@ const WarehouseOwnerDashboard = () => {
             <Package className="w-5 h-5 mr-3" />
             My Listings
           </a>
-          {/* <a
-            href="/bookings"
-            className="flex items-center px-4 py-2 mt-2 text-gray-600 hover:bg-gray-100 hover:text-gray-700 transition-colors duration-200"
-          >
-            <Calendar className="w-5 h-5 mr-3" />
-            Bookings
-          </a> */}
-
           <a
             href="/settings"
             className="flex items-center px-4 py-2 mt-2 text-gray-600 hover:bg-gray-100 hover:text-gray-700 transition-colors duration-200"
@@ -140,21 +146,12 @@ const WarehouseOwnerDashboard = () => {
             Settings
           </a>
         </nav>
-        {/* <div className="absolute bottom-0 w-64 p-4">
-          <a
-            href="#"
-            className="flex items-center text-gray-600 hover:text-gray-700 transition-colors duration-200"
-          >
-            <LogOut className="w-5 h-5 mr-3" />
-            Logout
-          </a>
-        </div> */}
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto p-8">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-semibold text-gray-800">
+      <main className="flex-1 overflow-y-auto p-4 lg:p-8">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6">
+          <h2 className="text-2xl lg:text-3xl font-semibold text-gray-800 mb-4 lg:mb-0">
             Welcome back, {name ? name : "Kisan"}!
           </h2>
           <a href="/warehouse/list">
@@ -166,66 +163,62 @@ const WarehouseOwnerDashboard = () => {
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
+          <div className="bg-white rounded-lg shadow p-4 lg:p-6">
+            <h3 className="text-lg lg:text-xl font-semibold text-gray-700 mb-2">
               Total Listings
             </h3>
-            <p className="text-3xl font-bold text-blue-600">
+            <p className="text-2xl lg:text-3xl font-bold text-blue-600">
               {info && info.length}
             </p>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">
+          <div className="bg-white rounded-lg shadow p-4 lg:p-6">
+            <h3 className="text-lg lg:text-xl font-semibold text-gray-700 mb-2">
               Active Bookings
             </h3>
-            <p className="text-3xl font-bold text-blue-600">
+            <p className="text-2xl lg:text-3xl font-bold text-blue-600">
               {
                 info.filter((booking) => booking.availability === "booked")
                   .length
               }
             </p>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">
+          <div className="bg-white rounded-lg shadow p-4 lg:p-6">
+            <h3 className="text-lg lg:text-xl font-semibold text-gray-700 mb-2">
               Total Space
             </h3>
-            <p className="text-3xl font-bold text-blue-600">
+            <p className="text-2xl lg:text-3xl font-bold text-blue-600">
               {info
                 .reduce((acc, curr) => acc + Number(curr.size), 0)
                 .toLocaleString()}{" "}
               sq ft
             </p>
           </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">
+          <div className="bg-white rounded-lg shadow p-4 lg:p-6">
+            <h3 className="text-lg lg:text-xl font-semibold text-gray-700 mb-2">
               Total Revenue
             </h3>
-            <p className="text-3xl font-bold text-green-600">
+            <p className="text-2xl lg:text-3xl font-bold text-green-600">
               ₹
               {info
                 .filter((listing) => listing.availability === "booked")
                 .reduce((acc, curr) => {
-                  // Ensure bookings is always an array
                   const bookings = Array.isArray(curr.bookings)
                     ? curr.bookings
                     : [curr.bookings];
 
-                  // Calculate revenue for each booking in the array
                   const revenueForListing = bookings.reduce(
                     (bookingAcc, booking) => {
                       const startDate = new Date(booking.startDate);
                       const endDate = new Date(booking.endDate);
                       const difference = Math.abs(endDate - startDate);
-                      const days = difference / (1000 * 3600 * 24) + 1; // Inclusive of both start and end date
-                      const pricePerDay = parseFloat(curr.pricePerDay) || 0; // Handle invalid values
+                      const days = difference / (1000 * 3600 * 24) + 1;
+                      const pricePerDay = parseFloat(curr.pricePerDay) || 0;
                       return bookingAcc + days * pricePerDay;
                     },
                     0
                   );
 
-                  // Accumulate revenue for all listings
                   return acc + revenueForListing;
                 }, 0)
                 .toLocaleString()}
@@ -234,36 +227,37 @@ const WarehouseOwnerDashboard = () => {
         </div>
 
         {/* Recent Bookings */}
-        <div className="bg-white rounded-lg shadow overflow-hidden mb-8">
-          <div className="p-6">
+        <div className="bg-white rounded-lg shadow overflow-x-auto mb-8">
+          <div className="p-4 lg:p-6">
             <h3 className="text-xl font-semibold text-gray-700 mb-4">
               Recent Bookings
             </h3>
-            <table className="w-full">
+            <table className="w-full min-w-max">
               <thead>
                 <tr className="text-left text-gray-500 border-b">
-                  <th className="pb-3">Warehouse</th>
-                  <th className="pb-3">Booked by</th>
-                  <th className="pb-3">Space</th>
-                  <th className="pb-3">From</th>
-                  <th className="pb-3">To</th>
-                  <th className="pb-3">Days</th>
+                  <th className="pb-3 pr-4">Warehouse</th>
+                  <th className="pb-3 pr-4">Booked by</th>
+                  <th className="pb-3 pr-4">Space</th>
+                  <th className="pb-3 pr-4">From</th>
+                  <th className="pb-3 pr-4">To</th>
+                  <th className="pb-3 pr-4">Days</th>
                   <th className="pb-3">Status</th>
                 </tr>
               </thead>
               <tbody>
-                {/* {console.log(info[0].name)} */}
                 {info.map((listing) =>
                   listing.bookings.map((booking) => (
                     <tr key={booking._id} className="border-b">
-                      <td className="py-3">{listing.name}</td>
-                      <td className="py-3">{booking.userId.name}</td>
-                      <td>{listing.size} sq ft</td>
-                      <td>
+                      <td className="py-3 pr-4">{listing.name}</td>
+                      <td className="py-3 pr-4">{booking.userId.name}</td>
+                      <td className="pr-4">{listing.size} sq ft</td>
+                      <td className="pr-4">
                         {new Date(booking.startDate).toLocaleDateString()}
                       </td>
-                      <td>{new Date(booking.endDate).toLocaleDateString()}</td>
-                      <td>
+                      <td className="pr-4">
+                        {new Date(booking.endDate).toLocaleDateString()}
+                      </td>
+                      <td className="pr-4">
                         {Math.abs(
                           new Date(booking.endDate) -
                             new Date(booking.startDate)
@@ -301,24 +295,6 @@ const WarehouseOwnerDashboard = () => {
             </table>
           </div>
         </div>
-
-        {/* Available Space */}
-        {/* <div className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="p-6">
-            <h3 className="text-xl font-semibold text-gray-700 mb-4">
-              Available Space
-            </h3>
-            <div className="bg-gray-200 h-4 rounded-full overflow-hidden">
-              <div
-                className="bg-blue-600 h-full"
-                style={{ width: "75%" }}
-              ></div>
-            </div>
-            <p className="mt-2 text-gray-600">
-              7,500 sq ft out of 10,000 sq ft occupied
-            </p>
-          </div>
-        </div> */}
       </main>
     </div>
   );

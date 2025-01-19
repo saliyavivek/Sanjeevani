@@ -113,10 +113,10 @@ const HostProfile = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="flex items-center gap-4 mb-8">
+      <div className="flex items-center gap-2 md:gap-4 mb-8">
         <button
           onClick={() => navigate(-1)}
-          className="p-2 rounded-full hover:bg-gray-50 transition-colors duration-200"
+          className="md:p-2 rounded-full hover:bg-gray-50 transition-colors duration-200"
           aria-label="Go back"
         >
           <ArrowLeft className="h-5 w-5 text-gray-600" />
@@ -127,7 +127,7 @@ const HostProfile = () => {
         {/* Left Column - Profile Info */}
         <div className="space-y-6">
           {/* Profile Card */}
-          <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="bg-white rounded-xl shadow-sm p-2 md:p-6">
             <div className="relative inline-block">
               <img
                 src={user.avatar}
@@ -151,7 +151,7 @@ const HostProfile = () => {
           </div>
 
           {/* Verified Information Card */}
-          <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="bg-white rounded-xl shadow-sm p-2 md:p-6">
             <h2 className="text-xl font-semibold mb-4">
               {user.name}'s confirmed information
             </h2>
@@ -170,7 +170,7 @@ const HostProfile = () => {
         </div>
 
         {/* Right Column - About and Listings */}
-        <div className="space-y-8">
+        <div className="space-y-8 p-2">
           {/* About Section */}
           <div>
             <h2 className="text-2xl font-semibold mb-4">About {user.name}</h2>

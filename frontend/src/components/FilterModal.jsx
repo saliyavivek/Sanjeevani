@@ -59,7 +59,7 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-      <div className="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-xl w-[95%] md:w-[full] max-w-2xl max-h-[80vh] md:max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b">
           <button

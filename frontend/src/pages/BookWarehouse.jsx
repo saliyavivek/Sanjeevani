@@ -10,7 +10,6 @@ import "leaflet/dist/leaflet.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { jwtDecode } from "jwt-decode";
-import { toast } from "sonner";
 import { showErrorToast, showSuccessToast } from "../components/toast";
 
 const theme = createTheme({
@@ -25,11 +24,10 @@ const BookWarehouse = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { warehouse } = location.state;
-  // console.log(warehouse);
 
   if (!warehouse) {
     navigate(-1);
-    return;
+    return null;
   }
 
   const [startDate, setStartDate] = useState(null);
@@ -69,7 +67,7 @@ const BookWarehouse = () => {
   const handleBooking = async () => {
     try {
       if (!startDate || !endDate) {
-        alert("Please select both start and end dates");
+        showErrorToast("Please select both start and end dates");
         return;
       }
 
@@ -88,17 +86,15 @@ const BookWarehouse = () => {
       });
       if (response.ok) {
         const data = await response.json();
-
         showSuccessToast("Make a payment to proceed.");
-
-        // console.log(data.message, data.booking);
         navigate(`/booking/${data.booking._id}`);
       } else {
         const error = await response.json();
         showErrorToast(error.message);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      showErrorToast("An error occurred while booking. Please try again.");
     }
   };
 
@@ -106,12 +102,12 @@ const BookWarehouse = () => {
     <ThemeProvider theme={theme}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <div className="min-h-screen bg-white">
-          <div className="max-w-[2000px] mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 min-h-screen">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col lg:flex-row min-h-screen">
               {/* Booking Form Section */}
-              <div className="p-12 lg:p-24 flex items-center">
-                <div className="w-full max-w-lg">
-                  <div className="flex items-center gap-4 mb-8">
+              <div className="w-full lg:w-1/2 p-4 sm:p-6 md:p-8 lg:p-12 flex items-center">
+                <div className="w-full max-w-lg mx-auto">
+                  <div className="flex items-center gap-4 mb-6">
                     <button
                       onClick={() => navigate(-1)}
                       className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200"
@@ -119,15 +115,17 @@ const BookWarehouse = () => {
                     >
                       <ArrowLeft className="h-5 w-5 text-gray-600" />
                     </button>
-                    <h1 className="text-3xl font-semibold text-gray-900">
+                    <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">
                       Confirm Dates
                     </h1>
                   </div>
-                  <div className="mb-8">
-                    <h1 className="text-[48px] font-bold text-gray-900 tracking-tight">
+                  <div className="mb-6">
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">
                       ₹{warehouse.pricePerDay.toLocaleString()}
                     </h1>
-                    <p className="text-xl text-gray-600 mt-1">per day</p>
+                    <p className="text-lg sm:text-xl text-gray-600 mt-1">
+                      per day
+                    </p>
                   </div>
 
                   <div className="space-y-6">
@@ -155,7 +153,7 @@ const BookWarehouse = () => {
 
                     {totalPrice > 0 && (
                       <div className="space-y-3 pt-4">
-                        <div className="flex justify-between items-center text-lg">
+                        <div className="flex justify-between items-center text-base sm:text-lg">
                           <span className="text-gray-600">
                             ₹{warehouse.pricePerDay.toLocaleString()} ×{" "}
                             {calculateDays(startDate, endDate)} days
@@ -165,7 +163,7 @@ const BookWarehouse = () => {
                           </span>
                         </div>
                         <div className="border-t border-gray-200 pt-4">
-                          <div className="flex justify-between items-center text-xl font-semibold">
+                          <div className="flex justify-between items-center text-lg sm:text-xl font-semibold">
                             <span>Total</span>
                             <span>₹{totalPrice.toLocaleString()}</span>
                           </div>
@@ -182,7 +180,7 @@ const BookWarehouse = () => {
 
                     <div className="flex items-start space-x-3 pt-4">
                       <MapPin className="h-6 w-6 text-gray-400 flex-shrink-0 mt-0.5" />
-                      <p className="text-gray-600 leading-relaxed">
+                      <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                         {warehouse.location.formattedAddress}
                       </p>
                     </div>
@@ -191,7 +189,7 @@ const BookWarehouse = () => {
               </div>
 
               {/* Map Section */}
-              <div className="h-[600px] lg:h-auto">
+              <div className="w-full lg:w-1/2 h-[400px] lg:h-auto">
                 <MapContainer
                   center={warehouse.location.coordinates.slice().reverse()}
                   zoom={13}

@@ -6,6 +6,8 @@ import {
   MessageSquare,
   Settings,
   LogOut,
+  Menu,
+  X,
 } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 import { jwtDecode } from "jwt-decode";
@@ -13,10 +15,10 @@ import { useNavigate } from "react-router-dom";
 
 const FarmerDashboard = () => {
   const token = useAuth();
-  // const navigate = useNavigate();
   const [userId, setUserId] = useState(null);
   const [info, setInfo] = useState([]);
   const [name, setName] = useState("");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (token) {
@@ -81,13 +83,26 @@ const FarmerDashboard = () => {
 
   const { past, current, upcoming } = categorizeBookings();
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
+      {/* Mobile Header */}
+      <header className="md:hidden bg-white shadow-md p-4 flex justify-between items-center">
+        <h1 className="text-2xl font-bold text-green-600">FarmStore</h1>
+        <button onClick={toggleSidebar} className="text-gray-600">
+          {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </header>
+
       {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-md">
-        {/* <div className="p-4">
-          <h1 className="text-2xl font-bold text-green-600">FarmStore</h1>
-        </div> */}
+      <aside
+        className={`${
+          isSidebarOpen ? "block" : "hidden"
+        } md:block w-full md:w-64 bg-white shadow-md`}
+      >
         <nav className="mt-6">
           <a
             href="/farmer/dashboard"
@@ -110,7 +125,6 @@ const FarmerDashboard = () => {
             <Calendar className="w-5 h-5 mr-3" />
             Book Storage
           </a>
-
           <a
             href="/settings"
             className="flex items-center px-4 py-2 mt-2 text-gray-600 hover:bg-gray-100 hover:text-gray-700 transition-colors duration-200"
@@ -119,49 +133,40 @@ const FarmerDashboard = () => {
             Settings
           </a>
         </nav>
-        {/* <div className="absolute bottom-0 w-64 p-4">
-          <a
-            href="#"
-            className="flex items-center text-gray-600 hover:text-gray-700 transition-colors duration-200"
-          >
-            <LogOut className="w-5 h-5 mr-3" />
-            Logout
-          </a>
-        </div> */}
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto p-8">
-        <h2 className="text-3xl font-semibold text-gray-800 mb-6">
+      <main className="flex-1 overflow-y-auto p-4 md:p-8">
+        <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 mb-6">
           Welcome back, {name ? name : "John"}!
         </h2>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+          <div className="bg-white rounded-lg shadow p-4 md:p-6">
+            <h3 className="text-lg md:text-xl font-semibold text-gray-700 mb-2">
               Active Bookings
             </h3>
-            <p className="text-3xl font-bold text-green-600">
+            <p className="text-2xl md:text-3xl font-bold text-green-600">
               {info.filter((booking) => booking.status === "active").length}
             </p>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">
+          <div className="bg-white rounded-lg shadow p-4 md:p-6">
+            <h3 className="text-lg md:text-xl font-semibold text-gray-700 mb-2">
               Total Storage Used
             </h3>
-            <p className="text-3xl font-bold text-green-600">
+            <p className="text-2xl md:text-3xl font-bold text-green-600">
               {info
                 .reduce((acc, curr) => acc + Number(curr.warehouseId.size), 0)
                 .toLocaleString()}{" "}
               sq ft
             </p>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">
+          <div className="bg-white rounded-lg shadow p-4 md:p-6">
+            <h3 className="text-lg md:text-xl font-semibold text-gray-700 mb-2">
               Upcoming Expiry
             </h3>
-            <p className="text-3xl font-bold text-yellow-600">
+            <p className="text-2xl md:text-3xl font-bold text-yellow-600">
               {
                 info.filter((booking) => {
                   const endDate = normalizeDate(booking.endDate);
@@ -173,11 +178,11 @@ const FarmerDashboard = () => {
               }
             </p>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">
+          <div className="bg-white rounded-lg shadow p-4 md:p-6">
+            <h3 className="text-lg md:text-xl font-semibold text-gray-700 mb-2">
               Total Expense
             </h3>
-            <p className="text-3xl font-bold text-green-600">
+            <p className="text-2xl md:text-3xl font-bold text-green-600">
               ₹
               {info
                 .reduce((acc, curr) => acc + curr.totalPrice, 0)
@@ -188,90 +193,108 @@ const FarmerDashboard = () => {
 
         {/* Recent Bookings */}
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="p-6">
+          <div className="p-4 md:p-6">
             <h3 className="text-xl font-semibold text-gray-700 mb-4">
               Recent Bookings
             </h3>
-            <table className="w-full">
-              <thead>
-                <tr className="text-left text-gray-500 border-b">
-                  <th className="pb-3">Warehouse</th>
-                  <th className="pb-3">Location</th>
-                  <th className="pb-3">Space</th>
-                  <th className="pb-3">From</th>
-                  <th className="pb-3">To</th>
-                  <th className="pb-3">Days</th>
-                  <th className="pb-3">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {info.map((booking, index) => (
-                  <tr key={index} className="border-b hover:bg-gray-50">
-                    <td className="py-3">
-                      <a href={`/booking/${booking._id}`}>
-                        {booking.warehouseId.name}
-                      </a>
-                    </td>
-                    <td>
-                      <a href={`/booking/${booking._id}`}>
-                        {booking.warehouseId.location.formattedAddress.length >
-                        50
-                          ? `${booking.warehouseId.location.formattedAddress.substring(
-                              0,
-                              50
-                            )}...`
-                          : booking.warehouseId.location.formattedAddress}
-                      </a>
-                    </td>
-                    <td>
-                      <a href={`/booking/${booking._id}`}>
-                        {booking.warehouseId.size} sq ft
-                      </a>
-                    </td>
-                    <td>
-                      <a href={`/booking/${booking._id}`}>
-                        {new Date(booking.startDate).toLocaleDateString()}
-                      </a>
-                    </td>
-                    <td>
-                      <a href={`/booking/${booking._id}`}>
-                        {new Date(booking.endDate).toLocaleDateString()}
-                      </a>
-                    </td>
-                    <td>
-                      {Math.abs(
-                        new Date(booking.endDate) - new Date(booking.startDate)
-                      ) /
-                        (1000 * 3600 * 24) +
-                        1}
-                    </td>
-                    <td>
-                      <span
-                        className={`bg-${
-                          upcoming.includes(booking)
-                            ? "blue"
-                            : current.includes(booking)
-                            ? "green"
-                            : "gray"
-                        }-100 text-${
-                          upcoming.includes(booking)
-                            ? "blue"
-                            : current.includes(booking)
-                            ? "green"
-                            : "gray"
-                        }-800 px-2 py-1 rounded-full text-sm`}
-                      >
-                        {upcoming.includes(booking)
-                          ? "upcoming"
-                          : current.includes(booking)
-                          ? "active"
-                          : "completed"}
-                      </span>
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="text-left text-gray-500 border-b">
+                    <th className="pb-3 pr-2">Warehouse</th>
+                    <th className="pb-3 pr-2">Location</th>
+                    <th className="pb-3 pr-2">Space</th>
+                    <th className="pb-3 pr-2">From</th>
+                    <th className="pb-3 pr-2">To</th>
+                    <th className="pb-3 pr-2">Days</th>
+                    <th className="pb-3">Status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {info.map((booking, index) => (
+                    <tr key={index} className="border-b hover:bg-gray-50">
+                      <td className="py-3 pr-2">
+                        <a
+                          href={`/booking/${booking._id}`}
+                          className="hover:underline"
+                        >
+                          {booking.warehouseId.name}
+                        </a>
+                      </td>
+                      <td className="pr-2">
+                        <a
+                          href={`/booking/${booking._id}`}
+                          className="hover:underline"
+                        >
+                          {booking.warehouseId.location.formattedAddress
+                            .length > 50
+                            ? `${booking.warehouseId.location.formattedAddress.substring(
+                                0,
+                                50
+                              )}...`
+                            : booking.warehouseId.location.formattedAddress}
+                        </a>
+                      </td>
+                      <td className="pr-2">
+                        <a
+                          href={`/booking/${booking._id}`}
+                          className="hover:underline"
+                        >
+                          {booking.warehouseId.size} sq ft
+                        </a>
+                      </td>
+                      <td className="pr-2">
+                        <a
+                          href={`/booking/${booking._id}`}
+                          className="hover:underline"
+                        >
+                          {new Date(booking.startDate).toLocaleDateString()}
+                        </a>
+                      </td>
+                      <td className="pr-2">
+                        <a
+                          href={`/booking/${booking._id}`}
+                          className="hover:underline"
+                        >
+                          {new Date(booking.endDate).toLocaleDateString()}
+                        </a>
+                      </td>
+                      <td className="pr-2">
+                        {Math.abs(
+                          new Date(booking.endDate) -
+                            new Date(booking.startDate)
+                        ) /
+                          (1000 * 3600 * 24) +
+                          1}
+                      </td>
+                      <td>
+                        <span
+                          className={`bg-${
+                            upcoming.includes(booking)
+                              ? "blue"
+                              : current.includes(booking)
+                              ? "green"
+                              : "gray"
+                          }-100 text-${
+                            upcoming.includes(booking)
+                              ? "blue"
+                              : current.includes(booking)
+                              ? "green"
+                              : "gray"
+                          }-800 px-2 py-1 rounded-full text-sm`}
+                        >
+                          {upcoming.includes(booking)
+                            ? "upcoming"
+                            : current.includes(booking)
+                            ? "active"
+                            : "completed"}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </main>

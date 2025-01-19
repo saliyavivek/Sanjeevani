@@ -279,7 +279,7 @@ const AddNewListing = () => {
       </div> */}
 
       {/* Main Content */}
-      <div className="max-w-[1400px] mx-auto p-4">
+      <div className="max-w-[1400px] mx-auto p-2 md:p-4">
         <div className="flex items-center gap-2 mb-4">
           <button
             onClick={() => navigate(-1)}
@@ -345,7 +345,7 @@ const AddNewListing = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   <div>
                     <label
                       htmlFor="size"
@@ -536,7 +536,7 @@ const AddNewListing = () => {
 
           {/* Right Column - Map */}
           <div className="flex-1 lg:max-w-[800px]">
-            <div className="bg-white rounded-xl p-3 h-[calc(100vh-140px)] sticky top-4">
+            <div className="bg-white rounded-xl p-3 h-[calc(100vh-340px)] lg:h-[calc(100vh-140px)] sticky top-4">
               <div className="h-full rounded-lg overflow-hidden">
                 <MapContainer
                   center={formData.location.coordinates.slice().reverse()} // Reverse coordinates for map center
