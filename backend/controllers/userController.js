@@ -289,6 +289,28 @@ const deleteAccount = async (req, res) => {
   }
 };
 
+const totalUsers = async (req, res) => {
+  try {
+    const totalUsers = await User.countDocuments();
+    res.status(200).json({ totalUsers });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch total users" });
+  }
+};
+
+const fetchAllUsers = async (req, res) => {
+  try {
+    const allUsers = await User.find({});
+    // console.log(allUsers);
+
+    res.status(200).json({ allUsers });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch all users" });
+  }
+};
+
 module.exports = {
   signup,
   signin,
@@ -298,4 +320,6 @@ module.exports = {
   requestPasswordReset,
   resetPassword,
   deleteAccount,
+  totalUsers,
+  fetchAllUsers,
 };

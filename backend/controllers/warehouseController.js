@@ -293,6 +293,44 @@ const uploadImage = async (req, res) => {
   }
 };
 
+const deleteWarehouseImage = async (req, res) => {
+  try {
+    const { id, index } = req.params;
+
+    const warehouse = await Warehouse.findById(id);
+    if (!warehouse) {
+      return res.status(404).json({ message: "Warehouse not found" });
+    }
+
+    await warehouse.images.splice(index, 1);
+    await warehouse.save();
+    res.status(200).json({ message: "Image deleted successfully." });
+  } catch (error) {
+    res.status(500).json({ message: "Error uploading image", error });
+  }
+};
+
+const totalWarehouses = async (req, res) => {
+  try {
+    const totalWarehouses = await Warehouse.countDocuments();
+    res.status(200).json({ totalWarehouses });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch total warehouses" });
+  }
+};
+
+const fetchAllWarehouses = async (req, res) => {
+  try {
+    const allWarehouses = await Warehouse.find({});
+
+    res.status(200).json({ allWarehouses });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch all warehouses" });
+  }
+};
+
 module.exports = {
   addWarehouse,
   getAllWarehouses,
@@ -301,4 +339,7 @@ module.exports = {
   deleteWarehouse,
   generateDescription,
   uploadImage,
+  deleteWarehouseImage,
+  totalWarehouses,
+  fetchAllWarehouses,
 };

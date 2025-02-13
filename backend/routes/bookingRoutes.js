@@ -6,10 +6,14 @@ const {
   getBookingDetails,
   confirmBooking,
   isBookedByUser,
+  getAllBookings,
+  fetchAdminEarnings,
   // markCompleted,
 } = require("../controllers/bookingController");
 const router = express.Router();
 
+router.get("/all-bookings", getAllBookings);
+router.get("/commission", fetchAdminEarnings);
 router.get("/:bookingId", getBookingDetails);
 router.post("/", createBooking);
 router.post("/getall", getUserBookings);

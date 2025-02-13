@@ -90,15 +90,15 @@ const FarmerDashboard = () => {
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
       {/* Mobile Header */}
-      <header className="md:hidden bg-white shadow-md p-4 flex justify-between items-center">
+      {/* <header className="md:hidden bg-white shadow-md p-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold text-green-600">FarmStore</h1>
         <button onClick={toggleSidebar} className="text-gray-600">
           {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
-      </header>
+      </header> */}
 
       {/* Sidebar */}
-      <aside
+      {/* <aside
         className={`${
           isSidebarOpen ? "block" : "hidden"
         } md:block w-full md:w-64 bg-white shadow-md`}
@@ -133,7 +133,7 @@ const FarmerDashboard = () => {
             Settings
           </a>
         </nav>
-      </aside>
+      </aside> */}
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto p-4 md:p-8">
@@ -269,7 +269,7 @@ const FarmerDashboard = () => {
                       </td>
                       <td>
                         <span
-                          className={`bg-${
+                          className={`text-xs font-medium bg-${
                             upcoming.includes(booking)
                               ? "blue"
                               : current.includes(booking)
@@ -284,10 +284,10 @@ const FarmerDashboard = () => {
                           }-800 px-2 py-1 rounded-full text-sm`}
                         >
                           {upcoming.includes(booking)
-                            ? "upcoming"
+                            ? "Upcoming"
                             : current.includes(booking)
-                            ? "active"
-                            : "completed"}
+                            ? "Active"
+                            : "Completed"}
                         </span>
                       </td>
                     </tr>

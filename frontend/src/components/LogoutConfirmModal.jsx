@@ -6,7 +6,7 @@ const LogoutConfirmModal = ({ isOpen, onClose, onConfirm }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-      <div className="bg-white rounded-lg w-full max-w-md p-6 relative">
+      <div className="bg-white rounded-lg w-full max-w-[90%] md:max-w-md p-6 relative">
         <button
           onClick={onClose}
           className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 transition-colors duration-200"

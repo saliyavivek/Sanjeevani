@@ -13,7 +13,7 @@ const AllReviewsModal = ({ isOpen, onClose, reviews, stats }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-center">
-      <div className="bg-white w-full max-w-5xl min-h-screen md:min-h-0 md:my-8 md:rounded-xl relative">
+      <div className="bg-white w-full max-w-5xl min-h-screen md:min-h-[90%] md:my-8 md:rounded-xl relative">
         {/* Close Button */}
         <button
           onClick={onClose}

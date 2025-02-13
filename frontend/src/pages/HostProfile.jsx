@@ -11,40 +11,6 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate, useParams } from "react-router-dom";
 
 const HostProfile = () => {
-  const host = {
-    name: "Monica",
-    image: "/placeholder.svg?height=200&width=200",
-    yearsHosting: 8,
-    location: "Pushkar, India",
-    verifiedInfo: ["Identity", "Email address", "Phone number"],
-    listings: [
-      {
-        id: 1,
-        type: "Farm stay",
-        title: "Peeli Kothi is ideal 4 shooting with...",
-        images: ["/placeholder.svg?height=300&width=400"],
-        totalImages: 8,
-        currentImage: 7,
-      },
-      {
-        id: 2,
-        type: "Rental unit",
-        title: "1 bhk fully furnished apartment",
-        images: ["/placeholder.svg?height=300&width=400"],
-        totalImages: 6,
-        currentImage: 1,
-      },
-      {
-        id: 3,
-        type: "Farm stay",
-        title: "Blue Mountain Farm",
-        images: ["/placeholder.svg?height=300&width=400"],
-        totalImages: 10,
-        currentImage: 1,
-      },
-    ],
-  };
-
   //   const [userId, setUserId] = useState();
   const [user, setUser] = useState();
   const [warehouses, setWarehouses] = useState([]);

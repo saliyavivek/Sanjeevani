@@ -271,10 +271,10 @@ const UserSettings = () => {
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex items-center gap-2 mb-8">
           <button
             onClick={() => navigate(-1)}
-            className="p-2 rounded-full hover:bg-gray-50 transition-colors duration-200"
+            className="md:p-2 rounded-full hover:bg-gray-100 transition-colors duration-200"
             aria-label="Go back"
           >
             <ArrowLeft className="h-5 w-5 text-gray-600" />
@@ -319,7 +319,7 @@ const UserSettings = () => {
               <h2 className="text-xl font-semibold text-gray-900">
                 {user.name}
               </h2>
-              <p className="text-base text-gray-500">{user.email}</p>
+              <p className="text-base text-gray-600">{user.email}</p>
             </div>
           </div>
         </div>
@@ -404,7 +404,7 @@ const UserSettings = () => {
           <div className="py-4">
             <a
               onClick={() => setIsDeleteModalOpen(true)}
-              className="text-red-600 hover:underline cursor-pointer"
+              className="text-red-600 hover:bg-red-100 rounded p-2 cursor-pointer"
             >
               Delete account
             </a>

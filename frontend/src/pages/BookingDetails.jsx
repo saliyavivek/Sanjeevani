@@ -10,6 +10,7 @@ import {
   Clock,
   Check,
   ArrowLeft,
+  X,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -49,7 +50,14 @@ const Modal = ({ isOpen, onClose, title, children }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md relative">
+        {" "}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
+        >
+          <X className="w-5 h-5" />
+        </button>
         <h3 className="text-xl font-semibold mb-4">{title}</h3>
         {children}
       </div>

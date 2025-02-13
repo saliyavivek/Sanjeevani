@@ -198,7 +198,7 @@ const PhotoGallery = ({ images, onClose }) => {
         <div className="flex items-center gap-2">
           <button
             onClick={handleShare}
-            className={`p-2 hover:bg-gray-100 rounded-full transition-colors ${
+            className={`p-2 hover:bg-gray-100 rounded-md transition-colors ${
               !isMobile && "flex items-center gap-2 px-4 py-2"
             }`}
           >
@@ -207,7 +207,7 @@ const PhotoGallery = ({ images, onClose }) => {
           </button>
           <button
             onClick={handleSave}
-            className={`p-2 hover:bg-gray-100 rounded-full transition-colors ${
+            className={`p-2 hover:bg-gray-100 rounded-md transition-colors ${
               !isMobile && "flex items-center gap-2 px-4 py-2"
             }`}
           >

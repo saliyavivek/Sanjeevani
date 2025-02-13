@@ -8,6 +8,7 @@ const bookingRouter = require("./routes/bookingRoutes");
 const reviewRouter = require("./routes/reviewRoutes");
 const notificationRouter = require("./routes/notificationRoutes");
 const wishlistRouter = require("./routes/wishlistRoutes");
+const authRouter = require("./routes/authRoutes");
 const cors = require("cors");
 const app = express();
 
@@ -24,6 +25,7 @@ app.use("/api/bookings", bookingRouter);
 app.use("/api/reviews", reviewRouter);
 app.use("/api/notifications", notificationRouter);
 app.use("/api/wishlists", wishlistRouter);
+app.use("/api/auth", authRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is up and listening to port ${PORT}`);

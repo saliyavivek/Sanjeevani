@@ -374,7 +374,7 @@ const StorageDetail = () => {
 
       {/* Details Section */}
       <div
-        className={`mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-12 ${
+        className={`mt-6 grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-12 ${
           warehouse.ownerId._id !== user.userId
             ? "border-b pb-6"
             : "lg:grid-cols-2"
@@ -472,7 +472,7 @@ const StorageDetail = () => {
 
         <div className="lg:col-span-1">
           {warehouse.ownerId._id !== user.userId && (
-            <div className="sticky top-8 bg-white p-4 sm:p-6 rounded-xl border shadow-sm">
+            <div className="sticky top-20 bg-white p-4 sm:p-6 rounded-xl border shadow-sm">
               <div className="flex justify-between items-center mb-4 sm:mb-6">
                 <div>
                   <p className="text-xl sm:text-2xl font-semibold">
@@ -525,7 +525,7 @@ const StorageDetail = () => {
 
       {/* Review */}
       <div className="mt-8">
-        <p className="text-2xl font-semibold mb-5 text-center">Reviews</p>
+        <p className="text-2xl font-semibold mb-12 text-center">Reviews</p>
 
         <ReviewModal
           isOpen={isModalOpen}
@@ -543,7 +543,7 @@ const StorageDetail = () => {
         />
 
         {reviews && reviews.length > 0 && (
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-center md:justify-start mt-4">
             <button
               onClick={() => setIsAllReviewModalOpen(true)}
               className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 text-sm sm:text-base"

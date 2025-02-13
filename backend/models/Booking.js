@@ -29,6 +29,16 @@ const bookingSchema = new Schema({
     enum: ["active", "upcoming", "completed", "pending"],
     default: "pending",
   },
+  commission: {
+    type: Number,
+  },
+  ownerEarnings: {
+    type: Number,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const Booking = mongoose.model("Booking", bookingSchema);

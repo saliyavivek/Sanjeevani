@@ -54,6 +54,7 @@ const WarehouseOwnerDashboard = () => {
         }
         const data = await response.json();
         setInfo(data.warehouses);
+        // console.log(info);
       }
     } catch (error) {
       console.log(error);
@@ -110,15 +111,15 @@ const WarehouseOwnerDashboard = () => {
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
       {/* Mobile Header */}
-      <header className="lg:hidden bg-white shadow-md p-4 flex justify-between items-center">
+      {/* <header className="lg:hidden bg-white shadow-md p-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold text-blue-600">FarmStore</h1>
         <button onClick={toggleSidebar} className="text-gray-600">
           {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
-      </header>
+      </header> */}
 
       {/* Sidebar */}
-      <aside
+      {/* <aside
         className={`${
           isSidebarOpen ? "block" : "hidden"
         } lg:block w-full lg:w-64 bg-white shadow-md`}
@@ -146,7 +147,7 @@ const WarehouseOwnerDashboard = () => {
             Settings
           </a>
         </nav>
-      </aside>
+      </aside> */}
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto p-4 lg:p-8">
@@ -200,7 +201,7 @@ const WarehouseOwnerDashboard = () => {
             </h3>
             <p className="text-2xl lg:text-3xl font-bold text-green-600">
               ₹
-              {info
+              {/* {info
                 .filter((listing) => listing.availability === "booked")
                 .reduce((acc, curr) => {
                   const bookings = Array.isArray(curr.bookings)
@@ -220,6 +221,24 @@ const WarehouseOwnerDashboard = () => {
                   );
 
                   return acc + revenueForListing;
+                }, 0)
+                .toLocaleString()} */}
+              {info
+                .filter((warehouse) => warehouse.availability === "booked") // Only consider booked warehouses
+                .reduce((acc, warehouse) => {
+                  const warehouseRevenue = warehouse.bookings.reduce(
+                    (sum, booking) => {
+                      return (
+                        sum +
+                        (booking.ownerEarnings
+                          ? booking.ownerEarnings
+                          : booking.totalPrice)
+                      ); // Add ownerEarnings if present, else add totalPrice
+                    },
+                    0
+                  );
+
+                  return acc + warehouseRevenue; // Add warehouse revenue to total
                 }, 0)
                 .toLocaleString()}
             </p>

@@ -6,7 +6,14 @@ const { formatDate } = require("../utils/formatDate");
 
 const createBooking = async (req, res) => {
   try {
-    const { warehouseId, userId, startDate, endDate, totalPrice } = req.body;
+    const {
+      warehouseId,
+      userId,
+      startDate,
+      endDate,
+      basePrice,
+      commissionFee,
+    } = req.body;
 
     const warehouse = await Warehouse.findById(warehouseId);
     if (!warehouse)
@@ -25,7 +32,9 @@ const createBooking = async (req, res) => {
       userId,
       startDate,
       endDate,
-      totalPrice,
+      totalPrice: basePrice,
+      commission: commissionFee,
+      ownerEarnings: basePrice - commissionFee,
     });
 
     await booking.save();
@@ -249,6 +258,42 @@ const isBookedByUser = async (req, res) => {
 //   }
 // };
 
+const getAllBookings = async (req, res) => {
+  try {
+    const bookings = await Booking.find({})
+      .populate("warehouseId")
+      .populate("userId");
+
+    if (bookings.length === 0) {
+      return res.status(404).json({ message: "no bookings found" });
+    }
+    res.status(200).json(bookings);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+const fetchAdminEarnings = async (req, res) => {
+  try {
+    const bookings = await Booking.find({});
+    let totalCommission = 0;
+
+    if (bookings.length === 0) {
+      return res.status(404).json({ message: "no bookings found" });
+    }
+
+    bookings.forEach((booking) => {
+      if (booking.commission) {
+        totalCommission += booking.commission;
+      }
+    });
+
+    res.status(200).json({ totalCommission });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
 module.exports = {
   createBooking,
   getUserBookings,
@@ -256,5 +301,7 @@ module.exports = {
   getBookingDetails,
   confirmBooking,
   isBookedByUser,
+  getAllBookings,
+  fetchAdminEarnings,
   // markCompleted,
 };

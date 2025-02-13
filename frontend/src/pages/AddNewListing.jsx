@@ -6,7 +6,7 @@ import {
   Popup,
   useMapEvents,
 } from "react-leaflet";
-import { ArrowLeft, Upload } from "lucide-react";
+import { ArrowLeft, CrossIcon, Upload, X } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 import { validateForm } from "../utils/FormValidation";
 import { jwtDecode } from "jwt-decode";
@@ -71,7 +71,7 @@ const AddNewListing = () => {
       console.log(formData);
 
       // Set image preview if needed
-      setImagePreview(existingWarehouse.images[0]);
+      setImagePreview(existingWarehouse.images);
     }
   }, [existingWarehouse]);
 
@@ -143,7 +143,7 @@ const AddNewListing = () => {
 
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result); // Set the image preview
+        setImagePreview((prevImages) => [...prevImages, reader.result]);
       };
       reader.readAsDataURL(file);
     }
@@ -261,6 +261,23 @@ const AddNewListing = () => {
       ...prevState,
       description: generatedDescription,
     }));
+  };
+
+  const handleDeleteImage = async (warehouseId, index) => {
+    const response = await fetch(
+      `http://localhost:8080/api/warehouses/${warehouseId}/delete/${index}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    if (!response.ok) {
+      console.log("Something went wrong");
+      return;
+    }
+    const data = await response.json();
+    showSuccessToast(data.message);
+    setImagePreview((prevImages) => prevImages.filter((_, i) => i !== index));
   };
 
   return (
@@ -462,9 +479,6 @@ const AddNewListing = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Warehouse Images
-                  </label>
                   {/* <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
                     <div className="space-y-1 text-center">
                       <Upload className="mx-auto h-12 w-12 text-gray-400" />
@@ -491,34 +505,56 @@ const AddNewListing = () => {
                       </p>
                     </div>
                   </div> */}
-                  <div
-                    {...getRootProps({
-                      className:
-                        "mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer",
-                    })}
-                  >
-                    <input {...getInputProps()} />
-                    <div className="space-y-1 text-center">
-                      <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                      <p className="text-sm text-gray-600">
-                        Drag & drop your image here, or click to select files
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        PNG, JPG, GIF up to 10MB
-                      </p>
-                    </div>
-                  </div>
                   {imagePreview && (
-                    <div className="mt-4">
+                    <div className="mt-4 mb-4">
                       <h3 className="text-sm font-medium text-gray-700">
                         Image Preview:
                       </h3>
-                      <img
-                        src={imagePreview}
-                        alt="Preview"
-                        className="mt-2 w-full h-auto rounded-lg border border-gray-300"
-                      />
+                      <div className="grid grid-cols-2">
+                        {imagePreview.map((img, index) => (
+                          <div key={index} className="relative">
+                            <img
+                              src={img}
+                              alt={`Preview ${index + 1}`}
+                              className="mt-2 w-full h-auto rounded-lg border border-gray-300"
+                            />
+                            {imagePreview.length > 1 && (
+                              <X
+                                onClick={() =>
+                                  handleDeleteImage(warehouseId, index)
+                                }
+                                className="w-6 h-6 absolute top-4 right-3 hover:text-gray-700 bg-gray-50 hover:bg-gray-100 p-1 rounded-full transition-colors duration-200 cursor-pointer"
+                              />
+                            )}
+                          </div>
+                        ))}
+                      </div>
                     </div>
+                  )}
+                  {!warehouseId && (
+                    <>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Upload Image
+                      </label>
+                      <div
+                        {...getRootProps({
+                          className:
+                            "mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer",
+                        })}
+                      >
+                        <input {...getInputProps()} />
+                        <div className="space-y-1 text-center">
+                          <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                          <p className="text-sm text-gray-600">
+                            Drag & drop your image here, or click to select
+                            files
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            PNG, JPG, GIF up to 10MB
+                          </p>
+                        </div>
+                      </div>
+                    </>
                   )}
                 </div>
 

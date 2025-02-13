@@ -7,6 +7,9 @@ const {
   editWarehouse,
   deleteWarehouse,
   uploadImage,
+  deleteWarehouseImage,
+  totalWarehouses,
+  fetchAllWarehouses,
 } = require("../controllers/warehouseController");
 const router = express.Router();
 const upload = require("../middlewares/multer");
@@ -19,5 +22,8 @@ router.delete("/delete", deleteWarehouse);
 router.post("/listings", getMyListings);
 router.post("/generate-description", generateDescription);
 router.post("/:id/upload", upload.array("image"), uploadImage);
+router.delete("/:id/delete/:index", deleteWarehouseImage);
+router.get("/total-warehouses", totalWarehouses);
+router.get("/all-warehouses", fetchAllWarehouses);
 
 module.exports = router;

@@ -125,6 +125,43 @@ const Signup = () => {
             </div>
 
             <div className="space-y-2">
+              <span className="block text-sm font-medium text-gray-700">
+                I am a
+              </span>
+              <div className="flex space-x-4">
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-1 form-check">
+                    <input
+                      type="radio"
+                      className="form-check-input form-radio text-emerald-600 focus:ring-emerald-500"
+                      name="role"
+                      value="farmer"
+                      checked={role === "farmer"}
+                      onChange={(e) => setRole(e.target.value)}
+                    />
+                    <span className="form-check-label text-md font-medium text-gray-700">
+                      Farmer
+                    </span>
+                  </label>
+                  <label className="flex items-center gap-1 form-check">
+                    <input
+                      type="radio"
+                      className="form-check-input form-radio text-emerald-600 focus:ring-emerald-500"
+                      name="role"
+                      value="owner"
+                      checked={role === "owner"}
+                      onChange={(e) => setRole(e.target.value)}
+                      style={{ accentColor: "#3b82f6" }}
+                    />
+                    <span className="form-check-label text-md font-medium text-gray-700">
+                      Warehouse Owner
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
               <label
                 htmlFor="name"
                 className="block text-sm font-medium text-gray-700"
@@ -234,43 +271,6 @@ const Signup = () => {
                   placeholder="+91 987654321"
                   onChange={(e) => setPhno(e.target.value)}
                 />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <span className="block text-sm font-medium text-gray-700">
-                I am a
-              </span>
-              <div className="flex space-x-4">
-                <div className="flex gap-4">
-                  <label className="flex items-center gap-1 form-check">
-                    <input
-                      type="radio"
-                      className="form-check-input form-radio text-emerald-600 focus:ring-emerald-500"
-                      name="role"
-                      value="farmer"
-                      checked={role === "farmer"}
-                      onChange={(e) => setRole(e.target.value)}
-                    />
-                    <span className="form-check-label text-md font-medium text-gray-700">
-                      Farmer
-                    </span>
-                  </label>
-                  <label className="flex items-center gap-1 form-check">
-                    <input
-                      type="radio"
-                      className="form-check-input form-radio text-emerald-600 focus:ring-emerald-500"
-                      name="role"
-                      value="owner"
-                      checked={role === "owner"}
-                      onChange={(e) => setRole(e.target.value)}
-                      style={{ accentColor: "#3b82f6" }}
-                    />
-                    <span className="form-check-label text-md font-medium text-gray-700">
-                      Warehouse Owner
-                    </span>
-                  </label>
-                </div>
               </div>
             </div>
 

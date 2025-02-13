@@ -23,6 +23,8 @@ import "./App.css";
 import HostProfile from "./pages/HostProfile";
 import FarmerProfile from "./pages/FarmerProfile";
 import Wishlists from "./pages/WishLists";
+import GoogleRedirect from "./pages/GoogleRedirect";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const AppRoutes = () => {
   const location = useLocation(); // Get the current location
@@ -55,6 +57,8 @@ const AppRoutes = () => {
         <Route path="/users/o/show/:id" element={<HostProfile />} />
         <Route path="/users/f/show/:id" element={<FarmerProfile />} />
         <Route path="/wishlists" element={<Wishlists />} />
+        <Route path="/auth" element={<GoogleRedirect />} />
+        <Route path="/admin" element={<AdminDashboard />} />
       </Routes>
     </>
   );

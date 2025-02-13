@@ -143,7 +143,7 @@ const ReviewList = ({ reviews, onEditReview, onDeleteReview }) => {
     </div>
   ) : (
     <div className="flex justify-center text-gray-600">
-      <p>No reviews yet. It will appear below when available.</p>
+      <p>Oops! No reviews yet. Be the first one to review.</p>
     </div>
   );
 };

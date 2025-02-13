@@ -104,8 +104,8 @@ const NotificationList = () => {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md max-w-2xl mx-auto">
-      <div className="flex items-center justify-between p-4 border-b border-gray-200">
+    <div className="md:bg-white rounded-lg md:shadow-md max-w-2xl mx-auto">
+      <div className="flex items-center justify-between p-2 md:p-4 border-b border-gray-200">
         <button
           onClick={() => navigate(-1)}
           className="p-2 rounded-full hover:bg-gray-50 transition-colors duration-200"
@@ -131,7 +131,7 @@ const NotificationList = () => {
           </p>
         </div>
       ) : (
-        <div className="max-h-[calc(100vh-200px)] overflow-y-auto">
+        <div className="max-h-screen md:max-h-[calc(100vh-200px)] overflow-y-auto">
           {notifications.length > 0 ? (
             notifications.map((notification) => (
               <NotificationItem

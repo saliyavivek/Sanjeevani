@@ -77,7 +77,7 @@ export default function BrowseStorage() {
           </div>
           <div>
             <button
-              className="flex justify-center items-center mb-8 gap-2 hover:bg-gray-100 rounded-md h-10 px-1 md:px-3 py-2"
+              className="flex justify-center items-center mb-8 gap-2 hover:bg-gray-100 rounded-md h-10 px-1 md:px-5 py-2"
               onClick={() => setIsFilterModalOpen(true)}
             >
               <SlidersHorizontal className="w-5 h-5" />

@@ -9,6 +9,8 @@ const {
   requestPasswordReset,
   resetPassword,
   deleteAccount,
+  totalUsers,
+  fetchAllUsers,
 } = require("../controllers/userController");
 const upload = require("../middlewares/multer");
 
@@ -20,5 +22,7 @@ router.post("/signin", signin);
 router.post("/request-password-reset", requestPasswordReset);
 router.post("/reset-password", resetPassword);
 router.post("/delete-account", deleteAccount);
+router.get("/total-users", totalUsers);
+router.get("/all-users", fetchAllUsers);
 
 module.exports = router;
