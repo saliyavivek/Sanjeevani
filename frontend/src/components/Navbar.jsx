@@ -31,6 +31,10 @@ const Navbar = () => {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+    // Only prevent scroll when showing full-screen menu for logged-in users
+    if (user) {
+      document.body.style.overflow = !isMenuOpen ? "hidden" : "unset";
+    }
   };
 
   useEffect(() => {
@@ -69,7 +73,7 @@ const Navbar = () => {
 
   useEffect(() => {
     fetchUserDetails();
-  }, [userId]);
+  }, [userId, API_BASE_URL]); // Added API_BASE_URL to dependencies
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -233,7 +237,7 @@ const Navbar = () => {
     };
 
     return () => eventSource.close();
-  }, [userId]);
+  }, [userId, API_BASE_URL]); // Added API_BASE_URL to dependencies
 
   const handleGoogleCallback = () => {
     window.location.href = `${API_BASE_URL}/auth/google`;
@@ -381,11 +385,7 @@ const Navbar = () => {
           {isMenuOpen ? (
             <X className="h-5 w-5 text-gray-600" />
           ) : user ? (
-            <div
-              className={`relative ${
-                hasUnread ? "profile-pic green-dot-mobile" : ""
-              }`}
-            >
+            <div className="relative">
               <img
                 src={user.avatar || "/placeholder.svg"}
                 alt={user.name[0].toUpperCase()}
@@ -397,102 +397,119 @@ const Navbar = () => {
           )}
         </button>
 
-        {/* Mobile Menu - Dropdown */}
+        {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="absolute top-16 right-0 w-[100%] bg-white shadow-b-lg overflow-hidden md:hidden z-50">
-            {/* Mobile Menu Content */}
-            <div className="max-h-[calc(100vh-5rem)] overflow-y-auto">
-              {user && (
-                <div className="p-4 border-b">
-                  <a
-                    href={`/users/${user.role === "farmer" ? "f" : "o"}/show/${
-                      user._id
-                    }`}
-                  >
-                    <div className="flex items-center space-x-3">
-                      <img
-                        src={user.avatar || "/placeholder.svg"}
-                        alt={user.name[0].toUpperCase()}
-                        className="w-10 h-10 rounded-full object-cover"
-                      />
-                      <div>
-                        <p className="font-medium text-gray-900">{user.name}</p>
-                        <p className="text-xs text-gray-500">{user.email}</p>
+          <>
+            {user ? (
+              // Full-screen menu for logged-in users
+              <div className="fixed inset-0 z-50 bg-white md:hidden">
+                <div className="flex flex-col h-full">
+                  {/* Header */}
+                  <div className="flex items-center justify-between p-4 border-b">
+                    <a
+                      href="/"
+                      className="flex items-center"
+                      onClick={toggleMenu}
+                    >
+                      <Leaf className="h-8 w-8 text-emerald-600" />
+                      <span className="ml-1 text-2xl font-bold text-emerald-700">
+                        Sanjeevani
+                      </span>
+                    </a>
+                    <button
+                      onClick={toggleMenu}
+                      className="p-2 text-gray-700 hover:text-emerald-600 transition-colors"
+                    >
+                      <X className="h-6 w-6" />
+                    </button>
+                  </div>
+
+                  {/* User Profile */}
+                  <div className="p-4 border-b">
+                    <a
+                      href={`/users/${
+                        user.role === "farmer" ? "f" : "o"
+                      }/show/${user._id}`}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <img
+                          src={user.avatar || "/placeholder.svg"}
+                          alt={user.name[0].toUpperCase()}
+                          className="w-12 h-12 rounded-full object-cover"
+                        />
+                        <div>
+                          <p className="font-medium text-gray-900">
+                            {user.name}
+                          </p>
+                          <p className="text-sm text-gray-500">{user.email}</p>
+                        </div>
                       </div>
-                    </div>
-                  </a>
-                </div>
-              )}
+                    </a>
+                  </div>
 
-              <div className="py-2">
-                {/* Role-based Navigation */}
-                {user?.role === "farmer" && (
-                  <>
-                    <a
-                      href="/farmer/dashboard"
-                      className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      onClick={toggleMenu}
-                    >
-                      <LayoutDashboardIcon className="w-4 h-4" />
-                      <span>My Dashboard</span>
-                    </a>
-                    <a
-                      href="/warehouses/search"
-                      className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      onClick={toggleMenu}
-                    >
-                      <SearchIcon className="w-4 h-4" />
-                      <span>Search Storage</span>
-                    </a>
-                    <a
-                      href="/bookings"
-                      className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      onClick={toggleMenu}
-                    >
-                      <WarehouseIcon className="w-4 h-4" />
-                      <span>My Bookings</span>
-                    </a>
-                  </>
-                )}
-
-                {user?.role === "owner" && (
-                  <>
-                    <a
-                      href="/owner/dashboard"
-                      className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      onClick={toggleMenu}
-                    >
-                      <LayoutDashboardIcon className="w-4 h-4" />
-                      <span>My Dashboard</span>
-                    </a>
-                    <a
-                      href="/listings"
-                      className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      onClick={toggleMenu}
-                    >
-                      <UploadIcon className="w-4 h-4" />
-                      <span>Manage Listings</span>
-                    </a>
-                  </>
-                )}
-
-                {/* Common Navigation Items */}
-                {user ? (
-                  <>
+                  {/* Navigation */}
+                  <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                    {user.role === "farmer" ? (
+                      <>
+                        <a
+                          href="/farmer/dashboard"
+                          className="flex items-center space-x-3 p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+                          onClick={toggleMenu}
+                        >
+                          <LayoutDashboardIcon className="w-5 h-5" />
+                          <span>My Dashboard</span>
+                        </a>
+                        <a
+                          href="/warehouses/search"
+                          className="flex items-center space-x-3 p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+                          onClick={toggleMenu}
+                        >
+                          <SearchIcon className="w-5 h-5" />
+                          <span>Search Storage</span>
+                        </a>
+                        <a
+                          href="/bookings"
+                          className="flex items-center space-x-3 p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+                          onClick={toggleMenu}
+                        >
+                          <WarehouseIcon className="w-5 h-5" />
+                          <span>My Bookings</span>
+                        </a>
+                      </>
+                    ) : (
+                      <>
+                        <a
+                          href="/owner/dashboard"
+                          className="flex items-center space-x-3 p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+                          onClick={toggleMenu}
+                        >
+                          <LayoutDashboardIcon className="w-5 h-5" />
+                          <span>My Dashboard</span>
+                        </a>
+                        <a
+                          href="/listings"
+                          className="flex items-center space-x-3 p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+                          onClick={toggleMenu}
+                        >
+                          <UploadIcon className="w-5 h-5" />
+                          <span>Manage Listings</span>
+                        </a>
+                      </>
+                    )}
                     <a
                       href="/wishlists"
-                      className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="flex items-center space-x-3 p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
                       onClick={toggleMenu}
                     >
-                      <Heart className="w-4 h-4" />
+                      <Heart className="w-5 h-5" />
                       <span>Wishlists</span>
                     </a>
                     <a
                       href="/notifications"
-                      className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="flex items-center space-x-3 p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
                       onClick={toggleMenu}
                     >
-                      <Bell className="w-4 h-4" />
+                      <Bell className="w-5 h-5" />
                       <span>Notifications</span>
                       {hasUnread && (
                         <span className="w-2 h-2 bg-emerald-500 rounded-full ml-auto" />
@@ -500,56 +517,63 @@ const Navbar = () => {
                     </a>
                     <a
                       href="/settings"
-                      className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="flex items-center space-x-3 p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
                       onClick={toggleMenu}
                     >
-                      <Settings className="w-4 h-4" />
+                      <Settings className="w-5 h-5" />
                       <span>Settings</span>
                     </a>
-                    <div className="border-t mt-2">
-                      <button
-                        onClick={() => {
-                          toggleMenu();
-                          setIsLogoutModalOpen(true);
-                        }}
-                        className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        <span>Logout</span>
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  <div className="p-4 space-y-2">
+                  </div>
+
+                  {/* Logout Button */}
+                  <div className="border-t p-4">
                     <button
-                      onClick={handleGoogleCallback}
-                      className="flex items-center justify-center w-full border border-gray-300 rounded-lg shadow-sm px-4 py-2 text-sm font-medium hover:bg-gray-50"
+                      onClick={() => {
+                        toggleMenu();
+                        setIsLogoutModalOpen(true);
+                      }}
+                      className="flex items-center space-x-3 p-2 text-gray-700 hover:bg-gray-100 rounded-lg w-full"
                     >
-                      <svg className="h-5 w-5 mr-2" viewBox="0 0 48 48">
-                        <path
-                          fill="#EA4335"
-                          d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
-                        />
-                        <path
-                          fill="#4285F4"
-                          d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
-                        />
-                        <path
-                          fill="#FBBC05"
-                          d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
-                        />
-                        <path
-                          fill="#34A853"
-                          d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
-                        />
-                      </svg>
-                      Continue with Google
+                      <LogOut className="w-5 h-5" />
+                      <span>Logout</span>
                     </button>
-                    <div className="flex items-center my-4">
-                      <div className="flex-1 border-t"></div>
-                      <span className="px-4 text-sm text-gray-500">or</span>
-                      <div className="flex-1 border-t"></div>
-                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              // Dropdown menu for non-logged-in users
+              <div className="absolute top-16 right-0 w-[100%] bg-white shadow-b-lg overflow-hidden md:hidden z-50">
+                <div className="p-4 space-y-4">
+                  <button
+                    onClick={handleGoogleCallback}
+                    className="flex items-center justify-center w-full border border-gray-300 rounded-lg shadow-sm px-4 py-2 text-sm font-medium hover:bg-gray-50"
+                  >
+                    <svg className="h-5 w-5 mr-2" viewBox="0 0 48 48">
+                      <path
+                        fill="#EA4335"
+                        d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
+                      />
+                      <path
+                        fill="#4285F4"
+                        d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
+                      />
+                      <path
+                        fill="#FBBC05"
+                        d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
+                      />
+                      <path
+                        fill="#34A853"
+                        d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
+                      />
+                    </svg>
+                    Continue with Google
+                  </button>
+                  <div className="flex items-center">
+                    <div className="flex-1 border-t"></div>
+                    <span className="px-4 text-sm text-gray-500">or</span>
+                    <div className="flex-1 border-t"></div>
+                  </div>
+                  <div className="space-y-2">
                     <a
                       href="/signin"
                       className="block w-full text-center py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
@@ -565,10 +589,10 @@ const Navbar = () => {
                       Sign up
                     </a>
                   </div>
-                )}
+                </div>
               </div>
-            </div>
-          </div>
+            )}
+          </>
         )}
       </div>
 
