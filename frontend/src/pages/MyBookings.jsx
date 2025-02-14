@@ -36,7 +36,7 @@ const BookingCard = ({ booking, navigate }) => (
     className="flex flex-col bg-white overflow-hidden cursor-pointer group"
   >
     {/* Image Container */}
-    <div className="p-3">
+    <div className="p-1 lg:p-3">
       <div className="relative aspect-[1/1] overflow-hidden border-[6px] border-white rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
         <img
           src={
@@ -53,7 +53,7 @@ const BookingCard = ({ booking, navigate }) => (
     </div>
 
     {/* Content */}
-    <div className="px-4 py-3 flex flex-col flex-1">
+    <div className="px-2 lg:px-4 py-3 flex flex-col flex-1">
       <div className="flex justify-between items-start mb-2">
         <h3 className="text-lg font-medium text-gray-900">
           {booking.warehouseId.name}

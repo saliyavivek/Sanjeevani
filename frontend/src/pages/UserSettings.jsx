@@ -396,7 +396,7 @@ const UserSettings = () => {
           <div className="py-4">
             <a
               onClick={() => setIsDeleteModalOpen(true)}
-              className="text-red-600 hover:bg-red-100 rounded p-2 cursor-pointer"
+              className="text-red-600 hover:bg-red-100 rounded md:p-2 cursor-pointer"
             >
               Delete account
             </a>

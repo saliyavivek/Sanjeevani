@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 const Wishlists = () => {
   const [userId, setUserId] = useState(null);
   const [wishlists, setWishlists] = useState([]);
+  const [loading, setLoading] = useState(true);
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
 
@@ -34,9 +35,9 @@ const Wishlists = () => {
         return;
       }
       const data = await response.json();
-      console.log(data);
-
+      // console.log(data);
       setWishlists(data.wishlist);
+      setLoading(false);
     } catch (error) {
       console.log("Couldn't wishlist this warehouse currently.");
     }
@@ -73,6 +74,14 @@ const Wishlists = () => {
       // showErrorToast("Couldn't remove this warehouse from wishlist.");
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-[100vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

@@ -153,7 +153,7 @@ const BookingDetails = () => {
 
   const handleCancel = async () => {
     try {
-      const response = await fetch(`/bookings/${booking._id}`, {
+      const response = await fetch(`${API_BASE_URL}/bookings/${booking._id}`, {
         method: "DELETE",
         body: JSON.stringify({
           userId,
@@ -164,9 +164,10 @@ const BookingDetails = () => {
       });
       if (response.ok) {
         const data = await response.json();
-        console.log(data.message);
+        // console.log(data.message);
         // setBooking({ ...booking, status: "cancelled" });
         setIsCancelModalOpen(false);
+        showSuccessToast("Your booking has been cancelled.");
         navigate("/bookings");
       }
     } catch (error) {
@@ -206,10 +207,10 @@ const BookingDetails = () => {
   return (
     <div className="min-h-screen bg-white-50 py-12">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex items-center gap-2 md:gap-4 mb-8">
           <button
             onClick={() => navigate(-1)}
-            className="p-2 rounded-full hover:bg-gray-50 transition-colors duration-200"
+            className="md:p-2 rounded-full hover:bg-gray-50 transition-colors duration-200"
             aria-label="Go back"
           >
             <ArrowLeft className="h-5 w-5 text-gray-600" />
@@ -221,9 +222,9 @@ const BookingDetails = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="md:col-span-2">
             <div className="bg-white rounded-lg overflow-hidden">
-              <div className="p-6">
+              <div className="md:p-6">
                 <div className="flex justify-between items-start mb-4">
-                  <h2 className="text-2xl font-semibold text-gray-900">
+                  <h2 className="text-xl md:text-2xl font-semibold text-gray-900">
                     {booking.warehouseId.name}
                   </h2>
                   {/* {new Date(booking.startDate) > new Date() ? (
@@ -265,7 +266,7 @@ const BookingDetails = () => {
                   </div>
                 </div>
               </div>
-              <div className="border-t border-gray-200 mt-6 pt-6 px-6 pb-6">
+              <div className="border-t border-gray-200 mt-6 pt-6 md:px-6 md:pb-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <img
@@ -295,7 +296,7 @@ const BookingDetails = () => {
           </div>
 
           <div>
-            <div className="bg-white rounded-lg p-6">
+            <div className="bg-white rounded-lg md:p-6">
               <h3 className="text-xl font-semibold mb-4">Price Details</h3>
               <div className="flex justify-between items-center mb-4">
                 <span>Total Price</span>

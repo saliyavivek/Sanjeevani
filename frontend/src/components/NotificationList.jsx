@@ -7,17 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { showErrorToast, showSuccessToast } from "./toast";
 
 const NotificationList = () => {
-  const [notifications, setNotifications] = useState([
-    {
-      content:
-        "Your booking for warehouse Grand Axis Depot has been confirmed.",
-      createdAt: "2024-12-11T15:53:27.807Z",
-      isRead: false,
-      type: "booking",
-      userId: "674b4373a3eb39ec05f508fd",
-      _id: "6759b577688aabf90553e665",
-    },
-  ]);
+  const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState(null);
   const token = useAuth();
@@ -96,8 +86,8 @@ const NotificationList = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      <div className="flex justify-center items-center h-[100vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
       </div>
     );
   }
@@ -105,16 +95,18 @@ const NotificationList = () => {
   return (
     <div className="md:bg-white rounded-lg md:shadow-md max-w-2xl mx-auto">
       <div className="flex items-center justify-between p-2 md:p-4 border-b border-gray-200">
-        <button
-          onClick={() => navigate(-1)}
-          className="p-2 rounded-full hover:bg-gray-50 transition-colors duration-200"
-          aria-label="Go back"
-        >
-          <ArrowLeft className="h-5 w-5 text-gray-600" />
-        </button>
-        <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 flex items-center">
-          Notifications
-        </h2>
+        <div className="flex items-center md:gap-6">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 rounded-full hover:bg-gray-50 transition-colors duration-200"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="h-5 w-5 text-gray-600" />
+          </button>
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 flex items-center">
+            Notifications
+          </h2>
+        </div>
         <button
           className="text-xs sm:text-sm font-semibold text-gray-600 hover:text-gray-700"
           onClick={handleMarkAllAsRead}
