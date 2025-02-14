@@ -12,12 +12,13 @@ export default function BrowseStorage() {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [filteredWarehouses, setFilteredWarehouses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
 
   const fetchStorages = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:8080/api/warehouses/");
+      const response = await fetch(`${API_BASE_URL}/warehouses/`);
       if (response.ok) {
         const data = await response.json();
         setWarehouses(data.warehouses);

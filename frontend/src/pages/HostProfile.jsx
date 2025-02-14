@@ -17,9 +17,10 @@ const HostProfile = () => {
   const verifiedInfo = ["Email address", "Phone number"];
   const navigate = useNavigate();
   const { id } = useParams();
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const fetchPersonalDetails = async () => {
-    const response = await fetch("http://localhost:8080/api/users/", {
+    const response = await fetch(`${API_BASE_URL}/users/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -33,18 +34,15 @@ const HostProfile = () => {
   };
 
   const fetchListings = async () => {
-    const response = await fetch(
-      "http://localhost:8080/api/warehouses/listings",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          user: id,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await fetch(`${API_BASE_URL}/warehouses/listings`, {
+      method: "POST",
+      body: JSON.stringify({
+        user: id,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     if (response.ok) {
       const data = await response.json();
       setWarehouses(data.warehouses);

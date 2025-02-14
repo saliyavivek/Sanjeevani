@@ -30,6 +30,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const profileDropdownRef = useRef(null);
   const [hasUnread, setHasUnread] = useState(false);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -54,7 +55,7 @@ const Navbar = () => {
   const fetchUserDetails = async () => {
     try {
       if (userId) {
-        const response = await fetch("http://localhost:8080/api/users", {
+        const response = await fetch(`${API_BASE_URL}/users`, {
           method: "POST",
           body: JSON.stringify({ userId }),
           headers: { "Content-Type": "application/json" },
@@ -228,7 +229,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const eventSource = new EventSource(
-      `http://localhost:8080/api/notifications/unread/${userId}`
+      `${API_BASE_URL}/notifications/unread/${userId}`
     );
 
     eventSource.onmessage = (event) => {
@@ -240,7 +241,7 @@ const Navbar = () => {
   }, [userId]);
 
   const handleGoogleCallback = () => {
-    window.location.href = "http://localhost:8080/api/auth/google";
+    window.location.href = `${API_BASE_URL}/auth/google`;
   };
 
   return (

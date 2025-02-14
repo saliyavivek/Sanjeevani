@@ -5,6 +5,7 @@ import { showSuccessToast } from "./toast";
 const PasswordResetModal = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,7 +15,7 @@ const PasswordResetModal = ({ isOpen, onClose }) => {
       console.log(email);
 
       const response = await fetch(
-        "http://localhost:8080/api/users/request-password-reset",
+        `${API_BASE_URL}/users/request-password-reset`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

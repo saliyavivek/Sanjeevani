@@ -13,13 +13,14 @@ const Signin = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     const loadingToastId = showLoadingToast("Logging in the user...");
-    const response = await fetch("http://localhost:8080/api/users/signin", {
+    const response = await fetch(`${API_BASE_URL}/users/signin`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

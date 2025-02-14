@@ -4,10 +4,11 @@ import { Search, Edit, Trash } from "lucide-react";
 const UserManagement = () => {
   const [allUsers, setAllUsers] = useState([]);
   const [users, setUsers] = useState([]);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const fetchAllUsers = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/users/all-users");
+      const response = await fetch(`${API_BASE_URL}/users/all-users`);
       if (!response.ok) {
         console.log("Error while fetching all users.");
         return;

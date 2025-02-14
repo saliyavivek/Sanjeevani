@@ -20,7 +20,7 @@ const { v2: cloudinary } = require("cloudinary");
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  "http://localhost:8080/api/auth/google/callback"
+  `${process.env.BACKEND_URL}/api/auth/google/callback`
 );
 
 const getGoogleAuthURL = (req, res) => {
@@ -83,7 +83,7 @@ const handleGoogleCallback = async (req, res) => {
         process.env.JWT_SECRET
       );
       res.redirect(
-        `http://localhost:5173/auth?token=${token}&role=${user.role}`
+        `${process.env.FRONTEND_URL}/auth?token=${token}&role=${user.role}`
       );
     } else {
       const token = jwt.sign(
@@ -97,7 +97,7 @@ const handleGoogleCallback = async (req, res) => {
         process.env.JWT_SECRET
       );
       res.redirect(
-        `http://localhost:5173/auth?token=${token}&role=${user.role}`
+        `${process.env.FRONTEND_URL}/auth?token=${token}&role=${user.role}`
       );
     }
 

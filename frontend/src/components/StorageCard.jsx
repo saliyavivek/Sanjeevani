@@ -18,6 +18,7 @@ const StorageCard = ({ warehouse, onDelete }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0); // New state
   const [user, setUser] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const handleEdit = (e) => {
     e.stopPropagation();
@@ -34,14 +35,11 @@ const StorageCard = ({ warehouse, onDelete }) => {
     setIsLoading(true);
     const loadingToastId = showLoadingToast("Deleting your warehouse...");
     try {
-      const response = await fetch(
-        "http://localhost:8080/api/warehouses/delete",
-        {
-          method: "DELETE",
-          body: JSON.stringify({ warehouseId: warehouse._id }),
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/warehouses/delete`, {
+        method: "DELETE",
+        body: JSON.stringify({ warehouseId: warehouse._id }),
+        headers: { "Content-Type": "application/json" },
+      });
 
       if (response.ok) {
         const data = await response.json();

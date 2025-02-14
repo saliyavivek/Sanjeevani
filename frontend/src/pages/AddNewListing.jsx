@@ -47,6 +47,7 @@ const AddNewListing = () => {
       country: "",
     },
   });
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     if (existingWarehouse) {
@@ -207,7 +208,7 @@ const AddNewListing = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/warehouses/${warehouseId ? "edit" : "add"}`,
+        `${API_BASE_URL}/warehouses/${warehouseId ? "edit" : "add"}`,
         {
           method: warehouseId ? "PUT" : "POST",
           body: formDataToSend,
@@ -265,7 +266,7 @@ const AddNewListing = () => {
 
   const handleDeleteImage = async (warehouseId, index) => {
     const response = await fetch(
-      `http://localhost:8080/api/warehouses/${warehouseId}/delete/${index}`,
+      `${API_BASE_URL}/warehouses/${warehouseId}/delete/${index}`,
       {
         method: "DELETE",
       }

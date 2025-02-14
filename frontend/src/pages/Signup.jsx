@@ -26,6 +26,7 @@ const Signup = () => {
   const [profilePicture, setProfilePicture] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef(null);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -47,7 +48,7 @@ const Signup = () => {
       return;
     }
 
-    const response = await fetch("http://localhost:8080/api/users/signup", {
+    const response = await fetch(`${API_BASE_URL}/users/signup`, {
       method: "POST",
       body: formData,
     });

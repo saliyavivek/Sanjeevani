@@ -16,6 +16,7 @@ const ResetPassword = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const validatePassword = (password) => {
     const hasMinLength = password.length >= 6;
@@ -64,19 +65,16 @@ const ResetPassword = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(
-        "http://localhost:8080/api/users/reset-password",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            token,
-            newPassword: formData.password,
-          }),
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/users/reset-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token,
+          newPassword: formData.password,
+        }),
+      });
 
       const data = await response.json();
 

@@ -2,12 +2,11 @@ import { useEffect, useState } from "react";
 
 const RecentBookings = () => {
   const [bookings, setBookings] = useState([]);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const fetchAllBookings = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:8080/api/bookings/all-bookings"
-      );
+      const response = await fetch(`${API_BASE_URL}/bookings/all-bookings`);
       if (!response.ok) {
         console.log("Error while fetching all bookings.");
         return;

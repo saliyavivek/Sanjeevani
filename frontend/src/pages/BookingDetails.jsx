@@ -76,6 +76,7 @@ const BookingDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   // const token = useAuth();
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   // console.log(token);
   useEffect(() => {
@@ -95,7 +96,7 @@ const BookingDetails = () => {
 
   const fetchBookingDetails = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/api/bookings/${id}`);
+      const response = await fetch(`${API_BASE_URL}/bookings/${id}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -122,7 +123,7 @@ const BookingDetails = () => {
   }
 
   const handlePayment = async () => {
-    const response = await fetch(`http://localhost:8080/api/bookings/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/bookings/${id}`, {
       method: "PUT",
       body: JSON.stringify({
         warehouseId,
@@ -152,18 +153,15 @@ const BookingDetails = () => {
 
   const handleCancel = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/bookings/${booking._id}`,
-        {
-          method: "DELETE",
-          body: JSON.stringify({
-            userId,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`/bookings/${booking._id}`, {
+        method: "DELETE",
+        body: JSON.stringify({
+          userId,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       if (response.ok) {
         const data = await response.json();
         console.log(data.message);

@@ -35,6 +35,7 @@ const UserSettings = () => {
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -58,7 +59,7 @@ const UserSettings = () => {
     try {
       // console.log(userId);
       if (userId) {
-        const response = await fetch("http://localhost:8080/api/users", {
+        const response = await fetch(`${API_BASE_URL}/users`, {
           method: "POST",
           body: JSON.stringify({
             userId,
@@ -100,13 +101,10 @@ const UserSettings = () => {
         formData.append("avatar", file);
 
         // API request to upload the profile picture
-        const response = await fetch(
-          `http://localhost:8080/api/users/${userId}/avatar`,
-          {
-            method: "PUT",
-            body: formData,
-          }
-        );
+        const response = await fetch(`${API_BASE_URL}/users/${userId}/avatar`, {
+          method: "PUT",
+          body: formData,
+        });
 
         if (!response.ok) {
           throw new Error("Failed to upload profile picture");
@@ -138,16 +136,13 @@ const UserSettings = () => {
       // Send only the updated field to the backend
       const updatedField = { [field]: value };
 
-      const response = await fetch(
-        `http://localhost:8080/api/users/${userId}`,
-        {
-          method: "PATCH", // PATCH is ideal for partial updates
-          body: JSON.stringify(updatedField),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+        method: "PATCH", // PATCH is ideal for partial updates
+        body: JSON.stringify(updatedField),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
         throw new Error("Failed to update user details.");
@@ -238,18 +233,15 @@ const UserSettings = () => {
     setIsDeleteModalOpen(false);
 
     try {
-      const response = await fetch(
-        "http://localhost:8080/api/users/delete-account",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId,
-          }),
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/users/delete-account`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId,
+        }),
+      });
       if (!response.ok) {
         console.log("Error while deleting the user.");
         return;

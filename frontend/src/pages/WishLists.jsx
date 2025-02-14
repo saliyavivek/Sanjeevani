@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 const Wishlists = () => {
   const [userId, setUserId] = useState(null);
   const [wishlists, setWishlists] = useState([]);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,12 +25,10 @@ const Wishlists = () => {
   }, []);
 
   const fetchWishlists = async () => {
-    console.log("inside fetch");
+    // console.log("inside fetch");
 
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/wishlists/get/${userId}`
-      );
+      const response = await fetch(`${API_BASE_URL}/wishlists/get/${userId}`);
       if (!response.ok) {
         console.log("Couldn't fetch wishlists currently.");
         return;
@@ -50,7 +49,7 @@ const Wishlists = () => {
   const handleRemoveWishlist = async (wishlistId) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/wishlists/remove/${wishlistId}`,
+        `${API_BASE_URL}/wishlists/remove/${wishlistId}`,
         {
           method: "DELETE",
           headers: {

@@ -8,12 +8,13 @@ const AIDescriptionGenerator = ({
   onDescriptionGenerated,
 }) => {
   const [isGenerating, setIsGenerating] = useState(false);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const generateDescription = async () => {
     setIsGenerating(true);
     try {
       const response = await fetch(
-        "http://localhost:8080/api/warehouses/generate-description",
+        `${API_BASE_URL}/warehouses/generate-description`,
         {
           method: "POST",
           headers: {

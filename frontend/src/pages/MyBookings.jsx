@@ -99,20 +99,18 @@ const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("current");
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const fetchBookings = async () => {
     if (token) {
       const { userId } = jwtDecode(token);
-      const response = await fetch(
-        "http://localhost:8080/api/bookings/getall",
-        {
-          method: "POST",
-          body: JSON.stringify({ userId }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/bookings/getall`, {
+        method: "POST",
+        body: JSON.stringify({ userId }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       if (response.ok) {
         const data = await response.json();
         // console.log(data);

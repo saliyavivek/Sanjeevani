@@ -20,6 +20,7 @@ const WarehouseOwnerDashboard = () => {
   const [userId, setUserId] = useState(null);
   const [info, setInfo] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     if (token) {
@@ -36,18 +37,15 @@ const WarehouseOwnerDashboard = () => {
   const fetchOwnerInfo = async () => {
     try {
       if (userId) {
-        const response = await fetch(
-          "http://localhost:8080/api/warehouses/listings",
-          {
-            method: "POST",
-            body: JSON.stringify({
-              user: userId,
-            }),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await fetch(`${API_BASE_URL}/warehouses/listings`, {
+          method: "POST",
+          body: JSON.stringify({
+            user: userId,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         if (!response.ok) {
           console.log("Error while fetching user bookings.");
           return;

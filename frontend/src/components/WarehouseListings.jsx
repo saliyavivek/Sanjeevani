@@ -2,51 +2,12 @@ import { useEffect, useState } from "react";
 import { Search, Edit, Trash, MapPin } from "lucide-react";
 
 const WarehouseListings = () => {
-  // const [warehouses, setWarehouses] = useState([
-  //   {
-  //     id: 1,
-  //     name: "Green Acres Storage",
-  //     location: "Springfield, IL",
-  //     capacity: "10,000 sq ft",
-  //     occupancy: "80%",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Harvest Haven",
-  //     location: "Bloomington, IN",
-  //     capacity: "8,000 sq ft",
-  //     occupancy: "65%",
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Crop Keeper",
-  //     location: "Des Moines, IA",
-  //     capacity: "15,000 sq ft",
-  //     occupancy: "90%",
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "Farm Fresh Storage",
-  //     location: "Madison, WI",
-  //     capacity: "12,000 sq ft",
-  //     occupancy: "75%",
-  //   },
-  //   {
-  //     id: 5,
-  //     name: "Silo Solutions",
-  //     location: "Columbus, OH",
-  //     capacity: "20,000 sq ft",
-  //     occupancy: "85%",
-  //   },
-  // ]);
-
   const [warehouses, setWarehouses] = useState([]);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const fetchAllWarehouses = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:8080/api/warehouses/all-warehouses"
-      );
+      const response = await fetch(`${API_BASE_URL}/warehouses/all-warehouses`);
       if (!response.ok) {
         console.log("Error while fetching all warehouses.");
         return;

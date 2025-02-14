@@ -35,6 +35,7 @@ const StorageDetail = () => {
   const [booked, setIsBooked] = useState(false);
   const [isAllReviewModalOpen, setIsAllReviewModalOpen] = useState(false);
   const [reviewStats, setReviewStats] = useState({});
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
 
   const fetchCurrentUser = async () => {
@@ -52,19 +53,16 @@ const StorageDetail = () => {
   };
 
   const fetchBookingStatus = async () => {
-    const response = await fetch(
-      "http://localhost:8080/api/bookings/isBookedByUser",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          userId: user.userId,
-          warehouseId: warehouse._id,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await fetch(`${API_BASE_URL}/bookings/isBookedByUser`, {
+      method: "POST",
+      body: JSON.stringify({
+        userId: user.userId,
+        warehouseId: warehouse._id,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     const data = await response.json();
 
     setIsBooked(data.message === true);
@@ -81,8 +79,8 @@ const StorageDetail = () => {
 
   const handleSubmit = async (reviewData) => {
     const url = editingReview
-      ? `http://localhost:8080/api/reviews/${editingReview._id}`
-      : "http://localhost:8080/api/reviews/";
+      ? `${API_BASE_URL}/reviews/${editingReview._id}`
+      : `${API_BASE_URL}/reviews/`;
     const method = editingReview ? "PUT" : "POST";
 
     const response = await fetch(url, {
@@ -116,12 +114,9 @@ const StorageDetail = () => {
   };
 
   const handleDeleteReview = async (reviewId) => {
-    const response = await fetch(
-      `http://localhost:8080/api/reviews/${reviewId}`,
-      {
-        method: "DELETE",
-      }
-    );
+    const response = await fetch(`${API_BASE_URL}/reviews/${reviewId}`, {
+      method: "DELETE",
+    });
 
     if (!response.ok) {
       console.error("Failed to delete review");
@@ -135,15 +130,12 @@ const StorageDetail = () => {
 
   const fetchReviews = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/reviews/${warehouse._id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/reviews/${warehouse._id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
         console.error("Failed to fetch reviews");
@@ -202,7 +194,7 @@ const StorageDetail = () => {
       setIsFavorite(!isFavorite);
 
       const response = await fetch(
-        `http://localhost:8080/api/wishlists/add/${warehouse._id}`,
+        `${API_BASE_URL}/wishlists/add/${warehouse._id}`,
         {
           method: "POST",
           headers: {
@@ -228,7 +220,7 @@ const StorageDetail = () => {
   const checkIsWishlisted = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/wishlists/checkStatus/${warehouse._id}`,
+        `${API_BASE_URL}/wishlists/checkStatus/${warehouse._id}`,
         {
           method: "POST",
           headers: {
@@ -260,7 +252,7 @@ const StorageDetail = () => {
   const handleRemoveFavorite = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/wishlists/remove/${warehouse._id}`,
+        `${API_BASE_URL}/wishlists/remove/${warehouse._id}`,
         {
           method: "DELETE",
           headers: {
@@ -293,7 +285,7 @@ const StorageDetail = () => {
       });
 
       const response = await fetch(
-        `http://localhost:8080/api/warehouses/${warehouse._id}/upload`,
+        `${API_BASE_URL}/warehouses/${warehouse._id}/upload`,
         {
           method: "POST",
           body: formData,

@@ -224,7 +224,7 @@ const requestPasswordReset = async (req, res) => {
     },
   });
 
-  const resetLink = `http://localhost:5173/reset-password?token=${token}`;
+  const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
   const templatePath = path.join(__dirname, "../utils/emailTemplate.html");
   const htmlTemplate = fs.readFileSync(templatePath, "utf8");
   const htmlContent = htmlTemplate

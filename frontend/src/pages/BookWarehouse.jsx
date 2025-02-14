@@ -36,6 +36,7 @@ const BookWarehouse = () => {
   const [commissionFee, setCommissionFee] = useState(0);
   const [basePrice, setBasePrice] = useState(0);
   const [userId, setUserId] = useState("");
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const token = useAuth();
 
@@ -75,7 +76,7 @@ const BookWarehouse = () => {
         return;
       }
 
-      const response = await fetch("http://localhost:8080/api/bookings", {
+      const response = await fetch(`${API_BASE_URL}/bookings`, {
         method: "POST",
         body: JSON.stringify({
           warehouseId: warehouse._id,

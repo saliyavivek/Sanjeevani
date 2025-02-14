@@ -5,9 +5,10 @@ const OverviewStats = () => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalWarehouses, setTotalWarehouses] = useState(0);
   const [revenue, setRevenue] = useState(0);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const fetchTotalUsers = async () => {
-    const response = await fetch("http://localhost:8080/api/users/total-users");
+    const response = await fetch(`${API_BASE_URL}/users/total-users`);
     if (!response.ok) {
       console.log("Failed to fetch user count.");
       return;
@@ -17,9 +18,7 @@ const OverviewStats = () => {
   };
 
   const fetchTotalWarehouses = async () => {
-    const response = await fetch(
-      "http://localhost:8080/api/warehouses/total-warehouses"
-    );
+    const response = await fetch(`${API_BASE_URL}/warehouses/total-warehouses`);
     if (!response.ok) {
       console.log("Failed to fetch warehouse count.");
       return;
@@ -29,9 +28,7 @@ const OverviewStats = () => {
   };
 
   const fetchAdminCommission = async () => {
-    const response = await fetch(
-      "http://localhost:8080/api/bookings/commission"
-    );
+    const response = await fetch(`${API_BASE_URL}/bookings/commission`);
     if (!response.ok) {
       console.log("Failed to fetch admin commission.");
       return;
