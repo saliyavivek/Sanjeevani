@@ -29,7 +29,7 @@ const AddNewListing = () => {
   // console.log(warehouseId);
 
   const navigate = useNavigate();
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState([]);
   const [currentUserId, setCurrentUserId] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
