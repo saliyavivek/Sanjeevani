@@ -21,6 +21,18 @@ import AllReviewsModal from "../components/AllReviews";
 import ImageGrid from "../components/ImageGrid";
 import PhotoGallery from "../components/PhotoGallery";
 import UploadModal from "../components/UploadModal";
+import L from "leaflet";
+
+const markerIcon = new L.Icon({
+  iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
+  iconRetinaUrl:
+    "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
+  shadowSize: [41, 41],
+});
 
 const StorageDetail = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -590,7 +602,10 @@ const StorageDetail = () => {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
-            <Marker position={warehouse.location.coordinates.slice().reverse()}>
+            <Marker
+              position={warehouse.location.coordinates.slice().reverse()}
+              icon={markerIcon}
+            >
               <Popup>
                 {warehouse.name}
                 <br />

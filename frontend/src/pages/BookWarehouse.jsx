@@ -11,6 +11,18 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { jwtDecode } from "jwt-decode";
 import { showErrorToast, showSuccessToast } from "../components/toast";
+import L, { icon } from "leaflet";
+
+const markerIcon = new L.Icon({
+  iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
+  iconRetinaUrl:
+    "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
+  shadowSize: [41, 41],
+});
 
 const theme = createTheme({
   palette: {
@@ -295,6 +307,7 @@ const BookWarehouse = () => {
                   />
                   <Marker
                     position={warehouse.location.coordinates.slice().reverse()}
+                    icon={markerIcon}
                   >
                     <Popup>
                       <div className="text-sm">
