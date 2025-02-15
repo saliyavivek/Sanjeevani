@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -6,7 +8,7 @@ import {
   Popup,
   useMapEvents,
 } from "react-leaflet";
-import { ArrowLeft, CrossIcon, Upload, X } from "lucide-react";
+import { ArrowLeft, Upload, X } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 import { validateForm } from "../utils/FormValidation";
 import { jwtDecode } from "jwt-decode";
@@ -74,7 +76,7 @@ const AddNewListing = () => {
       // Set image preview if needed
       setImagePreview(existingWarehouse.images);
     }
-  }, [existingWarehouse]);
+  }, [existingWarehouse, formData]); // Added formData to dependencies
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -94,7 +96,7 @@ const AddNewListing = () => {
               ...prevState,
               location: {
                 ...prevState.location,
-                coordinates: [parseFloat(lon), parseFloat(lat)],
+                coordinates: [Number.parseFloat(lon), Number.parseFloat(lat)],
                 formattedAddress: display_name,
                 city: address?.city || "",
                 state: address?.state || "",
@@ -131,20 +133,63 @@ const AddNewListing = () => {
   };
 
   const handleImageChange = (acceptedFiles) => {
-    const file = acceptedFiles[0]; // Get the first file from the accepted files
+    const file = acceptedFiles[0];
     if (file) {
       if (!file.type.startsWith("image/")) {
-        console.error("Invalid file type. Please upload an image.");
-        return; // Exit if the file type is not valid
+        showErrorToast("Invalid file type. Please upload an image.");
+        return;
       }
-      setFormData((prevState) => ({
-        ...prevState,
-        image: file,
-      }));
 
+      // Compress image before upload
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview((prevImages) => [...prevImages, reader.result]);
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const MAX_WIDTH = 1200;
+          const MAX_HEIGHT = 1200;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+
+          canvas.toBlob(
+            (blob) => {
+              const compressedFile = new File([blob], file.name, {
+                type: "image/jpeg",
+                lastModified: Date.now(),
+              });
+
+              setFormData((prevState) => ({
+                ...prevState,
+                image: compressedFile,
+              }));
+
+              setImagePreview((prevImages) => [
+                ...prevImages,
+                URL.createObjectURL(compressedFile),
+              ]);
+            },
+            "image/jpeg",
+            0.8
+          );
+        };
+        img.src = e.target.result;
       };
       reader.readAsDataURL(file);
     }
@@ -403,26 +448,6 @@ const AddNewListing = () => {
                   </div>
                 </div>
 
-                {/* <div>
-                  <label
-                    htmlFor="description"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Description
-                  </label>
-                  <textarea
-                    id="description"
-                    name="description"
-                    rows="3"
-                    value={formData.description}
-                    onChange={handleChange}
-                    required
-                    className="form-control mt-1 block w-full rounded-lg px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  />
-                  <div className="invalid-feedback">
-                    Description is required.
-                  </div>
-                </div> */}
                 <div>
                   <label
                     htmlFor="description"
@@ -480,32 +505,6 @@ const AddNewListing = () => {
                 </div>
 
                 <div>
-                  {/* <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
-                    <div className="space-y-1 text-center">
-                      <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                      <div className="flex text-sm text-gray-600">
-                        <label
-                          htmlFor="image"
-                          className="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
-                        >
-                          <span>Upload files</span>
-                          <input
-                            id="image"
-                            name="image"
-                            type="file"
-                            className="sr-only"
-                            onChange={handleImageChange}
-                            required
-                            accept="image/*"
-                          />
-                        </label>
-                        <p className="pl-1">or drag and drop</p>
-                      </div>
-                      <p className="text-xs text-gray-500">
-                        PNG, JPG, GIF up to 10MB
-                      </p>
-                    </div>
-                  </div> */}
                   {imagePreview && (
                     <div className="mt-4 mb-4">
                       <h3 className="text-sm font-medium text-gray-700">
@@ -515,7 +514,7 @@ const AddNewListing = () => {
                         {imagePreview.map((img, index) => (
                           <div key={index} className="relative">
                             <img
-                              src={img}
+                              src={img || "/placeholder.svg"}
                               alt={`Preview ${index + 1}`}
                               className="mt-2 w-full h-auto rounded-lg border border-gray-300"
                             />
@@ -554,6 +553,34 @@ const AddNewListing = () => {
                             PNG, JPG, GIF up to 10MB
                           </p>
                         </div>
+                      </div>
+                      {/* Mobile Camera Capture */}
+                      <div className="mt-4">
+                        <label className="block text-sm font-medium text-gray-700">
+                          Or take a photo
+                        </label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          capture="environment"
+                          className="hidden"
+                          id="cameraInput"
+                          onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                              handleImageChange([e.target.files[0]]);
+                            }
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            document.getElementById("cameraInput").click()
+                          }
+                          className="mt-1 w-full flex justify-center items-center px-6 py-3 border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                        >
+                          <Upload className="w-5 h-5 mr-2" />
+                          Take Photo
+                        </button>
                       </div>
                     </>
                   )}
