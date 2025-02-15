@@ -265,45 +265,86 @@ const WarehouseOwnerDashboard = () => {
                 {info.map((listing) =>
                   listing.bookings.map((booking) => (
                     <tr key={booking._id} className="border-b">
-                      <td className="py-3 pr-4">{listing.name}</td>
-                      <td className="py-3 pr-4">{booking.userId.name}</td>
-                      <td className="pr-4">{listing.size} sq ft</td>
-                      <td className="pr-4">
-                        {new Date(booking.startDate).toLocaleDateString()}
+                      <td className="py-3 pr-4">
+                        <a
+                          href={`/booking/${booking._id}`}
+                          className="hover:underline"
+                        >
+                          {listing.name}
+                        </a>
+                      </td>
+                      <td className="py-3 pr-4">
+                        <a
+                          href={`/booking/${booking._id}`}
+                          className="hover:underline"
+                        >
+                          {booking.userId.name}
+                        </a>
                       </td>
                       <td className="pr-4">
-                        {new Date(booking.endDate).toLocaleDateString()}
+                        <a
+                          href={`/booking/${booking._id}`}
+                          className="hover:underline"
+                        >
+                          {listing.size} sq ft
+                        </a>
                       </td>
                       <td className="pr-4">
-                        {Math.abs(
-                          new Date(booking.endDate) -
-                            new Date(booking.startDate)
-                        ) /
-                          (1000 * 3600 * 24) +
-                          1}
+                        <a
+                          href={`/booking/${booking._id}`}
+                          className="hover:underline"
+                        >
+                          {new Date(booking.startDate).toLocaleDateString()}
+                        </a>
+                      </td>
+                      <td className="pr-4">
+                        <a
+                          href={`/booking/${booking._id}`}
+                          className="hover:underline"
+                        >
+                          {new Date(booking.endDate).toLocaleDateString()}
+                        </a>
+                      </td>
+                      <td className="pr-4">
+                        <a
+                          href={`/booking/${booking._id}`}
+                          className="hover:underline"
+                        >
+                          {Math.abs(
+                            new Date(booking.endDate) -
+                              new Date(booking.startDate)
+                          ) /
+                            (1000 * 3600 * 24) +
+                            1}
+                        </a>
                       </td>
                       <td>
-                        <span
-                          className={`bg-${
-                            upcoming.includes(booking)
-                              ? "blue"
-                              : current.includes(booking)
-                              ? "green"
-                              : "gray"
-                          }-100 text-${
-                            upcoming.includes(booking)
-                              ? "blue"
-                              : current.includes(booking)
-                              ? "green"
-                              : "gray"
-                          }-800 px-2 py-1 rounded-full text-sm`}
+                        <a
+                          href={`/booking/${booking._id}`}
+                          className="hover:underline"
                         >
-                          {upcoming.includes(booking)
-                            ? "upcoming"
-                            : current.includes(booking)
-                            ? "active"
-                            : "completed"}
-                        </span>
+                          <span
+                            className={`bg-${
+                              upcoming.includes(booking)
+                                ? "blue"
+                                : current.includes(booking)
+                                ? "green"
+                                : "gray"
+                            }-100 text-${
+                              upcoming.includes(booking)
+                                ? "blue"
+                                : current.includes(booking)
+                                ? "green"
+                                : "gray"
+                            }-800 px-2 py-1 rounded-full text-sm`}
+                          >
+                            {upcoming.includes(booking)
+                              ? "upcoming"
+                              : current.includes(booking)
+                              ? "active"
+                              : "completed"}
+                          </span>
+                        </a>
                       </td>
                     </tr>
                   ))
