@@ -164,7 +164,19 @@ const StorageCard = ({ warehouse, onDelete }) => {
                     </button>
                     <button
                       onClick={handleDeleteClick}
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                      disabled={warehouse.availability !== "available"}
+                      title={
+                        warehouse.availability !== "available"
+                          ? "Can not delete currently booked warehouse"
+                          : ""
+                      }
+                      className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left cursor-not-allowed
+                        ${
+                          warehouse.availability !== "available"
+                            ? "opacity-50"
+                            : ""
+                        }
+                        `}
                     >
                       <Trash2 className="w-4 h-4 mr-2" />
                       Delete this listing
