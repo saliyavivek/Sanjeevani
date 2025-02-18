@@ -565,7 +565,7 @@ const StorageDetail = () => {
           stats={reviewStats}
         />
 
-        {booked && user.userId !== warehouse.ownerId._id && (
+        {/* {booked && user.userId !== warehouse.ownerId._id && (
           <div className="flex justify-center items-center mt-4">
             <button
               onClick={() => setIsModalOpen(true)}
@@ -578,6 +578,22 @@ const StorageDetail = () => {
         {!booked && user.userId !== warehouse.ownerId._id && (
           <div className="flex justify-center items-center mt-4 text-gray-600 text-sm sm:text-base">
             Book this storage to add reviews.
+          </div>
+        )} */}
+        {user.userId !== warehouse.ownerId._id && (
+          <div className="flex justify-center items-center mt-4">
+            {booked ? (
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Add Review
+              </button>
+            ) : (
+              <p className="text-gray-600 text-sm sm:text-base">
+                Book this storage to add reviews.
+              </p>
+            )}
           </div>
         )}
       </div>

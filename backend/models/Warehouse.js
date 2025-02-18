@@ -43,7 +43,7 @@ const warehouseSchema = new Schema({
   ],
   availability: {
     type: String,
-    enum: ["available", "booked", "maintenance"],
+    enum: ["available", "booked", "maintenance", "pending"],
     default: "available",
   },
   location: {

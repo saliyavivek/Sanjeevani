@@ -227,7 +227,7 @@ const isBookedByUser = async (req, res) => {
     warehouseId: req.body.warehouseId,
   });
   if (!booking) {
-    return res.status(404).json({ message: false });
+    return res.status(201).json({ message: false });
   }
   // console.log(booking);
   return res.status(201).json({ message: true });

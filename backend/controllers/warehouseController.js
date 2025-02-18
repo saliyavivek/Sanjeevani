@@ -130,15 +130,23 @@ const getAllWarehouses = async (req, res) => {
           (booking) => booking.status === "completed"
         );
 
-        if (allBookingsCompleted && warehouse.availability !== "available") {
+        const allBookingsPending = bookings.every(
+          (booking) => booking.status === "pending"
+        );
+
+        // if (allBookingsCompleted && warehouse.availability !== "available") {
+        //   warehouse.availability = "available";
+        //   return warehouse.save(); // Save the updated warehouse
+        // } else if (
+        //   !allBookingsCompleted &&
+        //   warehouse.availability !== "booked"
+        // ) {
+        //   warehouse.availability = "booked"; // Ensure availability reflects reality
+        //   return warehouse.save();
+        // }
+        if (allBookingsCompleted || allBookingsPending) {
           warehouse.availability = "available";
           return warehouse.save(); // Save the updated warehouse
-        } else if (
-          !allBookingsCompleted &&
-          warehouse.availability !== "booked"
-        ) {
-          warehouse.availability = "booked"; // Ensure availability reflects reality
-          return warehouse.save();
         }
 
         return null; // No changes needed

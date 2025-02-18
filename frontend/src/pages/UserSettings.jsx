@@ -15,6 +15,7 @@ import {
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import DeleteAccountModal from "../components/DeleteAccountModal";
+import LogoutConfirmModal from "../components/LogoutConfirmModal";
 
 const UserSettings = () => {
   const [loading, setLoading] = useState(false);
@@ -35,6 +36,7 @@ const UserSettings = () => {
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
@@ -260,6 +262,17 @@ const UserSettings = () => {
     }
   };
 
+  function handleLogout() {
+    try {
+      localStorage.removeItem("token");
+      setIsLogoutModalOpen(false);
+      navigate("/");
+      showSuccessToast("Logged out.");
+    } catch (error) {
+      console.error("Error during logout", error);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -393,25 +406,43 @@ const UserSettings = () => {
               </div>
             )}
           </div>
-          <div className="py-4">
-            <a
-              onClick={() => setIsDeleteModalOpen(true)}
-              className="text-red-600 hover:bg-red-100 rounded md:p-2 cursor-pointer"
-            >
-              Delete account
-            </a>
-            {/* <button
+          <div className="flex items-center">
+            <div className="pr-4">
+              <a
+                onClick={() => {
+                  setIsLogoutModalOpen(true);
+                }}
+                className="text-red-600 hover:bg-red-100 rounded md:p-2 cursor-pointer"
+              >
+                Log out
+              </a>
+
+              <LogoutConfirmModal
+                isOpen={isLogoutModalOpen}
+                onClose={() => setIsLogoutModalOpen(false)}
+                onConfirm={handleLogout}
+              />
+            </div>
+            <div className="py-4">
+              <a
+                onClick={() => setIsDeleteModalOpen(true)}
+                className="text-red-600 hover:bg-red-100 rounded md:p-2 cursor-pointer"
+              >
+                Delete account
+              </a>
+              {/* <button
               onClick={() => setIsDeleteModalOpen(true)}
               className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
             >
               Delete Account
             </button> */}
 
-            <DeleteAccountModal
-              isOpen={isDeleteModalOpen}
-              onClose={() => setIsDeleteModalOpen(false)}
-              onConfirmDelete={handleDeleteAccount}
-            />
+              <DeleteAccountModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirmDelete={handleDeleteAccount}
+              />
+            </div>
           </div>
           {/* <InputField
             label="Password"
