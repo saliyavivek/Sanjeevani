@@ -85,10 +85,13 @@ const normalizeDate = (date) => {
 
 const getUserBookings = async (req, res) => {
   try {
-    const bookings = await Booking.find({
-      userId: req.body.userId,
-      status: { $ne: "declined" },
-    })
+    let filter = { userId: req.body.userId };
+
+    if (!req.body.isFetchAll) {
+      filter.status = { $ne: "declined" };
+    }
+
+    const bookings = await Booking.find(filter)
       .populate({
         path: "warehouseId",
         populate: {

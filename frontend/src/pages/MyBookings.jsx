@@ -107,7 +107,7 @@ const MyBookings = () => {
       const { userId } = jwtDecode(token);
       const response = await fetch(`${API_BASE_URL}/bookings/getall`, {
         method: "POST",
-        body: JSON.stringify({ userId }),
+        body: JSON.stringify({ userId, isFetchAll: true }),
         headers: {
           "Content-Type": "application/json",
         },
