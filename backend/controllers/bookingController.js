@@ -8,6 +8,8 @@ const createBooking = async (req, res) => {
   try {
     const {
       warehouseId,
+      ownerId,
+      userName,
       userId,
       startDate,
       endDate,
@@ -35,6 +37,8 @@ const createBooking = async (req, res) => {
       totalPrice: basePrice,
       commission: commissionFee,
       ownerEarnings: basePrice - commissionFee,
+      status: "pending",
+      approvalStatus: "pending",
     });
 
     await booking.save();
@@ -46,11 +50,26 @@ const createBooking = async (req, res) => {
     const startDateFormatted = formatDate(booking.startDate);
     const endDateFormatted = formatDate(booking.endDate);
 
+    //old code
+
+    // await Notification.create({
+    //   userId,
+    //   content: `Your booking request for ${warehouse.name} from ${startDateFormatted} to ${endDateFormatted} has been submitted. Please complete the payment to confirm your booking.`,
+    //   type: "booking",
+    // });
+
+    //added after guide's suggestion
     await Notification.create({
       userId,
-      content: `Your booking request for ${warehouse.name} from ${startDateFormatted} to ${endDateFormatted} has been submitted. Please complete the payment to confirm your booking.`,
-      type: "booking",
-    });
+      content: `Your booking request for ${warehouse.name} has been submitted and is awaiting owner approval. You will be notified once the owner reviews your request.`,
+      type: "request",
+    }); // notification for farmer
+
+    await Notification.create({
+      userId: ownerId,
+      content: `You have received a new booking request for ${warehouse.name} from ${userName}. Please review the request and confirm or decline the booking.`,
+      type: "request",
+    }); // notification for owner
 
     res.status(201).json({ message: "Booking created successfully", booking });
   } catch (error) {
@@ -66,12 +85,17 @@ const normalizeDate = (date) => {
 
 const getUserBookings = async (req, res) => {
   try {
-    const bookings = await Booking.find({ userId: req.body.userId }).populate({
-      path: "warehouseId",
-      populate: {
-        path: "ownerId",
-      },
-    });
+    const bookings = await Booking.find({
+      userId: req.body.userId,
+      status: { $ne: "declined" },
+    })
+      .populate({
+        path: "warehouseId",
+        populate: {
+          path: "ownerId",
+        },
+      })
+      .sort({ startDate: 1 });
 
     const currentDate = normalizeDate(new Date());
     bookings.forEach(async (booking) => {
@@ -97,6 +121,9 @@ const cancelBooking = async (req, res) => {
     warehouse.bookings = warehouse.bookings.filter(
       (bId) => bId.toString() !== req.params.bookingId
     );
+    await Warehouse.findByIdAndUpdate(booking.warehouseId, {
+      $pull: { pendingRequests: booking._id },
+    });
     await warehouse.save();
 
     const user = await User.findById(req.body.userId);
@@ -294,6 +321,87 @@ const fetchAdminEarnings = async (req, res) => {
   }
 };
 
+const getBookingRequests = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      return res
+        .status(400)
+        .json({ message: "Please provide a valid user id." });
+    }
+
+    const ownerWarehouses = await Warehouse.find({ ownerId: userId }).select(
+      "_id"
+    );
+
+    if (!ownerWarehouses) {
+      return res
+        .status(400)
+        .json({ message: "No warehouses found for this user." });
+    }
+
+    const warehouseIds = ownerWarehouses.map((warehouse) => warehouse._id);
+
+    const pendingBookings = await Booking.find({
+      warehouseId: { $in: warehouseIds },
+      approvalStatus: "pending",
+    })
+      .populate("warehouseId", "name location images") // Populate warehouse details
+      .populate("userId", "name email avatar"); // Populate user details
+
+    // console.log(pendingBookings);
+    res.status(200).json({ bookings: pendingBookings });
+  } catch (error) {
+    console.error("Error fetching pending bookings:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const handleRequest = async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+    const { approvalStatus, userId } = req.body; // "approved" or "rejected"
+
+    console.log(bookingId, approvalStatus);
+
+    const booking = await Booking.findById(bookingId).populate("warehouseId");
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    if (approvalStatus === "approved") {
+      // booking.status = "active";
+      booking.approvalStatus = "approved";
+
+      await Notification.create({
+        userId,
+        content: `Great news! Your booking request has been approved for ${booking.warehouseId.name}. Please make a payment to proceed.`,
+        type: "celebration",
+      });
+    } else {
+      booking.status = "declined";
+      booking.approvalStatus = "rejected";
+
+      await Notification.create({
+        userId,
+        content: `Unfortunately, your booking request for ${booking.warehouseId.name} has been declined by the owner. You may explore other available storage options.`,
+        type: "cancel",
+      });
+    }
+
+    await booking.save();
+
+    await Warehouse.findByIdAndUpdate(booking.warehouseId, {
+      $pull: { pendingRequests: booking._id },
+    });
+
+    res.status(200).json({ message: `Booking ${approvalStatus}` });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating booking status", error });
+  }
+};
+
 module.exports = {
   createBooking,
   getUserBookings,
@@ -303,5 +411,7 @@ module.exports = {
   isBookedByUser,
   getAllBookings,
   fetchAdminEarnings,
+  getBookingRequests,
+  handleRequest,
   // markCompleted,
 };

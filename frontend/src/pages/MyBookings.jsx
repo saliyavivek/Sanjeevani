@@ -19,6 +19,7 @@ const StatusBadge = ({ status }) => {
     upcoming: "bg-blue-100 text-blue-800",
     completed: "bg-gray-100 text-gray-800",
     pending: "bg-yellow-100 text-yellow-800",
+    declined: "bg-red-100 text-red-800",
   };
 
   return (
@@ -126,25 +127,30 @@ const MyBookings = () => {
   }, [token]);
 
   const normalizeDate = (date) => {
-    const normalizedDate = new Date(date);
-    normalizedDate.setHours(0, 0, 0, 0);
-    return normalizedDate;
+    return new Date(new Date(date).setHours(0, 0, 0, 0)); // Set time to 00:00:00
   };
 
   const categorizeBookings = () => {
-    const today = normalizeDate(new Date());
+    const today = normalizeDate(new Date()); // Normalize today's date
+
     return {
       past: bookings.filter(
-        (booking) => normalizeDate(booking.endDate) < today
+        (booking) =>
+          normalizeDate(booking.endDate) < today &&
+          booking.status !== "declined"
       ),
       current: bookings.filter(
         (booking) =>
           normalizeDate(booking.startDate) <= today &&
-          normalizeDate(booking.endDate) >= today
+          normalizeDate(booking.endDate) >= today &&
+          booking.status !== "declined" // Exclude declined bookings
       ),
       upcoming: bookings.filter(
-        (booking) => normalizeDate(booking.startDate) > today
+        (booking) =>
+          normalizeDate(booking.startDate) > today &&
+          booking.status !== "declined"
       ),
+      declined: bookings.filter((booking) => booking.status === "declined"),
     };
   };
 
@@ -194,6 +200,12 @@ const MyBookings = () => {
             count={categorizedBookings.past.length}
             isActive={activeTab === "past"}
             onClick={() => setActiveTab("past")}
+          />
+          <TabButton
+            label="Declined"
+            count={categorizedBookings.declined.length}
+            isActive={activeTab === "declined"}
+            onClick={() => setActiveTab("declined")}
           />
         </div>
         {loading ? (

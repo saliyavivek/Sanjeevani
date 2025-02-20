@@ -26,6 +26,7 @@ const StatusBadge = ({ status }) => {
     active: "bg-green-100 text-green-800",
     upcoming: "bg-blue-100 text-blue-800",
     completed: "bg-green-100 text-green-800",
+    declined: "bg-red-100 text-red-800",
   };
 
   const statusIcons = {
@@ -115,7 +116,7 @@ const BookingDetails = () => {
 
   useEffect(() => {
     fetchBookingDetails();
-    console.log(booking);
+    // console.log(booking);
   }, [id]);
 
   if (!booking) {
@@ -309,7 +310,19 @@ const BookingDetails = () => {
                 {booking.status === "pending" && (
                   <button
                     onClick={() => setIsPaymentModalOpen(true)}
-                    className="w-full bg-emerald-600 text-white py-2 px-4 rounded-lg hover:bg-emerald-700 transition-colors"
+                    disabled={booking.approvalStatus === "pending"}
+                    className={`w-full bg-emerald-600 text-white py-2 px-4 rounded-lg hover:bg-emerald-700 transition-colors
+                        ${
+                          booking.approvalStatus === "pending"
+                            ? "opacity-50 cursor-not-allowed"
+                            : ""
+                        }
+                      `}
+                    title={
+                      booking.approvalStatus === "pending"
+                        ? "Wait for owner's approval"
+                        : ""
+                    }
                   >
                     Complete Payment
                   </button>
@@ -319,14 +332,21 @@ const BookingDetails = () => {
                   onClick={() => setIsCancelModalOpen(true)}
                   disabled={
                     booking.status === "active" ||
-                    booking.status === "completed"
+                    booking.status === "completed" ||
+                    booking.status === "declined"
                   }
                   className={`w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors ${
                     booking.status === "active" ||
-                    booking.status === "completed"
+                    booking.status === "completed" ||
+                    booking.status === "declined"
                       ? "opacity-50 cursor-not-allowed"
                       : ""
                   }`}
+                  title={
+                    booking.status === "declined"
+                      ? "Your request has already been declined"
+                      : ""
+                  }
                 >
                   Cancel Booking
                 </button>

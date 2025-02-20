@@ -48,14 +48,16 @@ const BookWarehouse = () => {
   const [commissionFee, setCommissionFee] = useState(0);
   const [basePrice, setBasePrice] = useState(0);
   const [userId, setUserId] = useState("");
+  const [userName, setUserName] = useState("");
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const token = useAuth();
 
   useEffect(() => {
     if (token) {
-      const { userId } = jwtDecode(token);
+      const { userId, name } = jwtDecode(token);
       setUserId(userId);
+      setUserName(name);
     }
   }, [token]);
 
@@ -88,10 +90,13 @@ const BookWarehouse = () => {
         return;
       }
 
+      // console.log(warehouse.ownerId._id);
       const response = await fetch(`${API_BASE_URL}/bookings`, {
         method: "POST",
         body: JSON.stringify({
           warehouseId: warehouse._id,
+          ownerId: warehouse.ownerId._id,
+          userName,
           userId,
           startDate,
           endDate,
@@ -104,7 +109,7 @@ const BookWarehouse = () => {
       });
       if (response.ok) {
         const data = await response.json();
-        showSuccessToast("Make a payment to proceed.");
+        showSuccessToast("Wait for owner's approval to proceed.");
         navigate(`/booking/${data.booking._id}`);
       } else {
         const error = await response.json();
@@ -147,7 +152,7 @@ const BookWarehouse = () => {
                   </div>
 
                   <div className="space-y-6">
-                    <div className="space-y-4">
+                    <div className="space-y-4 md:flex flex-column">
                       <DatePicker
                         label="Check-in Date"
                         value={startDate}

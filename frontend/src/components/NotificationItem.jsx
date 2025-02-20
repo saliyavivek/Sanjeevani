@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
-const NotificationItem = ({ notification, onMarkAsRead }) => {
+const NotificationItem = ({ notification, onMarkAsRead, isRequest }) => {
   const { content, type, isRead, createdAt } = notification;
 
   const getIcon = () => {
@@ -54,9 +54,18 @@ const NotificationItem = ({ notification, onMarkAsRead }) => {
     >
       <div className="flex-shrink-0 mr-3 sm:mr-4">{getIcon()}</div>
       <div className="flex-grow">
-        <p className="text-xs sm:text-sm text-gray-800 font-medium">
-          {content}
-        </p>
+        {isRequest ? (
+          <a href="/bookings/requests" className="hover:underline">
+            <p className="text-xs sm:text-sm text-gray-800 font-medium">
+              {content}
+            </p>
+          </a>
+        ) : (
+          <p className="text-xs sm:text-sm text-gray-800 font-medium">
+            {content}
+          </p>
+        )}
+
         <p className="text-xs text-gray-500 mt-1">
           {formatDistanceToNow(new Date(createdAt), { addSuffix: true })}
         </p>

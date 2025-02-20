@@ -26,7 +26,12 @@ const bookingSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ["active", "upcoming", "completed", "pending"],
+    enum: ["active", "upcoming", "completed", "pending", "declined"],
+    default: "pending",
+  },
+  approvalStatus: {
+    type: String,
+    enum: ["pending", "approved", "rejected"],
     default: "pending",
   },
   commission: {

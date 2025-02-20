@@ -73,6 +73,12 @@ const warehouseSchema = new Schema({
       trim: true,
     },
   },
+  pendingRequests: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Booking",
+    },
+  ],
   createdAt: {
     type: Date,
     default: Date.now,

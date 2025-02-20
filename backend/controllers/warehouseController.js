@@ -173,16 +173,18 @@ const getAllWarehouses = async (req, res) => {
 
 const getMyListings = async (req, res) => {
   try {
-    const warehouses = await Warehouse.find({
-      ownerId: req.body.user,
-    })
+    const warehouses = await Warehouse.find({ ownerId: req.body.user })
       .populate("ownerId")
       .populate({
         path: "bookings",
-        populate: {
-          path: "userId",
-        },
+        populate: { path: "userId" },
       });
+
+    warehouses.forEach((warehouse) => {
+      warehouse.bookings.sort(
+        (a, b) => new Date(a.startDate) - new Date(b.startDate)
+      );
+    });
 
     if (warehouses.length > 0) {
       // console.log(warehouses);

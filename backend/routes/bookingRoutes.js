@@ -8,6 +8,8 @@ const {
   isBookedByUser,
   getAllBookings,
   fetchAdminEarnings,
+  getBookingRequests,
+  handleRequest,
   // markCompleted,
 } = require("../controllers/bookingController");
 const router = express.Router();
@@ -20,6 +22,8 @@ router.post("/getall", getUserBookings);
 router.delete("/:bookingId", cancelBooking);
 router.put("/:bookingId", confirmBooking);
 router.post("/isBookedByUser", isBookedByUser);
+router.post("/booking-requests", getBookingRequests);
+router.put("/booking-requests/:bookingId", handleRequest);
 // router.post("/completed", markCompleted);
 
 module.exports = router;

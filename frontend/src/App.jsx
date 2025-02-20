@@ -25,6 +25,7 @@ import FarmerProfile from "./pages/FarmerProfile";
 import Wishlists from "./pages/WishLists";
 import GoogleRedirect from "./pages/GoogleRedirect";
 import AdminDashboard from "./pages/AdminDashboard";
+import BookingRequests from "./pages/BookingRequests";
 
 const AppRoutes = () => {
   const location = useLocation(); // Get the current location
@@ -59,6 +60,7 @@ const AppRoutes = () => {
         <Route path="/wishlists" element={<Wishlists />} />
         <Route path="/auth" element={<GoogleRedirect />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/bookings/requests" element={<BookingRequests />} />
       </Routes>
     </>
   );

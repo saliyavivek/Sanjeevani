@@ -129,6 +129,7 @@ const NotificationList = () => {
                 key={notification._id}
                 notification={notification}
                 onMarkAsRead={handleMarkAsRead}
+                isRequest={notification.type === "request" ? true : false}
               />
             ))
           ) : (
