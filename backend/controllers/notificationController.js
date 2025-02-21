@@ -6,9 +6,11 @@ const fetchNotification = async (req, res) => {
     if (!userId) {
       return res.status(400).json({ message: "User ID is required" });
     }
-    const notifications = await Notification.find({ userId }).sort({
-      createdAt: -1,
-    });
+    const notifications = await Notification.find({ userId })
+      .populate("userId")
+      .sort({
+        createdAt: -1,
+      });
 
     if (!notifications || notifications.length === 0) {
       return res

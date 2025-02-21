@@ -1,7 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
-const db = require("./db/db");
+const { connectDB } = require("./db/db");
 const userRouter = require("./routes/userRoutes");
 const warehouseRouter = require("./routes/warehouseRoutes");
 const bookingRouter = require("./routes/bookingRoutes");
@@ -12,7 +12,7 @@ const authRouter = require("./routes/authRoutes");
 const cors = require("cors");
 const app = express();
 
-db();
+connectDB();
 const PORT = process.env.PORT;
 
 app.use(

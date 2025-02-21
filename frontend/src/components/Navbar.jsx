@@ -27,6 +27,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const profileDropdownRef = useRef(null);
   const [hasUnread, setHasUnread] = useState(false);
+  const [hasPendingPayments, setHasPendingPayments] = useState(false);
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const toggleMenu = () => {
@@ -73,6 +74,7 @@ const Navbar = () => {
 
   useEffect(() => {
     fetchUserDetails();
+    fetchPendingPayments();
   }, [userId, API_BASE_URL]); // Added API_BASE_URL to dependencies
 
   useEffect(() => {
@@ -106,12 +108,32 @@ const Navbar = () => {
     }
   }
 
+  async function fetchPendingPayments() {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/bookings/pending-payments/${userId}`
+      );
+      if (!response.ok) {
+        console.log("Something went wrong.");
+        return;
+      }
+      const data = await response.json();
+      if (data.bookings.length > 0) {
+        setHasPendingPayments(true);
+      }
+
+      // console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const ProfileDropdown = () => (
     <div ref={profileDropdownRef} className="relative">
       <button
         onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
         className={`flex items-center space-x-2 focus:outline-none ${
-          hasUnread ? "profile-pic green-dot" : ""
+          hasUnread || hasPendingPayments ? "profile-pic green-dot" : ""
         }`}
       >
         <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-white text-lg font-semibold hover:shadow-lg transition-shadow">
@@ -165,7 +187,11 @@ const Navbar = () => {
                 </a>
                 <a
                   href="/bookings"
-                  className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ${
+                    hasPendingPayments
+                      ? "relative dropdown-payment green-dot"
+                      : ""
+                  }`}
                 >
                   <WarehouseIcon className="w-4 h-4 mr-2" />
                   My Bookings
@@ -200,7 +226,7 @@ const Navbar = () => {
             <a
               href="/notifications"
               className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ${
-                hasUnread ? "dropdown green-dot" : ""
+                hasUnread ? "relative dropdown-unread green-dot" : ""
               }`}
             >
               <Bell className="w-4 h-4 mr-2" />
@@ -378,7 +404,9 @@ const Navbar = () => {
         <button
           onClick={toggleMenu}
           className={`md:hidden p-2 rounded-full hover:bg-gray-100 transition-colors ${
-            hasUnread ? "profile-pic green-dot-mobile" : ""
+            hasUnread || hasPendingPayments
+              ? "profile-pic green-dot-mobile"
+              : ""
           } `}
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
         >
@@ -474,6 +502,9 @@ const Navbar = () => {
                         >
                           <WarehouseIcon className="w-5 h-5" />
                           <span>My Bookings</span>
+                          {hasPendingPayments && (
+                            <span className="w-2 h-2 bg-emerald-700 rounded-full ml-auto" />
+                          )}
                         </a>
                       </>
                     ) : (
@@ -512,7 +543,7 @@ const Navbar = () => {
                       <Bell className="w-5 h-5" />
                       <span>Notifications</span>
                       {hasUnread && (
-                        <span className="w-2 h-2 bg-emerald-500 rounded-full ml-auto" />
+                        <span className="w-2 h-2 bg-emerald-700 rounded-full ml-auto" />
                       )}
                     </a>
                     <a

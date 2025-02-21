@@ -157,12 +157,14 @@ const cancelBooking = async (req, res) => {
 const getBookingDetails = async (req, res) => {
   try {
     // console.log("inside get details");
-    const booking = await Booking.findById(req.params.bookingId).populate({
-      path: "warehouseId",
-      populate: {
-        path: "ownerId",
-      },
-    });
+    const booking = await Booking.findById(req.params.bookingId)
+      .populate("userId")
+      .populate({
+        path: "warehouseId",
+        populate: {
+          path: "ownerId",
+        },
+      });
     if (!booking) return res.status(404).json({ message: "Booking not found" });
     // console.log(booking);
 
@@ -241,6 +243,8 @@ const confirmBooking = async (req, res) => {
       type: "celebration",
     });
 
+    // console.log(booking);
+
     return res
       .status(200)
       .json({ message: "Booking is updated and is now active.", booking });
@@ -249,13 +253,34 @@ const confirmBooking = async (req, res) => {
   }
 };
 
+// const fetchSingleBookingForInvoice = async (req, res) => {
+//   try {
+//     const booking = await Booking.findById(req.params.bookingId)
+//       .populate("userId")
+//       .populate({
+//         path: "warehouseId",
+//         populate: {
+//           path: "ownerId",
+//         },
+//       });
+//     if (!booking) return res.status(404).json({ message: "Booking not found" });
+
+//     return res.status(200).json(booking);
+//   } catch (error) {
+//     res.status(500).json({ message: "Server error", error });
+//   }
+// };
+
 const isBookedByUser = async (req, res) => {
   // console.log(req.body.userId);
 
   const booking = await Booking.findOne({
     userId: req.body.userId,
     warehouseId: req.body.warehouseId,
+    approvalStatus: "approved",
   });
+
+  // console.log(booking);
   if (!booking) {
     return res.status(201).json({ message: false });
   }
@@ -366,7 +391,7 @@ const handleRequest = async (req, res) => {
     const { bookingId } = req.params;
     const { approvalStatus, userId } = req.body; // "approved" or "rejected"
 
-    console.log(bookingId, approvalStatus);
+    // console.log(bookingId, approvalStatus);
 
     const booking = await Booking.findById(bookingId).populate("warehouseId");
     if (!booking) {
@@ -405,6 +430,28 @@ const handleRequest = async (req, res) => {
   }
 };
 
+const pendingPayments = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({ message: "user id is required" });
+    }
+
+    const bookings = await Booking.find({
+      userId,
+      status: "pending",
+      approvalStatus: "approved",
+    });
+
+    return res
+      .status(200)
+      .json({ message: "Pending Payments found.", bookings });
+  } catch (error) {
+    return res.status(500).json({ message: "Error finding pending payments." });
+  }
+};
+
 module.exports = {
   createBooking,
   getUserBookings,
@@ -416,5 +463,6 @@ module.exports = {
   fetchAdminEarnings,
   getBookingRequests,
   handleRequest,
+  pendingPayments,
   // markCompleted,
 };

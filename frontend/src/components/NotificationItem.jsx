@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Calendar,
   Bell,
@@ -9,8 +9,23 @@ import {
   Ban,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import useAuth from "../hooks/useAuth";
+import { jwtDecode } from "jwt-decode";
 
 const NotificationItem = ({ notification, onMarkAsRead, isRequest }) => {
+  const token = useAuth();
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      if (token) {
+        const { userId } = await jwtDecode(token);
+        setUserId(userId);
+      }
+    };
+    fetchUserId();
+  }, [token]);
+
   const { content, type, isRead, createdAt } = notification;
 
   const getIcon = () => {
@@ -54,7 +69,7 @@ const NotificationItem = ({ notification, onMarkAsRead, isRequest }) => {
     >
       <div className="flex-shrink-0 mr-3 sm:mr-4">{getIcon()}</div>
       <div className="flex-grow">
-        {isRequest ? (
+        {isRequest && notification.userId.role === "owner" ? (
           <a href="/bookings/requests" className="hover:underline">
             <p className="text-xs sm:text-sm text-gray-800 font-medium">
               {content}

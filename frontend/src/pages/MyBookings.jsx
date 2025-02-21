@@ -100,11 +100,14 @@ const MyBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("current");
+  const [userId, setUserId] = useState(null);
+  const [hasPendingPayments, setHasPendingPayments] = useState(null);
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const fetchBookings = async () => {
     if (token) {
       const { userId } = jwtDecode(token);
+      setUserId(userId);
       const response = await fetch(`${API_BASE_URL}/bookings/getall`, {
         method: "POST",
         body: JSON.stringify({ userId, isFetchAll: true }),
@@ -126,6 +129,30 @@ const MyBookings = () => {
     fetchBookings();
   }, [token]);
 
+  useEffect(() => {
+    fetchPendingPayments();
+  }, [userId]);
+
+  async function fetchPendingPayments() {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/bookings/pending-payments/${userId}`
+      );
+      if (!response.ok) {
+        console.log("Something went wrong.");
+        return;
+      }
+      const data = await response.json();
+      if (data.bookings.length > 0) {
+        setHasPendingPayments(true);
+      }
+
+      // console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const normalizeDate = (date) => {
     return new Date(new Date(date).setHours(0, 0, 0, 0)); // Set time to 00:00:00
   };
@@ -137,32 +164,42 @@ const MyBookings = () => {
       past: bookings.filter(
         (booking) =>
           normalizeDate(booking.endDate) < today &&
-          booking.status !== "declined"
+          booking.status !== "declined" &&
+          booking.status !== "pending"
       ),
       current: bookings.filter(
         (booking) =>
           normalizeDate(booking.startDate) <= today &&
           normalizeDate(booking.endDate) >= today &&
-          booking.status !== "declined" // Exclude declined bookings
+          booking.status !== "declined" && // Exclude declined bookings
+          booking.status !== "pending"
       ),
       upcoming: bookings.filter(
         (booking) =>
           normalizeDate(booking.startDate) > today &&
-          booking.status !== "declined"
+          booking.status !== "declined" &&
+          booking.status !== "pending"
       ),
       declined: bookings.filter((booking) => booking.status === "declined"),
+      pendingPayment: bookings.filter(
+        (booking) =>
+          booking.approvalStatus === "approved" && booking.status === "pending"
+      ),
     };
   };
 
   const categorizedBookings = categorizeBookings();
 
-  const TabButton = ({ label, count, isActive, onClick }) => (
+  const TabButton = ({ label, count, isActive, onClick, isPendingPayment }) => (
     <button
-      className={`px-4 py-2 font-medium text-sm rounded-md transition-colors ${
+      className={`px-2 py-1 md:px-4 md:py-2 font-medium text-xs md:text-sm rounded-md transition-colors ${
         isActive
           ? "bg-emerald-100 text-emerald-800"
           : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
-      }`}
+      }
+      
+      ${isPendingPayment ? "relative mybooking green-dot" : ""}
+      `}
       onClick={onClick}
     >
       {label} ({count})
@@ -182,7 +219,7 @@ const MyBookings = () => {
           </button>
           <h1 className="text-3xl font-semibold text-gray-900">My Bookings</h1>
         </div>
-        <div className="flex space-x-4 mb-8">
+        <div className="flex space-x-4 mb-8 overflow-x-auto">
           <TabButton
             label="Current"
             count={categorizedBookings.current.length}
@@ -206,6 +243,13 @@ const MyBookings = () => {
             count={categorizedBookings.declined.length}
             isActive={activeTab === "declined"}
             onClick={() => setActiveTab("declined")}
+          />
+          <TabButton
+            label="Pending Payment"
+            count={categorizedBookings.pendingPayment.length}
+            isActive={activeTab === "pendingPayment"}
+            onClick={() => setActiveTab("pendingPayment")}
+            isPendingPayment={hasPendingPayments}
           />
         </div>
         {loading ? (

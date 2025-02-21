@@ -78,6 +78,7 @@ const BookingDetails = () => {
   const { id } = useParams();
   // const token = useAuth();
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const [paidBooking, setPaidBooking] = useState(null);
 
   // console.log(token);
   useEffect(() => {
@@ -105,6 +106,14 @@ const BookingDetails = () => {
       // console.log(data);
       setBooking(data);
       setWarehouseId(data.warehouseId._id);
+
+      if (
+        data.status !== "pending" &&
+        data.status !== "declined" &&
+        data.approvalStatus === "approved"
+      ) {
+        setPaidBooking(data);
+      }
 
       // if (booking?.status === "active") {
       //   setBooking({ ...booking, status: "confirmed" });
@@ -144,12 +153,20 @@ const BookingDetails = () => {
 
     showSuccessToast("Payment successfull.");
     // console.log(data.message, data.booking);
-    generateInvoice(data.booking);
+    // console.log(data.booking);
+    // generateInvoice(data.booking);
+    setPaidBooking(data.booking);
 
     setTimeout(() => {
       setBooking({ ...booking, status: "active" });
       setIsPaymentModalOpen(false);
     }, 1000);
+  };
+
+  const handleDownloadInvoice = () => {
+    if (paidBooking) {
+      generateInvoice(paidBooking);
+    }
   };
 
   const handleCancel = async () => {
@@ -335,7 +352,7 @@ const BookingDetails = () => {
                     booking.status === "completed" ||
                     booking.status === "declined"
                   }
-                  className={`w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors ${
+                  className={`w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-100 transition-colors ${
                     booking.status === "active" ||
                     booking.status === "completed" ||
                     booking.status === "declined"
@@ -350,6 +367,15 @@ const BookingDetails = () => {
                 >
                   Cancel Booking
                 </button>
+
+                {paidBooking && (
+                  <button
+                    onClick={handleDownloadInvoice}
+                    className="w-full border bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Download Invoice
+                  </button>
+                )}
               </div>
             </div>
           </div>

@@ -77,6 +77,7 @@ const StorageDetail = () => {
     });
     const data = await response.json();
 
+    // console.log(data);
     setIsBooked(data.message === true);
   };
 

@@ -10,6 +10,7 @@ const {
   fetchAdminEarnings,
   getBookingRequests,
   handleRequest,
+  pendingPayments,
   // markCompleted,
 } = require("../controllers/bookingController");
 const router = express.Router();
@@ -24,6 +25,7 @@ router.put("/:bookingId", confirmBooking);
 router.post("/isBookedByUser", isBookedByUser);
 router.post("/booking-requests", getBookingRequests);
 router.put("/booking-requests/:bookingId", handleRequest);
+router.get("/pending-payments/:userId", pendingPayments);
 // router.post("/completed", markCompleted);
 
 module.exports = router;
