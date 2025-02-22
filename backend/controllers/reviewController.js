@@ -1,10 +1,19 @@
 const Review = require("../models/Review");
 const Warehouse = require("../models/Warehouse");
+const Notification = require("../models/Notification");
 
 const addReview = async (req, res) => {
   try {
-    const { userId, ratings, review, warehouseId } = req.body;
-    console.log(req.body);
+    const {
+      userName,
+      warehoueName,
+      userId,
+      ratings,
+      review,
+      warehouseId,
+      ownerId,
+    } = req.body;
+    // console.log(req.body);
     const addedReview = new Review({
       userId,
       ratings,
@@ -12,6 +21,13 @@ const addReview = async (req, res) => {
       warehouseId,
     });
     await addedReview.save();
+
+    await Notification.create({
+      userId: ownerId,
+      content: `${userName} has add a review on your listing named ${warehoueName}.`,
+      type: "general",
+    });
+
     res.status(201).json({
       message: "Review added.",
       addedReview,

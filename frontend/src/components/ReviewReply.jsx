@@ -18,7 +18,7 @@ const ReviewReply = ({ reply }) => {
           {/* Owner info */}
           <div className="flex items-center mb-3">
             <div className="relative">
-              <a href={`/users/o/show/${reply.ownerId}`}>
+              <a href={`/users/o/show/${reply.ownerId._id}`}>
                 {reply.ownerId.avatar ? (
                   <img
                     src={reply.ownerId.avatar || "/placeholder.svg"}

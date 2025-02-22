@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import NotificationItem from "./NotificationItem";
 import { Bell, ArrowLeft } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { showErrorToast, showSuccessToast } from "./toast";
+import { isToday, isThisWeek, isThisMonth, parseISO } from "date-fns";
 
 const NotificationList = () => {
   const [notifications, setNotifications] = useState([]);
@@ -84,6 +85,32 @@ const NotificationList = () => {
     }
   };
 
+  const groupNotifications = (notifications) => {
+    return notifications.reduce(
+      (groups, notification) => {
+        const date = parseISO(notification.createdAt);
+
+        if (isToday(date)) {
+          groups.today.push(notification);
+        } else if (isThisWeek(date)) {
+          groups.thisWeek.push(notification);
+        } else if (isThisMonth(date)) {
+          groups.thisMonth.push(notification);
+        } else {
+          groups.older.push(notification);
+        }
+
+        return groups;
+      },
+      {
+        today: [],
+        thisWeek: [],
+        thisMonth: [],
+        older: [],
+      }
+    );
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-[100vh]">
@@ -91,6 +118,28 @@ const NotificationList = () => {
       </div>
     );
   }
+
+  const groupedNotifications = groupNotifications(notifications);
+
+  const renderSection = (title, notifications) => {
+    if (notifications.length === 0) return null;
+
+    return (
+      <div className="mb-6">
+        <h3 className="px-4 py-2 text-sm font-medium text-gray-500 bg-gray-50">
+          {title}
+        </h3>
+        {notifications.map((notification) => (
+          <NotificationItem
+            key={notification._id}
+            notification={notification}
+            onMarkAsRead={handleMarkAsRead}
+            isRequest={notification.type === "request"}
+          />
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div className="md:bg-white rounded-lg md:shadow-md max-w-2xl mx-auto">
@@ -123,20 +172,10 @@ const NotificationList = () => {
         </div>
       ) : (
         <div className="max-h-screen md:max-h-[calc(100vh-200px)] overflow-y-auto">
-          {notifications.length > 0 ? (
-            notifications.map((notification) => (
-              <NotificationItem
-                key={notification._id}
-                notification={notification}
-                onMarkAsRead={handleMarkAsRead}
-                isRequest={notification.type === "request" ? true : false}
-              />
-            ))
-          ) : (
-            <p className="p-4 text-center text-gray-500">
-              No notifications available
-            </p>
-          )}
+          {renderSection("Today", groupedNotifications.today)}
+          {renderSection("This Week", groupedNotifications.thisWeek)}
+          {renderSection("This Month", groupedNotifications.thisMonth)}
+          {renderSection("Older", groupedNotifications.older)}
         </div>
       )}
     </div>

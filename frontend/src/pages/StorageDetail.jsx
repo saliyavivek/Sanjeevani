@@ -57,6 +57,7 @@ const StorageDetail = () => {
       try {
         const decodedToken = jwtDecode(storedToken);
         setUser(decodedToken);
+        // console.log(warehouse);
       } catch (error) {
         console.error("Invalid token", error);
         localStorage.removeItem("token");
@@ -102,10 +103,13 @@ const StorageDetail = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        userName: user.name,
         userId: user.userId,
         ratings: reviewData.rating,
         review: reviewData.review,
         warehouseId: warehouse._id,
+        warehoueName: warehouse.name,
+        ownerId: warehouse.ownerId._id,
       }),
     });
 

@@ -166,6 +166,8 @@ const UserSettings = () => {
         showSuccessToast("Your email has been updated");
       } else if (field === "about") {
         showSuccessToast("Your about section has been updated");
+      } else {
+        showSuccessToast("Your address has been updated");
       }
     } catch (error) {
       console.error("Error updating user details:", error);
@@ -331,6 +333,11 @@ const UserSettings = () => {
 
         <div>
           <InputField label="Legal name" value={user.name} field="name" />
+          <InputField
+            label="Address"
+            value={user.address ? user.address : ""}
+            field="address"
+          />
           <InputField
             label="Email address"
             value={user.email}

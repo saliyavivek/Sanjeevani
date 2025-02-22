@@ -162,6 +162,13 @@ const updateUserDetails = async (req, res) => {
         type: "general",
       });
     }
+    if (updates.address) {
+      await Notification.create({
+        userId,
+        content: `Your address has been updated to ${user.address}.`,
+        type: "general",
+      });
+    }
 
     res.status(200).json(user); // Send back the updated user
   } catch (error) {

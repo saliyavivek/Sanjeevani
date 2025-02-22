@@ -58,7 +58,7 @@ const ReviewCard = ({ review, onEdit, onDelete, warehouse, onReply }) => {
   };
 
   return (
-    <div className="mb-8 relative">
+    <div className="mb-4 relative md:border-b-0 md:pb-0 border-b pb-4">
       <div className="flex items-center mb-4">
         <div className="relative">
           <a href={`/users/f/show/${review.userId._id}`}>
