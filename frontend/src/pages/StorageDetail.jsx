@@ -428,24 +428,29 @@ const StorageDetail = () => {
 
           <div className="py-4 border-t border-b">
             <div className="flex items-center gap-2">
-              <a href={`/users/o/show/${warehouse.ownerId._id}`}>
+              <a
+                href={`/users/o/show/${warehouse.ownerId._id}`}
+                className="flex items-center gap-2"
+              >
                 <img
                   src={warehouse.ownerId.avatar || "/placeholder.svg"}
                   alt={warehouse.ownerId.name}
                   className="w-10 h-10 object-cover rounded-full"
                 />
+
+                <div>
+                  <p className="font-medium">
+                    Listed by{" "}
+                    {warehouse.ownerId._id === user.userId
+                      ? "you"
+                      : warehouse.ownerId.name}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {calculateDuration(warehouse.ownerId.createdAt)} on
+                    Sanjeevani
+                  </p>
+                </div>
               </a>
-              <div>
-                <p className="font-medium">
-                  Listed by{" "}
-                  {warehouse.ownerId._id === user.userId
-                    ? "you"
-                    : warehouse.ownerId.name}
-                </p>
-                <p className="text-sm text-gray-600">
-                  {calculateDuration(warehouse.ownerId.createdAt)} on Sanjeevani
-                </p>
-              </div>
             </div>
           </div>
 
@@ -542,6 +547,7 @@ const StorageDetail = () => {
           editReview={editingReview}
         />
         <ReviewList
+          warehouse={warehouse}
           reviews={reviews}
           onEditReview={handleEditReview}
           onDeleteReview={handleDeleteReview}
@@ -566,21 +572,6 @@ const StorageDetail = () => {
           stats={reviewStats}
         />
 
-        {/* {booked && user.userId !== warehouse.ownerId._id && (
-          <div className="flex justify-center items-center mt-4">
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Add Review
-            </button>
-          </div>
-        )}
-        {!booked && user.userId !== warehouse.ownerId._id && (
-          <div className="flex justify-center items-center mt-4 text-gray-600 text-sm sm:text-base">
-            Book this storage to add reviews.
-          </div>
-        )} */}
         {user.userId !== warehouse.ownerId._id && (
           <div className="flex justify-center items-center mt-4">
             {booked ? (
@@ -598,6 +589,27 @@ const StorageDetail = () => {
           </div>
         )}
       </div>
+
+      {/* {showReplyForm && (
+        <form
+          onSubmit={handleReply}
+          className="mt-2 flex items-center space-x-2"
+        >
+          <input
+            type="text"
+            value={replyText}
+            onChange={(e) => setReplyText(e.target.value)}
+            className="border p-2 rounded w-full"
+            placeholder="Write your reply..."
+          />
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Submit
+          </button>
+        </form>
+      )} */}
 
       {/* Map Section */}
       <div className="mt-8">

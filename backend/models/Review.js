@@ -24,6 +24,15 @@ const reviewSchema = new mongoose.Schema(
       trim: true,
       maxlength: 1000,
     },
+    reply: {
+      text: { type: String, default: null },
+      ownerId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        default: null,
+      },
+      createdAt: { type: Date, default: null },
+    },
   },
   {
     timestamps: true,

@@ -87,11 +87,17 @@ export default function BrowseStorage() {
           </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {isLoading
-            ? skeletons.map((_, index) => <StorageCardSkeleton key={index} />)
-            : filteredWarehouses.map((warehouse) => (
-                <StorageCard key={warehouse._id} warehouse={warehouse} />
-              ))}
+          {isLoading ? (
+            skeletons.map((_, index) => <StorageCardSkeleton key={index} />)
+          ) : filteredWarehouses.length > 0 ? (
+            filteredWarehouses.map((warehouse) => (
+              <StorageCard key={warehouse._id} warehouse={warehouse} />
+            ))
+          ) : (
+            <p className="text-center text-gray-500 mt-4">
+              No warehouses found.
+            </p>
+          )}
         </div>
       </div>
       <FilterModal

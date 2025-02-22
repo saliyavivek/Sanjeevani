@@ -3,30 +3,41 @@ import { Star, MoreVertical, Dot } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import ReviewOptionsMenu from "./ReviewOptionsMenu";
 import { formatDistanceToNow } from "date-fns";
+import useAuth from "../hooks/useAuth";
+import ReplyModal from "./ReplyModal";
+import { showErrorToast, showSuccessToast } from "./toast";
+import ReviewReply from "./ReviewReply";
 
-const ReviewCard = ({ review, onEdit, onDelete }) => {
+const ReviewCard = ({ review, onEdit, onDelete, warehouse, onReply }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const shouldShowMore = review.review.length > 150;
+  const storedToken = useAuth();
 
   useEffect(() => {
-    const fetchCurrentUser = () => {
-      const storedToken = localStorage.getItem("token");
-      if (storedToken) {
-        try {
-          const decodedToken = jwtDecode(storedToken);
-          setCurrentUser(decodedToken.userId);
-        } catch (error) {
-          console.error("Invalid token", error);
-          localStorage.removeItem("token");
-        }
-      }
-    };
     fetchCurrentUser();
-  }, []);
+  }, [storedToken]);
 
-  const isCurrentUserReview = currentUser === review.userId._id;
+  const fetchCurrentUser = async () => {
+    if (storedToken) {
+      try {
+        const decodedToken = await jwtDecode(storedToken);
+        // console.log(decodedToken);
+        setCurrentUser(decodedToken);
+      } catch (error) {
+        console.error("Invalid token", error);
+        localStorage.removeItem("token");
+      }
+    }
+  };
+
+  const isCurrentUserReview =
+    currentUser && currentUser.userId === review.userId._id;
+
+  // if (currentUser) {
+  //   console.log(currentUser, warehouse);
+  // }
 
   const calculateDuration = (dateString) => {
     const currentDate = new Date();
@@ -125,11 +136,115 @@ const ReviewCard = ({ review, onEdit, onDelete }) => {
           <p>{review.review}</p>
         )}
       </div>
+
+      <div>
+        {review.reply &&
+          typeof review.reply.text === "string" &&
+          review.reply.text.trim() !== "" && (
+            <ReviewReply reply={review.reply} />
+          )}
+      </div>
+
+      <div>
+        {currentUser &&
+          currentUser.role === "owner" &&
+          currentUser.userId === warehouse.ownerId._id && (
+            <button
+              title={
+                review.reply &&
+                typeof review.reply.text === "string" &&
+                review.reply.text.trim() !== ""
+                  ? "You have already replied."
+                  : ""
+              }
+              disabled={
+                !!(
+                  review.reply &&
+                  typeof review.reply.text === "string" &&
+                  review.reply.text.trim() !== ""
+                )
+              }
+              onClick={() => onReply(review)}
+              className={`text-blue-500 ${
+                review.reply &&
+                typeof review.reply.text === "string" &&
+                review.reply.text.trim() !== ""
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
+              }`}
+            >
+              Reply
+            </button>
+          )}
+      </div>
     </div>
   );
 };
 
-const ReviewList = ({ reviews, onEditReview, onDeleteReview }) => {
+const ReviewList = ({ reviews, onEditReview, onDeleteReview, warehouse }) => {
+  const [showReplyForm, setShowReplyForm] = useState(false);
+  const [selectedReview, setSelectedReview] = useState(null);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const [currentUser, setCurrentUser] = useState(null);
+  const storedToken = useAuth();
+
+  // console.log(reviews);
+
+  useEffect(() => {
+    fetchCurrentUser();
+  }, [storedToken]);
+
+  const fetchCurrentUser = async () => {
+    if (storedToken) {
+      try {
+        const decodedToken = await jwtDecode(storedToken);
+        // console.log(decodedToken);
+        setCurrentUser(decodedToken);
+      } catch (error) {
+        console.error("Invalid token", error);
+        localStorage.removeItem("token");
+      }
+    }
+  };
+
+  const handleReplyReview = async (replyData, selectedReview) => {
+    if (!selectedReview) {
+      console.error("No review selected for reply.");
+      return;
+    }
+
+    // console.log("Replying to:", selectedReview._id);
+    // console.log("Reply Text:", replyData);
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/reviews/reply/${selectedReview._id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ text: replyData, userId: currentUser.userId }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to submit reply");
+      }
+
+      const data = await response.json();
+      showSuccessToast(data.message);
+      setShowReplyForm(false);
+    } catch (error) {
+      showErrorToast("Failed to reply");
+    }
+  };
+
+  const handleReplyClick = (review) => {
+    setSelectedReview(review); // Set the review data first
+    setTimeout(() => setShowReplyForm(true), 100); // Delay modal opening to ensure state update
+  };
+
   return reviews.length > 0 ? (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
       {reviews.map((review, index) => (
@@ -138,8 +253,20 @@ const ReviewList = ({ reviews, onEditReview, onDeleteReview }) => {
           review={review}
           onEdit={onEditReview}
           onDelete={onDeleteReview}
+          warehouse={warehouse}
+          onReply={handleReplyClick}
         />
       ))}
+
+      <ReplyModal
+        isOpen={showReplyForm}
+        onClose={() => {
+          setShowReplyForm(false);
+        }}
+        onSubmit={(replyData) => {
+          handleReplyReview(replyData, selectedReview);
+        }}
+      />
     </div>
   ) : (
     <div className="flex justify-center text-gray-600">

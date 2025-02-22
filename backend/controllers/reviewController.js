@@ -1,4 +1,5 @@
 const Review = require("../models/Review");
+const Warehouse = require("../models/Warehouse");
 
 const addReview = async (req, res) => {
   try {
@@ -25,7 +26,13 @@ const fetchReviews = async (req, res) => {
   try {
     const reviews = await Review.find({ warehouseId: req.params.warehouseId })
       .populate("userId")
-      .populate("warehouseId");
+      .populate("warehouseId")
+      .populate({
+        path: "reply",
+        populate: {
+          path: "ownerId",
+        },
+      });
     if (reviews.length > 0) {
       return res.status(200).json({ message: "Reviews found.", reviews });
     }
@@ -76,9 +83,42 @@ const deleteReview = async (req, res) => {
   }
 };
 
+const addReplyToReview = async (req, res) => {
+  try {
+    const { reviewId } = req.params;
+    const { text, userId } = req.body;
+
+    // console.log(reviewId, text, userId);
+
+    const review = await Review.findById(reviewId);
+    if (!review) return res.status(404).json({ message: "Review not found" });
+
+    // Check if the user is the owner of the warehouse
+    const warehouse = await Warehouse.findById(review.warehouseId);
+    if (!warehouse || warehouse.ownerId.toString() !== userId) {
+      return res
+        .status(403)
+        .json({ message: "Unauthorized to reply to this review" });
+    }
+
+    // Add reply to review
+    review.reply = {
+      text,
+      ownerId: userId,
+      createdAt: new Date(),
+    };
+
+    await review.save();
+    res.status(200).json({ message: "Reply added successfully", review });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
 module.exports = {
   addReview,
   fetchReviews,
   updateReview,
   deleteReview,
+  addReplyToReview,
 };
