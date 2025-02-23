@@ -13,6 +13,7 @@ const path = require("path");
 const Warehouse = require("../models/Warehouse");
 const Booking = require("../models/Booking");
 const Review = require("../models/Review");
+const Wishlist = require("../models/Wishlist");
 
 function generateToken() {
   return crypto.randomBytes(32).toString("hex");
@@ -279,12 +280,23 @@ const deleteAccount = async (req, res) => {
   try {
     const userId = req.body.userId;
 
+    if (!userId) {
+      return res.status(401).json({ message: "user id is required" });
+    }
+
+    const searchedUser = await User.findById(userId);
+
+    if (!searchedUser) {
+      return res.status(401).json({ message: "no such user found." });
+    }
+
+    await User.findByIdAndDelete(userId);
     await Warehouse.deleteMany({ ownerId: userId });
     await Booking.deleteMany({ userId: userId });
     await Notification.deleteMany({ userId: userId });
     await Review.deleteMany({ userId: userId });
+    await Wishlist.deleteMany({ user: userId });
 
-    const user = await User.findByIdAndDelete(userId);
     // console.log("user deleted", user);
 
     res

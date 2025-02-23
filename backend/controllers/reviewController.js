@@ -110,8 +110,12 @@ const addReplyToReview = async (req, res) => {
     if (!review) return res.status(404).json({ message: "Review not found" });
 
     // Check if the user is the owner of the warehouse
-    const warehouse = await Warehouse.findById(review.warehouseId);
-    if (!warehouse || warehouse.ownerId.toString() !== userId) {
+    const warehouse = await Warehouse.findById(review.warehouseId).populate(
+      "ownerId"
+    );
+
+    // console.log(warehouse);
+    if (!warehouse || warehouse.ownerId._id.toString() !== userId) {
       return res
         .status(403)
         .json({ message: "Unauthorized to reply to this review" });
@@ -125,9 +129,62 @@ const addReplyToReview = async (req, res) => {
     };
 
     await review.save();
+
+    await Notification.create({
+      userId: review.userId,
+      content: `Warehouse owner ${warehouse.ownerId.name} has replied to your review on ${warehouse.name}.`,
+      type: "general",
+    });
     res.status(200).json({ message: "Reply added successfully", review });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
+  }
+};
+
+const editReply = async (req, res) => {
+  try {
+    const { text, userId } = req.body;
+    const { reviewId } = req.params;
+
+    const review = await Review.findById(reviewId);
+    if (!review) return res.status(404).json({ message: "Review not found" });
+
+    // Ensure only the owner can edit
+    if (review.reply?.ownerId.toString() !== userId) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to edit this reply" });
+    }
+
+    review.reply.text = text;
+    await review.save();
+
+    res.status(200).json({ message: "Reply updated", reply: review.reply });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating reply", error });
+  }
+};
+
+const deleteReply = async (req, res) => {
+  try {
+    const { reviewId } = req.params;
+
+    const review = await Review.findById(reviewId);
+    if (!review) return res.status(404).json({ message: "Review not found" });
+
+    // Ensure only the owner can delete
+    if (review.reply?.ownerId.toString() !== req.body.userId) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to delete this reply" });
+    }
+
+    review.reply = undefined;
+    await review.save();
+
+    res.status(200).json({ message: "Reply deleted" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting reply", error });
   }
 };
 
@@ -137,4 +194,6 @@ module.exports = {
   updateReview,
   deleteReview,
   addReplyToReview,
+  editReply,
+  deleteReply,
 };

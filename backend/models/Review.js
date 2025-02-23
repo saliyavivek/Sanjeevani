@@ -25,13 +25,9 @@ const reviewSchema = new mongoose.Schema(
       maxlength: 1000,
     },
     reply: {
-      text: { type: String, default: null },
-      ownerId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        default: null,
-      },
-      createdAt: { type: Date, default: null },
+      text: String,
+      ownerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      createdAt: { type: Date, default: Date.now },
     },
   },
   {

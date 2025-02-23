@@ -1,24 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { Star, X } from "lucide-react";
+"use client";
 
-const ReplyModal = ({ isOpen, onClose, onSubmit }) => {
-  const [reply, setReply] = useState("");
+import { useState, useEffect } from "react";
+import { X } from "lucide-react";
 
-  //   useEffect(() => {
-  //     if (editReview) {
-  //       setRating(editReview.ratings);
-  //       setReview(editReview.review);
-  //     } else {
-  //       setRating(0);
-  //       setReview("");
-  //     }
-  //   }, [editReview]);
+const ReplyModal = ({ isOpen, onClose, onSubmit, initialReply = "" }) => {
+  const [reply, setReply] = useState(initialReply);
+
+  useEffect(() => {
+    setReply(initialReply);
+  }, [initialReply]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(reply);
     setReply("");
-    onClose();
   };
 
   if (!isOpen) return null;
@@ -32,7 +27,9 @@ const ReplyModal = ({ isOpen, onClose, onSubmit }) => {
         >
           <X className="w-6 h-6" />
         </button>
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Reply</h2>
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+          {initialReply ? "Edit Reply" : "Reply"}
+        </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
@@ -56,7 +53,7 @@ const ReplyModal = ({ isOpen, onClose, onSubmit }) => {
               type="submit"
               className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
             >
-              Submit Reply
+              {initialReply ? "Update Reply" : "Submit Reply"}
             </button>
           </div>
         </form>

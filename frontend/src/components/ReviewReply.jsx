@@ -1,7 +1,12 @@
-import { CornerDownRight } from "lucide-react";
+"use client";
+
+import { useState } from "react";
+import { CornerDownRight, MoreVertical } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
-const ReviewReply = ({ reply }) => {
+const ReviewReply = ({ reply, onEdit, onDelete, isOwner }) => {
+  const [showOptions, setShowOptions] = useState(false);
+
   return (
     <div className="ml-12 mt-4 relative">
       {/* Vertical connection line */}
@@ -32,7 +37,7 @@ const ReviewReply = ({ reply }) => {
                 )}
               </a>
             </div>
-            <div className="ml-3">
+            <div className="ml-3 flex-grow">
               <div className="flex items-center">
                 <h4 className="font-semibold text-gray-900">
                   {reply.ownerId.name}
@@ -47,6 +52,40 @@ const ReviewReply = ({ reply }) => {
                 })}
               </p>
             </div>
+            {isOwner && (
+              <div className="relative">
+                <button
+                  onClick={() => setShowOptions(!showOptions)}
+                  className="p-1 rounded-full hover:bg-gray-200"
+                >
+                  <MoreVertical className="w-5 h-5 text-gray-500" />
+                </button>
+                {showOptions && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
+                    <div className="py-1">
+                      <button
+                        onClick={() => {
+                          onEdit(reply);
+                          setShowOptions(false);
+                        }}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        Edit Reply
+                      </button>
+                      <button
+                        onClick={() => {
+                          onDelete(reply._id);
+                          setShowOptions(false);
+                        }}
+                        className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                      >
+                        Delete Reply
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Reply text */}

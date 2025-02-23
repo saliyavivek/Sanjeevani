@@ -2,6 +2,8 @@ const Warehouse = require("../models/Warehouse");
 const Notification = require("../models/Notification");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const Booking = require("../models/Booking");
+const Review = require("../models/Review");
+const Wishlist = require("../models/Wishlist");
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
@@ -265,6 +267,9 @@ const deleteWarehouse = async (req, res) => {
     }
 
     await Warehouse.deleteOne({ _id: warehouseId });
+    await Booking.deleteMany({ warehouseId });
+    await Review.deleteMany({ warehouseId });
+    await Wishlist.deleteMany({ warehouse: warehouseId });
 
     await Notification.create({
       userId: warehouse.ownerId,
