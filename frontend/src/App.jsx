@@ -26,6 +26,7 @@ import Wishlists from "./pages/WishLists";
 import GoogleRedirect from "./pages/GoogleRedirect";
 import AdminDashboard from "./pages/AdminDashboard";
 import BookingRequests from "./pages/BookingRequests";
+import Maintenance from "./pages/Maintenance";
 
 const AppRoutes = () => {
   const location = useLocation(); // Get the current location
@@ -33,14 +34,15 @@ const AppRoutes = () => {
   return (
     <>
       {/* Conditionally render Navbar based on the current path */}
-      {location.pathname !== "/" && (
+      {/* {location.pathname !== "/" && (
         <>
           <Navbar />
         </>
-      )}
+      )} */}
       <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/owner/dashboard" element={<WarehouseOwnerDashboard />} />
+        <Route path="*" element={<Maintenance />} />
+        {/* <Route path="/" element={<LandingPage />} /> */}
+        {/* <Route path="/owner/dashboard" element={<WarehouseOwnerDashboard />} />
         <Route path="/farmer/dashboard" element={<FarmerDashboard />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
@@ -51,7 +53,6 @@ const AppRoutes = () => {
         <Route path="/book/warehouse" element={<BookWarehouse />} />
         <Route path="/bookings" element={<MyBookings />} />
         <Route path="/booking/:id" element={<BookingDetails />} />
-        {/* <Route path="/requests" element={<BookingRequests />} /> */}
         <Route path="/settings" element={<UserSettings />} />
         <Route path="/notifications" element={<NotificationsPage />} />
         <Route path="/reset-password" element={<ResetPassword />} />
@@ -60,7 +61,7 @@ const AppRoutes = () => {
         <Route path="/wishlists" element={<Wishlists />} />
         <Route path="/auth" element={<GoogleRedirect />} />
         <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/bookings/requests" element={<BookingRequests />} />
+        <Route path="/bookings/requests" element={<BookingRequests />} /> */}
       </Routes>
     </>
   );
