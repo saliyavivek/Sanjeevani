@@ -1,17 +1,27 @@
 export default function Maintenance() {
   return (
-    <div className="h-screen flex flex-col items-center justify-center text-center mx-4">
-      <p className="text-gray-800 text-lg mb-6">
-        I asked "someone" to create a footer for the site, but unfortunately,
-        <br />
-        "that someone" didn't do his task.
+    <div className="h-screen flex flex-col justify-center mx-4">
+      <p className="text-gray-500 text-md mb-6">
+        Oh look, who is here! <br />
       </p>
-      <p className="text-gray-600 text-sm italic">
-        If you're reading this and you're the "footer guy", it's time to
-        RESPOND.😑
+      <p className="text-gray-500 text-md mb-6">
+        Finally, you remembered this website huh? I guess 400 marks were not
+        enough motivation for you.
       </p>
-      <p className="mt-4 text-gray-500">
-        Until then, the website stays paused. ✌️
+      <p className=" text-gray-500 text-md mb-6">
+        If you’ve finally decided to open this site, message me so I at least
+        know you care about <b>"our"</b> project. Otherwise, enjoy this page.
+      </p>
+      <p className="text-gray-500 text-md mb-6">
+        પઘારો! <br />
+      </p>
+      <p className="text-gray-500 text-md mb-6">
+        અરે, તમને આ વેબસાઇટ યાદ છે હજૂ? મને લાગ્યૂ કે 400 માર્કસ તમારા માટે
+        પૂરતૂ મોટિવેશન નથી.
+      </p>
+      <p className=" text-gray-500 text-md mb-6">
+        જો તમે આખરે આ સાઇટ ખોલવાનું નક્કી કર્યું જ હોય, તો મને જણાવો જેથી મને
+        ખબર પડે કે તમને <b>"આપણા"</b> પ્રોજેક્ટ ની કંઈક પડી.
       </p>
     </div>
   );

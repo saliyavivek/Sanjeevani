@@ -41,8 +41,8 @@ const AppRoutes = () => {
       )} */}
       <Routes>
         <Route path="*" element={<Maintenance />} />
-        {/* <Route path="/" element={<LandingPage />} /> */}
-        {/* <Route path="/owner/dashboard" element={<WarehouseOwnerDashboard />} />
+        {/* <Route path="/" element={<LandingPage />} />
+        <Route path="/owner/dashboard" element={<WarehouseOwnerDashboard />} />
         <Route path="/farmer/dashboard" element={<FarmerDashboard />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/signin" element={<Signin />} />
