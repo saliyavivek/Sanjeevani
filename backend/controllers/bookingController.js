@@ -316,7 +316,12 @@ const isBookedByUser = async (req, res) => {
 const getAllBookings = async (req, res) => {
   try {
     const bookings = await Booking.find({})
-      .populate("warehouseId")
+      .populate({
+        path: "warehouseId", // Populate warehouseId
+        populate: {
+          path: "ownerId", // Populate warehouseId->ownerId
+        },
+      })
       .populate("userId");
 
     if (bookings.length === 0) {

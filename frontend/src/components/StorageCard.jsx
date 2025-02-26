@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import DeleteConfirmModal from "./DeleteConfirmModal";
-import { showLoadingToast, showSuccessToast } from "./toast";
+import { showErrorToast, showLoadingToast, showSuccessToast } from "./toast";
 
 const StorageCard = ({ warehouse, onDelete }) => {
   const navigate = useNavigate();
@@ -47,7 +47,7 @@ const StorageCard = ({ warehouse, onDelete }) => {
         onDelete();
       } else {
         const errorData = await response.json();
-        showSuccessToast(errorData.message, loadingToastId);
+        showErrorToast(errorData.message, loadingToastId);
         console.error("Error deleting warehouse:", errorData);
       }
     } catch (error) {

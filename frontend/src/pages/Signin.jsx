@@ -36,6 +36,13 @@ const Signin = () => {
 
       showSuccessToast(data.message, loadingToastId);
 
+      console.log(data);
+
+      if (data.isDeactivated == true) {
+        navigate("/deactivated");
+        return;
+      }
+
       if (data.role === "farmer") {
         navigate("/warehouses/search");
       } else {

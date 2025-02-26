@@ -337,12 +337,29 @@ const totalWarehouses = async (req, res) => {
 
 const fetchAllWarehouses = async (req, res) => {
   try {
-    const allWarehouses = await Warehouse.find({});
+    const allWarehouses = await Warehouse.find({}).populate("ownerId");
 
     res.status(200).json({ allWarehouses });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to fetch all warehouses" });
+  }
+};
+
+const fetchWarehouseDetailsForAdmin = async (req, res) => {
+  try {
+    const { warehouseId } = req.params;
+    const warehouse = await Warehouse.findOne({ _id: warehouseId });
+
+    // console.log(warehouse);
+    if (!warehouse) {
+      return res.status(401).json({ message: "warehouse not found" });
+    }
+
+    res.status(200).json(warehouse);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch warehouse details" });
   }
 };
 
@@ -357,4 +374,5 @@ module.exports = {
   deleteWarehouseImage,
   totalWarehouses,
   fetchAllWarehouses,
+  fetchWarehouseDetailsForAdmin,
 };

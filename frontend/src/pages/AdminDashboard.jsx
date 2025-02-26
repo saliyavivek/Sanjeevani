@@ -1,109 +1,138 @@
 import { useState } from "react";
 import {
-  BarChart3,
+  LayoutDashboard,
   Users,
   Warehouse,
   Calendar,
-  Settings,
   LogOut,
+  Menu,
+  X,
 } from "lucide-react";
-import OverviewStats from "../components/OverviewStats";
-import RecentBookings from "../components/RecentBookings";
+import Overview from "../components/Overview";
 import UserManagement from "../components/UserManagement";
-import WarehouseListings from "../components/WarehouseListings";
+import WarehouseManagement from "../components/WarehouseManagement";
+import BookingManagement from "../components/BookingManagement";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case "overview":
+        return <Overview />;
+      case "users":
+        return <UserManagement />;
+      case "warehouses":
+        return <WarehouseManagement />;
+      case "bookings":
+        return <BookingManagement />;
+      default:
+        return <Overview />;
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-md">
-        {/* <div className="p-4">
-          <h1 className="text-2xl font-bold text-green-600">FarmStore Admin</h1>
-        </div> */}
-        <nav className="mt-6">
+      <div
+        className={`fixed inset-y-0 left-0 z-30 w-64 bg-white shadow-lg transition-all duration-300 transform ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:relative lg:translate-x-0`}
+      >
+        <div className="p-4">
+          <h1 className="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
+        </div>
+        <nav className="mt-8">
           <a
             href="#"
-            className={`flex items-center px-4 py-2 ${
+            className={`flex items-center px-4 py-3 ${
               activeTab === "overview"
-                ? "text-green-600 bg-green-100 border-r-4 border-green-600"
-                : "text-gray-700 hover:bg-gray-100"
+                ? "bg-blue-100 text-blue-600"
+                : "text-gray-600 hover:bg-gray-100"
             }`}
-            onClick={() => setActiveTab("overview")}
+            onClick={() => {
+              setActiveTab("overview");
+              setIsSidebarOpen(false);
+            }}
           >
-            <BarChart3 className="w-5 h-5 mr-3" />
+            <LayoutDashboard className="mr-3" size={20} />
             Overview
           </a>
           <a
             href="#"
-            className={`flex items-center px-4 py-2 mt-2 ${
+            className={`flex items-center px-4 py-3 ${
               activeTab === "users"
-                ? "text-green-600 bg-green-100 border-r-4 border-green-600"
-                : "text-gray-700 hover:bg-gray-100"
+                ? "bg-blue-100 text-blue-600"
+                : "text-gray-600 hover:bg-gray-100"
             }`}
-            onClick={() => setActiveTab("users")}
+            onClick={() => {
+              setActiveTab("users");
+              setIsSidebarOpen(false);
+            }}
           >
-            <Users className="w-5 h-5 mr-3" />
+            <Users className="mr-3" size={20} />
             Users
           </a>
           <a
             href="#"
-            className={`flex items-center px-4 py-2 mt-2 ${
+            className={`flex items-center px-4 py-3 ${
               activeTab === "warehouses"
-                ? "text-green-600 bg-green-100 border-r-4 border-green-600"
-                : "text-gray-700 hover:bg-gray-100"
+                ? "bg-blue-100 text-blue-600"
+                : "text-gray-600 hover:bg-gray-100"
             }`}
-            onClick={() => setActiveTab("warehouses")}
+            onClick={() => {
+              setActiveTab("warehouses");
+              setIsSidebarOpen(false);
+            }}
           >
-            <Warehouse className="w-5 h-5 mr-3" />
+            <Warehouse className="mr-3" size={20} />
             Warehouses
           </a>
           <a
             href="#"
-            className={`flex items-center px-4 py-2 mt-2 ${
+            className={`flex items-center px-4 py-3 ${
               activeTab === "bookings"
-                ? "text-green-600 bg-green-100 border-r-4 border-green-600"
-                : "text-gray-700 hover:bg-gray-100"
+                ? "bg-blue-100 text-blue-600"
+                : "text-gray-600 hover:bg-gray-100"
             }`}
-            onClick={() => setActiveTab("bookings")}
+            onClick={() => {
+              setActiveTab("bookings");
+              setIsSidebarOpen(false);
+            }}
           >
-            <Calendar className="w-5 h-5 mr-3" />
+            <Calendar className="mr-3" size={20} />
             Bookings
           </a>
-          <a
-            href="#"
-            className="flex items-center px-4 py-2 mt-2 text-gray-700 hover:bg-gray-100"
-          >
-            <Settings className="w-5 h-5 mr-3" />
-            Settings
-          </a>
         </nav>
-        <div className="absolute bottom-0 w-64 p-4">
+        {/* <div className="absolute bottom-0 w-full p-4">
           <a
             href="#"
-            className="flex items-center text-gray-700 hover:text-gray-900 transition-colors duration-200"
+            className="flex items-center text-gray-600 hover:text-gray-800"
           >
-            <LogOut className="w-5 h-5 mr-3" />
+            <LogOut className="mr-3" size={20} />
             Logout
           </a>
-        </div>
-      </aside>
+        </div> */}
+      </div>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto p-8">
-        <h2 className="text-3xl font-semibold text-gray-800 mb-6">
-          {activeTab === "overview" && "Dashboard Overview"}
-          {activeTab === "users" && "User Management"}
-          {activeTab === "warehouses" && "Warehouse Listings"}
-          {activeTab === "bookings" && "Booking Management"}
-        </h2>
-
-        {activeTab === "overview" && <OverviewStats />}
-        {activeTab === "overview" && <RecentBookings />}
-        {activeTab === "users" && <UserManagement />}
-        {activeTab === "warehouses" && <WarehouseListings />}
-      </main>
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <header className="bg-white shadow-sm">
+          <div className="flex items-center justify-between px-4 py-3">
+            <button
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className="text-gray-600 focus:outline-none lg:hidden"
+            >
+              {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+            <div className="text-gray-600">Welcome, Admin</div>
+          </div>
+        </header>
+        <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-6">
+          {renderContent()}
+        </main>
+      </div>
     </div>
   );
 };

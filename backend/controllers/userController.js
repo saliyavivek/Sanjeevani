@@ -99,6 +99,7 @@ const signin = async (req, res) => {
       token,
       userId: user._id,
       role: user.role,
+      isDeactivated: user.isDeactivated,
     });
   } catch (error) {
     // console.log(error.errors[0].message);
@@ -131,47 +132,49 @@ const updateUserDetails = async (req, res) => {
   const { userId } = req.params;
   const updates = req.body;
 
-  console.log(userId, updates);
+  // console.log(userId, updates);
 
   try {
-    const user = await User.findByIdAndUpdate(userId, updates, {
-      new: true,
-    });
+    const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    if (updates.name) {
+    const updatedUser = await User.findByIdAndUpdate(userId, updates, {
+      new: true,
+    });
+
+    if (updates.name && updatedUser.name !== user.name) {
       await Notification.create({
         userId,
-        content: `Your display name has been changed to ${user.name}.`,
+        content: `Your display name has been changed to ${updatedUser.name}.`,
         type: "general",
       });
     }
-    if (updates.email) {
+    if (updates.email && updatedUser.email !== user.email) {
       await Notification.create({
         userId,
-        content: `Your email address has been updated to ${user.email}.`,
+        content: `Your email address has been updated to ${updatedUser.email}.`,
         type: "general",
       });
     }
-    if (updates.phoneno) {
+    if (updates.phoneno && updatedUser.phoneno !== user.phoneno) {
       await Notification.create({
         userId,
-        content: `Your phone number has been updated to ${user.phoneno}.`,
+        content: `Your phone number has been updated to ${updatedUser.phoneno}.`,
         type: "general",
       });
     }
-    if (updates.address) {
+    if (updates.address && updatedUser.address !== user.address) {
       await Notification.create({
         userId,
-        content: `Your address has been updated to ${user.address}.`,
+        content: `Your address has been updated to ${updatedUser.address}.`,
         type: "general",
       });
     }
 
-    res.status(200).json(user); // Send back the updated user
+    res.status(200).json(updatedUser); // Send back the updated user
   } catch (error) {
     console.error("Error updating user:", error);
     res.status(500).json({ error: "Failed to update user" });
@@ -330,6 +333,47 @@ const fetchAllUsers = async (req, res) => {
   }
 };
 
+const fetchUserDetailsForAdmin = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findOne({ _id: userId });
+
+    // console.log(user);
+    if (!user) {
+      return res.status(401).json({ message: "user not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch user details" });
+  }
+};
+
+const manageUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findOne({ _id: userId });
+
+    if (!user) {
+      return res.status(401).json({ message: "user not found" });
+    }
+
+    if (user.isDeactivated == true) {
+      user.isDeactivated = false;
+      await user.save();
+      res.status(200).json({ user, message: "User has been activated." });
+    } else {
+      user.isDeactivated = true;
+      await user.save();
+      res.status(200).json({ user, message: "User has been deactivated." });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to deactivate user" });
+  }
+};
+
 module.exports = {
   signup,
   signin,
@@ -341,4 +385,6 @@ module.exports = {
   deleteAccount,
   totalUsers,
   fetchAllUsers,
+  fetchUserDetailsForAdmin,
+  manageUser,
 };

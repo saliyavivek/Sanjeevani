@@ -27,6 +27,8 @@ import GoogleRedirect from "./pages/GoogleRedirect";
 import AdminDashboard from "./pages/AdminDashboard";
 import BookingRequests from "./pages/BookingRequests";
 import Maintenance from "./pages/Maintenance";
+import AdminEditPage from "./pages/AdminEditPage";
+import DeactivationPage from "./pages/DeactivationPage";
 
 const AppRoutes = () => {
   const location = useLocation(); // Get the current location
@@ -34,11 +36,9 @@ const AppRoutes = () => {
   return (
     <>
       {/* Conditionally render Navbar based on the current path */}
-      {/* {location.pathname !== "/" && (
-        <>
-          <Navbar />
-        </>
-      )} */}
+      {location.pathname !== "/" && location.pathname !== "/deactivated" && (
+        <Navbar />
+      )}
       <Routes>
         <Route path="*" element={<Maintenance />} />
         {/* <Route path="/" element={<LandingPage />} />
@@ -61,7 +61,9 @@ const AppRoutes = () => {
         <Route path="/wishlists" element={<Wishlists />} />
         <Route path="/auth" element={<GoogleRedirect />} />
         <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/bookings/requests" element={<BookingRequests />} /> */}
+        <Route path="/bookings/requests" element={<BookingRequests />} />
+        <Route path="/admin/edit/:id" element={<AdminEditPage />} />
+        <Route path="/deactivated" element={<DeactivationPage />} /> */}
       </Routes>
     </>
   );

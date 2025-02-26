@@ -11,6 +11,8 @@ const {
   deleteAccount,
   totalUsers,
   fetchAllUsers,
+  fetchUserDetailsForAdmin,
+  manageUser,
 } = require("../controllers/userController");
 const upload = require("../middlewares/multer");
 
@@ -24,5 +26,7 @@ router.post("/reset-password", resetPassword);
 router.post("/delete-account", deleteAccount);
 router.get("/total-users", totalUsers);
 router.get("/all-users", fetchAllUsers);
+router.get("/user/:userId", fetchUserDetailsForAdmin);
+router.put("/user/:userId/manage", manageUser);
 
 module.exports = router;

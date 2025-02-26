@@ -18,6 +18,10 @@ const userSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  isDeactivated: {
+    type: Boolean,
+    default: false,
+  },
   resetToken: { type: String, default: null },
   resetTokenExpiry: { type: Date, default: null },
 });
