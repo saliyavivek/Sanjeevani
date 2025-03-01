@@ -36,7 +36,7 @@ const Signin = () => {
 
       showSuccessToast(data.message, loadingToastId);
 
-      console.log(data);
+      // console.log(data);
 
       if (data.isDeactivated == true) {
         navigate("/deactivated");
@@ -45,8 +45,10 @@ const Signin = () => {
 
       if (data.role === "farmer") {
         navigate("/warehouses/search");
-      } else {
+      } else if (data.role === "owner") {
         navigate("/owner/dashboard");
+      } else {
+        navigate("/admin");
       }
     } else {
       const error = await response.json();

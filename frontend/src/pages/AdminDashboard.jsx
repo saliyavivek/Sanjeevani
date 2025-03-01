@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   LayoutDashboard,
   Users,
@@ -12,10 +12,25 @@ import Overview from "../components/Overview";
 import UserManagement from "../components/UserManagement";
 import WarehouseManagement from "../components/WarehouseManagement";
 import BookingManagement from "../components/BookingManagement";
+import useAuth from "../hooks/useAuth";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
+import { showErrorToast } from "../components/toast";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const token = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (token) {
+      const { role } = jwtDecode(token);
+      if (role !== "admin") {
+        return navigate(-1);
+      }
+    }
+  }, [token]);
 
   const renderContent = () => {
     switch (activeTab) {

@@ -110,22 +110,22 @@ const Navbar = () => {
 
   async function fetchPendingPayments() {
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/bookings/pending-payments/${userId}`
-      );
-      if (!response.ok) {
-        console.log("Something went wrong.");
-        return;
-      }
-      const data = await response.json();
-      if (data.bookings.length > 0) {
-        setHasPendingPayments(true);
+      if (userId) {
+        const response = await fetch(
+          `${API_BASE_URL}/bookings/pending-payments/${userId}`
+        );
+        if (!response.ok) {
+          // console.log("Something went wrong.");
+          return;
+        }
+        const data = await response.json();
+        if (data.bookings.length > 0) {
+          setHasPendingPayments(true);
+        }
       }
 
       // console.log(data);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   }
 
   const ProfileDropdown = () => (
@@ -215,30 +215,33 @@ const Navbar = () => {
                 </a>
               </>
             ) : null}
-
-            <a
-              href="/wishlists"
-              className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            >
-              <Heart className="w-4 h-4 mr-2" />
-              Wishlists
-            </a>
-            <a
-              href="/notifications"
-              className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ${
-                hasUnread ? "relative dropdown-unread green-dot" : ""
-              }`}
-            >
-              <Bell className="w-4 h-4 mr-2" />
-              Notifications
-            </a>
-            <a
-              href="/settings"
-              className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            >
-              <Settings className="w-4 h-4 mr-2" />
-              Settings
-            </a>
+            {user.role !== "admin" && (
+              <>
+                <a
+                  href="/wishlists"
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  <Heart className="w-4 h-4 mr-2" />
+                  Wishlists
+                </a>
+                <a
+                  href="/notifications"
+                  className={`flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 ${
+                    hasUnread ? "relative dropdown-unread green-dot" : ""
+                  }`}
+                >
+                  <Bell className="w-4 h-4 mr-2" />
+                  Notifications
+                </a>
+                <a
+                  href="/settings"
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  <Settings className="w-4 h-4 mr-2" />
+                  Settings
+                </a>
+              </>
+            )}
             <button
               onClick={() => setIsLogoutModalOpen(true)}
               className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -507,7 +510,7 @@ const Navbar = () => {
                           )}
                         </a>
                       </>
-                    ) : (
+                    ) : user.role !== "admin" ? (
                       <>
                         <a
                           href="/owner/dashboard"
@@ -526,34 +529,40 @@ const Navbar = () => {
                           <span>Manage Listings</span>
                         </a>
                       </>
+                    ) : (
+                      ""
                     )}
-                    <a
-                      href="/wishlists"
-                      className="flex items-center space-x-3 p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-                      onClick={toggleMenu}
-                    >
-                      <Heart className="w-5 h-5" />
-                      <span>Wishlists</span>
-                    </a>
-                    <a
-                      href="/notifications"
-                      className="flex items-center space-x-3 p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-                      onClick={toggleMenu}
-                    >
-                      <Bell className="w-5 h-5" />
-                      <span>Notifications</span>
-                      {hasUnread && (
-                        <span className="w-2 h-2 bg-emerald-700 rounded-full ml-auto" />
-                      )}
-                    </a>
-                    <a
-                      href="/settings"
-                      className="flex items-center space-x-3 p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-                      onClick={toggleMenu}
-                    >
-                      <Settings className="w-5 h-5" />
-                      <span>Settings</span>
-                    </a>
+                    {user.role !== "admin" && (
+                      <>
+                        <a
+                          href="/wishlists"
+                          className="flex items-center space-x-3 p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+                          onClick={toggleMenu}
+                        >
+                          <Heart className="w-5 h-5" />
+                          <span>Wishlists</span>
+                        </a>
+                        <a
+                          href="/notifications"
+                          className="flex items-center space-x-3 p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+                          onClick={toggleMenu}
+                        >
+                          <Bell className="w-5 h-5" />
+                          <span>Notifications</span>
+                          {hasUnread && (
+                            <span className="w-2 h-2 bg-emerald-700 rounded-full ml-auto" />
+                          )}
+                        </a>
+                        <a
+                          href="/settings"
+                          className="flex items-center space-x-3 p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+                          onClick={toggleMenu}
+                        >
+                          <Settings className="w-5 h-5" />
+                          <span>Settings</span>
+                        </a>
+                      </>
+                    )}
                   </div>
 
                   {/* Logout Button */}

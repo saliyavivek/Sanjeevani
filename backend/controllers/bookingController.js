@@ -439,10 +439,6 @@ const pendingPayments = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    if (!userId) {
-      return res.status(400).json({ message: "user id is required" });
-    }
-
     const bookings = await Booking.find({
       userId,
       status: "pending",

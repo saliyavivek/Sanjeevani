@@ -116,6 +116,7 @@ const UserManagement = () => {
               <th className="py-3 pr-6 text-left hidden sm:table-cell">
                 Registered On
               </th>
+              <th className="hidden sm:table-cell"></th>
               <th className="py-3 px-6 text-center">Actions</th>
             </tr>
           </thead>
@@ -159,7 +160,18 @@ const UserManagement = () => {
                   <td className="py-3 px-6 hidden sm:table-cell">
                     {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                   </td>
-                  <td>{normalizeDate(user.createdAt)}</td>
+                  <td className="py-3 pr-6 text-left hidden sm:table-cell">
+                    {normalizeDate(user.createdAt)}
+                  </td>
+                  <td className="hidden sm:table-cell">
+                    {user.isDeactivated ? (
+                      <p className="text-center bg-red-200 text-red-800 py-1 rounded-full text-xs">
+                        Deactivated
+                      </p>
+                    ) : (
+                      ""
+                    )}
+                  </td>
                   <td className="py-3 px-6 text-center">
                     <button
                       className="mr-2 text-blue-500 hover:text-blue-700"

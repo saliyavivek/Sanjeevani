@@ -13,7 +13,7 @@ const BookingManagement = () => {
         return;
       }
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
       setBookings(data);
     } catch (error) {
       console.log(error);

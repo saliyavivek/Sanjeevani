@@ -192,7 +192,7 @@ const MyBookings = () => {
 
   const TabButton = ({ label, count, isActive, onClick, isPendingPayment }) => (
     <button
-      className={`px-2 py-1 md:px-4 md:py-2 font-medium text-xs md:text-sm rounded-md transition-colors ${
+      className={`px-4 py-1 md:px-4 md:py-2 font-medium text-sm rounded-md transition-colors ${
         isActive
           ? "bg-emerald-100 text-emerald-800"
           : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"

@@ -313,7 +313,10 @@ const deleteAccount = async (req, res) => {
 
 const totalUsers = async (req, res) => {
   try {
-    const totalUsers = await User.countDocuments();
+    const users = await User.find({ role: { $ne: "admin" } });
+
+    const totalUsers = users.length;
+    // console.log(totalUsers);
     res.status(200).json({ totalUsers });
   } catch (error) {
     console.error(error);
@@ -323,7 +326,7 @@ const totalUsers = async (req, res) => {
 
 const fetchAllUsers = async (req, res) => {
   try {
-    const allUsers = await User.find({});
+    const allUsers = await User.find({ role: { $ne: "admin" } });
     // console.log(allUsers);
 
     res.status(200).json({ allUsers });

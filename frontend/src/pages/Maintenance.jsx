@@ -2,7 +2,8 @@ export default function Maintenance() {
   return (
     <div className="h-screen flex flex-col justify-center mx-4 md:items-center">
       <p className="text-gray-500 text-md mb-6">
-        Oh look, who is here! <br />
+        Oh look, who is here!😒
+        <br />
       </p>
       <p className="text-gray-500 text-md mb-6">
         Finally, you remembered this website huh? I guess 400 marks were not
