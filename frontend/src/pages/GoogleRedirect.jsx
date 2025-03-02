@@ -11,13 +11,15 @@ const GoogleRedirect = () => {
 
     if (token) {
       localStorage.setItem("token", JSON.stringify(token));
-      console.log(token);
-      console.log(role);
+      // console.log(token);
+      // console.log(role);
 
       if (role === "farmer") {
         navigate("/warehouses/search");
-      } else {
+      } else if (role === "owner") {
         navigate("/owner/dashboard");
+      } else {
+        navigate("/select-role");
       }
     }
   }, []);

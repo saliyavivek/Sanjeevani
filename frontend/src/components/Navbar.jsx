@@ -215,7 +215,7 @@ const Navbar = () => {
                 </a>
               </>
             ) : null}
-            {user.role !== "admin" && (
+            {user.role !== "admin" && user.role !== "anonymous" && (
               <>
                 <a
                   href="/wishlists"
@@ -256,16 +256,18 @@ const Navbar = () => {
   );
 
   useEffect(() => {
-    const eventSource = new EventSource(
-      `${API_BASE_URL}/notifications/unread/${userId}`
-    );
+    if (userId) {
+      const eventSource = new EventSource(
+        `${API_BASE_URL}/notifications/unread/${userId}`
+      );
 
-    eventSource.onmessage = (event) => {
-      const newNotifications = JSON.parse(event.data);
-      setHasUnread(true);
-    };
+      eventSource.onmessage = (event) => {
+        const newNotifications = JSON.parse(event.data);
+        setHasUnread(true);
+      };
 
-    return () => eventSource.close();
+      return () => eventSource.close();
+    }
   }, [userId, API_BASE_URL]); // Added API_BASE_URL to dependencies
 
   const handleGoogleCallback = () => {
@@ -510,7 +512,7 @@ const Navbar = () => {
                           )}
                         </a>
                       </>
-                    ) : user.role !== "admin" ? (
+                    ) : user.role !== "admin" && user.role !== "anonymous" ? (
                       <>
                         <a
                           href="/owner/dashboard"
@@ -532,7 +534,7 @@ const Navbar = () => {
                     ) : (
                       ""
                     )}
-                    {user.role !== "admin" && (
+                    {user.role !== "admin" && user.role !== "anonymous" && (
                       <>
                         <a
                           href="/wishlists"

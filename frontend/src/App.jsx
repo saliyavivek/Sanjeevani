@@ -29,6 +29,7 @@ import BookingRequests from "./pages/BookingRequests";
 import Maintenance from "./pages/Maintenance";
 import AdminEditPage from "./pages/AdminEditPage";
 import DeactivationPage from "./pages/DeactivationPage";
+import RoleSelectionPage from "./pages/RoleSelectionPage";
 
 const AppRoutes = () => {
   const location = useLocation(); // Get the current location
@@ -40,8 +41,8 @@ const AppRoutes = () => {
         <Navbar />
       )}
       <Routes>
-        <Route path="*" element={<Maintenance />} />
-        {/* <Route path="/" element={<LandingPage />} />
+        {/* <Route path="*" element={<Maintenance />} /> */}
+        <Route path="/" element={<LandingPage />} />
         <Route path="/owner/dashboard" element={<WarehouseOwnerDashboard />} />
         <Route path="/farmer/dashboard" element={<FarmerDashboard />} />
         <Route path="/signup" element={<Signup />} />
@@ -63,7 +64,8 @@ const AppRoutes = () => {
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/bookings/requests" element={<BookingRequests />} />
         <Route path="/admin/edit/:id" element={<AdminEditPage />} />
-        <Route path="/deactivated" element={<DeactivationPage />} /> */}
+        <Route path="/deactivated" element={<DeactivationPage />} />
+        <Route path="/select-role" element={<RoleSelectionPage />} />
       </Routes>
     </>
   );

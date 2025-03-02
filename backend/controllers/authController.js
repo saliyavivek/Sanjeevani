@@ -57,7 +57,7 @@ const handleGoogleCallback = async (req, res) => {
     const { data } = await oauth2.userinfo.get();
 
     const avatarUrl = data.picture; // Get the user's avatar URL
-    console.log("Avatar URL:", avatarUrl);
+    // console.log("Avatar URL:", avatarUrl);
 
     // Check if user exists or create a new one
     let user = await User.findOne({ email: data.email });

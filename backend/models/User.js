@@ -8,8 +8,8 @@ const userSchema = new Schema({
   about: String,
   role: {
     type: String,
-    enum: ["farmer", "owner", "admin"],
-    default: "farmer",
+    enum: ["farmer", "owner", "admin", "anonymous"],
+    default: "anonymous",
   },
   phoneno: String,
   avatar: String,

@@ -13,6 +13,7 @@ const {
   fetchAllUsers,
   fetchUserDetailsForAdmin,
   manageUser,
+  assignRole,
 } = require("../controllers/userController");
 const upload = require("../middlewares/multer");
 
@@ -28,5 +29,6 @@ router.get("/total-users", totalUsers);
 router.get("/all-users", fetchAllUsers);
 router.get("/user/:userId", fetchUserDetailsForAdmin);
 router.put("/user/:userId/manage", manageUser);
+router.put("/:userId/assign-role", assignRole);
 
 module.exports = router;

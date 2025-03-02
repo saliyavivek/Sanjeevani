@@ -377,6 +377,25 @@ const manageUser = async (req, res) => {
   }
 };
 
+const assignRole = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { role } = req.body;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(400).json({ message: "No such user found" });
+    }
+
+    user.role = role;
+    await user.save();
+    res.status(200).json({ message: "Role has been assigned" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to assign role" });
+  }
+};
+
 module.exports = {
   signup,
   signin,
@@ -390,4 +409,5 @@ module.exports = {
   fetchAllUsers,
   fetchUserDetailsForAdmin,
   manageUser,
+  assignRole,
 };
