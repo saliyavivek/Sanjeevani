@@ -12,6 +12,7 @@ import useAuth from "../hooks/useAuth";
 import { jwtDecode } from "jwt-decode";
 import { showErrorToast, showSuccessToast } from "../components/toast";
 import L, { icon } from "leaflet";
+import dayjs from "dayjs";
 
 const markerIcon = new L.Icon({
   iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
@@ -173,7 +174,9 @@ const BookWarehouse = () => {
                           <TextField {...params} fullWidth />
                         )}
                         disablePast
-                        minDate={startDate}
+                        minDate={
+                          startDate ? dayjs(startDate).add(1, "day") : null
+                        }
                       />
                     </div>
 

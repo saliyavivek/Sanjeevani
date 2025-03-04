@@ -6,6 +6,7 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { showErrorToast, showSuccessToast } from "./toast";
 import { isToday, isThisWeek, isThisMonth, parseISO } from "date-fns";
+import dayjs from "dayjs";
 
 const NotificationList = () => {
   const [notifications, setNotifications] = useState([]);
@@ -30,10 +31,11 @@ const NotificationList = () => {
     try {
       const response = await fetch(`${API_BASE_URL}/notifications/${userId}`);
       const data = await response.json();
-      setNotifications(data);
+      setNotifications(Array.isArray(data) ? data : []);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching notifications:", error);
+      setNotifications([]);
       setLoading(false);
     }
   };
@@ -85,9 +87,11 @@ const NotificationList = () => {
     }
   };
 
-  const groupNotifications = (notifications) => {
+  const groupNotifications = (notifications = []) => {
     return notifications.reduce(
       (groups, notification) => {
+        if (!notification || !notification.createdAt) return groups;
+
         const date = parseISO(notification.createdAt);
 
         if (isToday(date)) {
@@ -119,7 +123,7 @@ const NotificationList = () => {
     );
   }
 
-  const groupedNotifications = groupNotifications(notifications);
+  const groupedNotifications = groupNotifications(notifications || []);
 
   const renderSection = (title, notifications) => {
     if (notifications.length === 0) return null;
