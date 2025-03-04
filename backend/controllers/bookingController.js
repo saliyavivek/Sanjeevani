@@ -429,6 +429,30 @@ const handleRequest = async (req, res) => {
       $pull: { pendingRequests: booking._id },
     });
 
+    if (approvalStatus === "approved") {
+      const otherPendingBookings = await Booking.find({
+        warehouseId: booking.warehouseId._id,
+        approvalStatus: "pending",
+      }).populate("warehouseId");
+
+      // console.log("Pending Bookings", otherPendingBookings);
+
+      if (otherPendingBookings.length > 0) {
+        await Booking.updateMany(
+          { warehouseId: booking.warehouseId._id, approvalStatus: "pending" },
+          { $set: { approvalStatus: "rejected", status: "declined" } }
+        );
+
+        const notifications = otherPendingBookings.map((pendingBooking) => ({
+          userId: pendingBooking.userId,
+          content: `Unfortunately, your booking request for ${pendingBooking.warehouseId.name} has been declined by the owner. You may explore other available storage options.`,
+          type: "cancel",
+        }));
+
+        await Notification.insertMany(notifications);
+      }
+    }
+
     res.status(200).json({ message: `Booking ${approvalStatus}` });
   } catch (error) {
     res.status(500).json({ message: "Error updating booking status", error });

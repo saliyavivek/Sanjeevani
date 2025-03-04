@@ -200,11 +200,11 @@ const FarmerDashboard = () => {
                 <thead>
                   <tr className="text-left text-gray-500 border-b">
                     <th className="pb-3 pr-2">Warehouse</th>
-                    <th className="pb-3 pr-2">Location</th>
-                    <th className="pb-3 pr-2">Space</th>
-                    <th className="pb-3 pr-2">From</th>
-                    <th className="pb-3 pr-2">To</th>
-                    <th className="pb-3 pr-2">Days</th>
+                    <th className="pb-3 pr-2 hidden md:table-cell">Location</th>
+                    <th className="pb-3 pr-2 hidden md:table-cell">Space</th>
+                    <th className="pb-3 pr-2 hidden md:table-cell">From</th>
+                    <th className="pb-3 pr-2 hidden md:table-cell">To</th>
+                    <th className="pb-3 pr-2 hidden md:table-cell">Days</th>
                     <th className="pb-3">Status</th>
                   </tr>
                 </thead>
@@ -222,7 +222,7 @@ const FarmerDashboard = () => {
                             {booking.warehouseId.name}
                           </a>
                         </td>
-                        <td className="pr-2">
+                        <td className="pr-2 hidden md:table-cell">
                           <a
                             href={`/booking/${booking._id}`}
                             className="hover:underline"
@@ -236,7 +236,7 @@ const FarmerDashboard = () => {
                               : booking.warehouseId.location.formattedAddress}
                           </a>
                         </td>
-                        <td className="pr-2">
+                        <td className="pr-2 hidden md:table-cell">
                           <a
                             href={`/booking/${booking._id}`}
                             className="hover:underline"
@@ -244,7 +244,7 @@ const FarmerDashboard = () => {
                             {booking.warehouseId.size} sq ft
                           </a>
                         </td>
-                        <td className="pr-2">
+                        <td className="pr-2 hidden md:table-cell">
                           <a
                             href={`/booking/${booking._id}`}
                             className="hover:underline"
@@ -252,7 +252,7 @@ const FarmerDashboard = () => {
                             {new Date(booking.startDate).toLocaleDateString()}
                           </a>
                         </td>
-                        <td className="pr-2">
+                        <td className="pr-2 hidden md:table-cell">
                           <a
                             href={`/booking/${booking._id}`}
                             className="hover:underline"
@@ -260,7 +260,7 @@ const FarmerDashboard = () => {
                             {new Date(booking.endDate).toLocaleDateString()}
                           </a>
                         </td>
-                        <td className="pr-2">
+                        <td className="pr-2 hidden md:table-cell">
                           {Math.abs(
                             new Date(booking.endDate) -
                               new Date(booking.startDate)

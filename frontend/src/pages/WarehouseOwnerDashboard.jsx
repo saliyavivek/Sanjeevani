@@ -151,7 +151,7 @@ const WarehouseOwnerDashboard = () => {
       <main className="flex-1 overflow-y-auto p-4 lg:p-8">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6">
           <h2 className="text-2xl lg:text-3xl font-semibold text-gray-800 mb-4 lg:mb-0">
-            Welcome back, {name ? name : "Kisan"}!
+            Welcome back, {name ? name : "John"}!
           </h2>
           <a href="/warehouse/list">
             <button className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-700 transition-colors duration-200">
@@ -252,12 +252,12 @@ const WarehouseOwnerDashboard = () => {
             <table className="w-full min-w-max">
               <thead>
                 <tr className="text-left text-gray-500 border-b">
-                  <th className="pb-3 pr-4">Warehouse</th>
-                  <th className="pb-3 pr-4">Booked by</th>
-                  <th className="pb-3 pr-4">Space</th>
-                  <th className="pb-3 pr-4">From</th>
-                  <th className="pb-3 pr-4">To</th>
-                  <th className="pb-3 pr-4">Days</th>
+                  <th className="pb-3 md:pr-4">Warehouse</th>
+                  <th className="pb-3 md:pr-4">Booked by</th>
+                  <th className="pb-3 md:pr-4 hidden md:table-cell">Space</th>
+                  <th className="pb-3 md:pr-4 hidden md:table-cell">From</th>
+                  <th className="pb-3 md:pr-4 hidden md:table-cell">To</th>
+                  <th className="pb-3 md:pr-4 hidden md:table-cell">Days</th>
                   <th className="pb-3">Status</th>
                 </tr>
               </thead>
@@ -270,8 +270,8 @@ const WarehouseOwnerDashboard = () => {
                       (a, b) => new Date(b.startDate) - new Date(a.startDate)
                     )
                     .map((booking) => (
-                      <tr key={booking._id} className="border-b">
-                        <td className="py-3 pr-4">
+                      <tr key={booking._id} className="border-b text-sm">
+                        <td className="py-3 md:pr-4">
                           <a
                             href={`/booking/${booking._id}`}
                             className="hover:underline"
@@ -279,7 +279,7 @@ const WarehouseOwnerDashboard = () => {
                             {listing.name}
                           </a>
                         </td>
-                        <td className="py-3 pr-4">
+                        <td className="py-3 md:pr-4">
                           <a
                             href={`/booking/${booking._id}`}
                             className="hover:underline"
@@ -287,7 +287,7 @@ const WarehouseOwnerDashboard = () => {
                             {booking.userId.name}
                           </a>
                         </td>
-                        <td className="pr-4">
+                        <td className="pr-4 hidden md:table-cell">
                           <a
                             href={`/booking/${booking._id}`}
                             className="hover:underline"
@@ -295,7 +295,7 @@ const WarehouseOwnerDashboard = () => {
                             {listing.size} sq ft
                           </a>
                         </td>
-                        <td className="pr-4">
+                        <td className="pr-4 hidden md:table-cell">
                           <a
                             href={`/booking/${booking._id}`}
                             className="hover:underline"
@@ -303,7 +303,7 @@ const WarehouseOwnerDashboard = () => {
                             {new Date(booking.startDate).toLocaleDateString()}
                           </a>
                         </td>
-                        <td className="pr-4">
+                        <td className="pr-4 hidden md:table-cell">
                           <a
                             href={`/booking/${booking._id}`}
                             className="hover:underline"
@@ -311,7 +311,7 @@ const WarehouseOwnerDashboard = () => {
                             {new Date(booking.endDate).toLocaleDateString()}
                           </a>
                         </td>
-                        <td className="pr-4">
+                        <td className="pr-4 hidden md:table-cell">
                           <a
                             href={`/booking/${booking._id}`}
                             className="hover:underline"

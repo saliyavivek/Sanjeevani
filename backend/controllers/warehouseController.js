@@ -188,11 +188,11 @@ const getMyListings = async (req, res) => {
         populate: { path: "userId" },
       });
 
-    warehouses.forEach((warehouse) => {
-      warehouse.bookings.sort(
-        (a, b) => new Date(a.startDate) - new Date(b.startDate)
-      );
-    });
+    // warehouses.forEach((warehouse) => {
+    //   warehouse.bookings.sort(
+    //     (a, b) => new Date(a.startDate) - new Date(b.startDate)
+    //   );
+    // });
 
     if (warehouses.length > 0) {
       // console.log(warehouses);
