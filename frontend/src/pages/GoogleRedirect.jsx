@@ -14,6 +14,10 @@ const GoogleRedirect = () => {
       // console.log(token);
       // console.log(role);
 
+      if (token.isDeactivated) {
+        return navigate("/deactivated");
+      }
+
       if (role === "farmer") {
         navigate("/warehouses/search");
       } else if (role === "owner") {

@@ -24,7 +24,7 @@ const DeactivationPage = () => {
         localStorage.removeItem("token");
       }
     }
-  }, []);
+  }, [token]);
 
   function handleLogout() {
     try {
