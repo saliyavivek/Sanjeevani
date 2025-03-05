@@ -152,25 +152,23 @@ const HostProfile = () => {
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {warehouses.map((listing) => (
-                <a href={`/warehouse/${listing._id}`}>
-                  <div key={listing._id} className="group cursor-pointer">
-                    <div className="relative aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
-                      <img
-                        src={listing.images[0]}
-                        alt={listing.title}
-                        className="w-full h-[122px] object-cover group-hover:scale-105 transition-transform duration-200"
-                      />
-                    </div>
-                    <div className="mt-2">
-                      <p className="font-medium text-gray-900">
-                        {listing.name}
-                      </p>
-                      <p className="text-gray-600 text-sm truncate">
-                        {listing.description}
-                      </p>
-                    </div>
+                // <a href={`/warehouse/${listing._id}`}>
+                <div key={listing._id} className="group cursor-pointer">
+                  <div className="relative aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
+                    <img
+                      src={listing.images[0]}
+                      alt={listing.title}
+                      className="w-full h-[122px] object-cover group-hover:scale-105 transition-transform duration-200"
+                    />
                   </div>
-                </a>
+                  <div className="mt-2">
+                    <p className="font-medium text-gray-900">{listing.name}</p>
+                    <p className="text-gray-600 text-sm truncate">
+                      {listing.description}
+                    </p>
+                  </div>
+                </div>
+                // </a>
               ))}
             </div>
           </div>

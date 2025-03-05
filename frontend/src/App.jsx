@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 import FarmerDashboard from "./pages/FarmerDashboard";
@@ -30,9 +30,23 @@ import Maintenance from "./pages/Maintenance";
 import AdminEditPage from "./pages/AdminEditPage";
 import DeactivationPage from "./pages/DeactivationPage";
 import RoleSelectionPage from "./pages/RoleSelectionPage";
+import useAuth from "./hooks/useAuth";
+import { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
 
 const AppRoutes = () => {
-  const location = useLocation(); // Get the current location
+  const location = useLocation();
+  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (token) {
+      const { isDeactivated } = jwtDecode(token);
+      if (isDeactivated && location.pathname !== "/deactivated") {
+        navigate("/deactivated");
+      }
+    }
+  }, [token]);
 
   return (
     <>
@@ -74,16 +88,6 @@ const AppRoutes = () => {
 function App() {
   return (
     <BrowserRouter>
-      {/* <Toaster
-        position="bottom-center"
-        toastOptions={{
-          style: {
-            fontSize: "16px",
-            whiteSpace: "nowrap",
-            width: "100%",
-          },
-        }}
-      /> */}
       <ToastContainer />
       <AppRoutes />
     </BrowserRouter>

@@ -176,14 +176,14 @@ const Navbar = () => {
                   className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
                   <LayoutDashboardIcon className="w-4 h-4 mr-2" />
-                  My Dashboard
+                  Dashboard
                 </a>
                 <a
                   href="/warehouses/search"
                   className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
                   <SearchIcon className="w-4 h-4 mr-2" />
-                  Search Storage
+                  Explore
                 </a>
                 <a
                   href="/bookings"
@@ -194,7 +194,7 @@ const Navbar = () => {
                   }`}
                 >
                   <WarehouseIcon className="w-4 h-4 mr-2" />
-                  My Bookings
+                  Bookings
                 </a>
               </>
             ) : user.role === "owner" ? (
@@ -204,14 +204,21 @@ const Navbar = () => {
                   className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
                   <LayoutDashboardIcon className="w-4 h-4 mr-2" />
-                  My Dashboard
+                  Dashboard
                 </a>
                 <a
                   href="/listings"
                   className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >
                   <UploadIcon className="w-4 h-4 mr-2" />
-                  Manage Listings
+                  Listings
+                </a>
+                <a
+                  href="/warehouses/search"
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  <SearchIcon className="w-4 h-4 mr-2" />
+                  Discover
                 </a>
               </>
             ) : null}
@@ -293,19 +300,19 @@ const Navbar = () => {
                 href="/farmer/dashboard"
                 className="text-md font-medium text-gray-700 hover:text-emerald-600 transition-colors"
               >
-                My Dashboard
+                Dashboard
               </a>
               <a
                 href="/warehouses/search"
                 className="text-md font-medium text-gray-700 hover:text-emerald-600 transition-colors"
               >
-                Search Storage
+                Explore
               </a>
               <a
                 href="/bookings"
                 className="text-md font-medium text-gray-700 hover:text-emerald-600 transition-colors"
               >
-                My Bookings
+                Bookings
               </a>
             </>
           )}
@@ -315,13 +322,19 @@ const Navbar = () => {
                 href="/owner/dashboard"
                 className="text-md font-medium text-gray-700 hover:text-emerald-600 transition-colors"
               >
-                My Dashboard
+                Dashboard
+              </a>
+              <a
+                href="/warehouses/search"
+                className="text-md font-medium text-gray-700 hover:text-emerald-600 transition-colors"
+              >
+                Discover
               </a>
               <a
                 href="/listings"
                 className="text-md font-medium text-gray-700 hover:text-emerald-600 transition-colors"
               >
-                Manage Listings
+                Listings
               </a>
             </>
           )}
@@ -490,7 +503,7 @@ const Navbar = () => {
                           onClick={toggleMenu}
                         >
                           <LayoutDashboardIcon className="w-5 h-5" />
-                          <span>My Dashboard</span>
+                          <span>Dashboard</span>
                         </a>
                         <a
                           href="/warehouses/search"
@@ -498,7 +511,7 @@ const Navbar = () => {
                           onClick={toggleMenu}
                         >
                           <SearchIcon className="w-5 h-5" />
-                          <span>Search Storage</span>
+                          <span>Explore</span>
                         </a>
                         <a
                           href="/bookings"
@@ -506,7 +519,7 @@ const Navbar = () => {
                           onClick={toggleMenu}
                         >
                           <WarehouseIcon className="w-5 h-5" />
-                          <span>My Bookings</span>
+                          <span>Bookings</span>
                           {hasPendingPayments && (
                             <span className="w-2 h-2 bg-emerald-700 rounded-full ml-auto" />
                           )}
@@ -520,7 +533,7 @@ const Navbar = () => {
                           onClick={toggleMenu}
                         >
                           <LayoutDashboardIcon className="w-5 h-5" />
-                          <span>My Dashboard</span>
+                          <span>Dashboard</span>
                         </a>
                         <a
                           href="/listings"
@@ -528,7 +541,15 @@ const Navbar = () => {
                           onClick={toggleMenu}
                         >
                           <UploadIcon className="w-5 h-5" />
-                          <span>Manage Listings</span>
+                          <span>Listings</span>
+                        </a>
+                        <a
+                          href="/warehouses/search"
+                          className="flex items-center space-x-3 p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+                          onClick={toggleMenu}
+                        >
+                          <SearchIcon className="w-5 h-5" />
+                          <span>Discover</span>
                         </a>
                       </>
                     ) : (

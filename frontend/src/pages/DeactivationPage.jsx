@@ -8,7 +8,7 @@ import { jwtDecode } from "jwt-decode";
 
 const DeactivationPage = () => {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  const [userName, setUserName] = useState(false);
+  const [userName, setUserName] = useState("");
   const navigate = useNavigate();
   const token = useAuth();
 
@@ -54,7 +54,7 @@ ${userName}`;
     const encodedBody = encodeURIComponent(body);
 
     // Open the user's email client with the pre-filled email
-    window.location.href = `mailto:support@sanjeevani.com?subject=${encodedSubject}&body=${encodedBody}`;
+    window.location.href = `mailto:viveksaliya007@gmail.com?subject=${encodedSubject}&body=${encodedBody}`;
   };
 
   return (

@@ -57,7 +57,6 @@ const StorageDetail = () => {
       try {
         const decodedToken = jwtDecode(storedToken);
         setUser(decodedToken);
-        // console.log(warehouse);
       } catch (error) {
         console.error("Invalid token", error);
         localStorage.removeItem("token");
@@ -517,13 +516,15 @@ const StorageDetail = () => {
                 }
                 className={`w-full bg-blue-600 text-white py-2 sm:py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors ${
                   warehouse.availability === "booked" ||
-                  warehouse.availability === "maintenance"
+                  warehouse.availability === "maintenance" ||
+                  user.role === "owner"
                     ? "opacity-50 cursor-not-allowed"
                     : ""
                 }`}
                 disabled={
                   warehouse.availability === "booked" ||
-                  warehouse.availability === "maintenance"
+                  warehouse.availability === "maintenance" ||
+                  user.role === "owner"
                 }
               >
                 {warehouse.availability === "available"

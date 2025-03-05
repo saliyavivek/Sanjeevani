@@ -27,6 +27,7 @@ const getToken = (newUser) => {
       name: newUser.name,
       role: newUser.role,
       avatar: newUser.avatar,
+      isDeactivated: newUser.isDeactivated,
     },
     process.env.JWT_SECRET,
     { expiresIn: "1h" }
