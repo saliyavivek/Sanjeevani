@@ -1,3 +1,4 @@
+import { jwtDecode } from "jwt-decode";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -10,13 +11,15 @@ const GoogleRedirect = () => {
     const role = params.get("role");
 
     if (token) {
-      localStorage.setItem("token", JSON.stringify(token));
-      // console.log(token);
-      // console.log(role);
+      // const decodedToken = jwtDecode(token);
 
-      if (token.isDeactivated) {
-        return navigate("/deactivated");
-      }
+      // console.log(decodedToken);
+
+      // if (decodedToken.isDeactivated) {
+      //   return navigate("/deactivated");
+      // }
+
+      localStorage.setItem("token", JSON.stringify(token));
 
       if (role === "farmer") {
         navigate("/warehouses/search");

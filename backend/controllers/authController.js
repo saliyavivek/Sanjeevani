@@ -79,6 +79,7 @@ const handleGoogleCallback = async (req, res) => {
           name: user.name,
           role: user.role,
           avatar: user.avatar,
+          isDeactivated: user.isDeactivated,
         },
         process.env.JWT_SECRET
       );
@@ -93,6 +94,7 @@ const handleGoogleCallback = async (req, res) => {
           name: user.name,
           role: user.role,
           avatar: user.avatar,
+          isDeactivated: user.isDeactivated,
         },
         process.env.JWT_SECRET
       );

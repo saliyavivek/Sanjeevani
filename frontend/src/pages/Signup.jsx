@@ -47,6 +47,11 @@ const Signup = () => {
       showErrorToast("Please upload your profile picture.", loadingToastId);
       return;
     }
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(phno)) {
+      showErrorToast("Please enter a valid phone number.", loadingToastId);
+      return;
+    }
 
     const response = await fetch(`${API_BASE_URL}/users/signup`, {
       method: "POST",
@@ -54,6 +59,7 @@ const Signup = () => {
     });
     if (response.ok) {
       const data = await response.json();
+      console.log(data);
       localStorage.setItem("token", JSON.stringify(data.token));
 
       showSuccessToast(data.message, loadingToastId);
