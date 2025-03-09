@@ -59,7 +59,7 @@ const Signup = () => {
     });
     if (response.ok) {
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
       localStorage.setItem("token", JSON.stringify(data.token));
 
       showSuccessToast(data.message, loadingToastId);

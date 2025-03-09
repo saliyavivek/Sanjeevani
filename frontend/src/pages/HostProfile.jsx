@@ -63,6 +63,7 @@ const HostProfile = () => {
     const totalYears = difference / (1000 * 60 * 60 * 24 * 365);
 
     if (currentDate.getMonth() === targetDate.getMonth()) {
+      if (Math.round(totalDays) === 0) return `1 day(s)`;
       return `${Math.round(totalDays)} day(s)`;
     } else if (totalMonths < 12) {
       return `${Math.round(totalMonths)} month(s)`;
@@ -138,11 +139,17 @@ const HostProfile = () => {
           {/* About Section */}
           <div>
             <h2 className="text-2xl font-semibold mb-2">About {user.name}</h2>
-            <p className="text-gray-600 mb-3">{user.about ? user.about : ""}</p>
-            <div className="flex items-center text-gray-600">
-              <MapPin className="w-5 h-5 mr-2" />
-              Lives in {user.address}
-            </div>
+            <p className="text-gray-600 mb-3">
+              {user.about
+                ? user.about
+                : "No information to show currently. It will be available once the user updates it."}
+            </p>
+            {user.address && (
+              <div className="flex items-center text-gray-600">
+                <MapPin className="w-5 h-5 mr-2" />
+                Lives in {user.address}
+              </div>
+            )}
           </div>
 
           {/* Listings Section */}
@@ -150,27 +157,35 @@ const HostProfile = () => {
             <h2 className="text-2xl font-semibold mb-4">
               {user.name}'s listings
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {warehouses.map((listing) => (
-                // <a href={`/warehouse/${listing._id}`}>
-                <div key={listing._id} className="group cursor-pointer">
-                  <div className="relative aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
-                    <img
-                      src={listing.images[0]}
-                      alt={listing.title}
-                      className="w-full h-[122px] object-cover group-hover:scale-105 transition-transform duration-200"
-                    />
+            {warehouses.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {warehouses.map((listing) => (
+                  // <a href={`/warehouse/${listing._id}`}>
+                  <div key={listing._id} className="group cursor-pointer">
+                    <div className="relative aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
+                      <img
+                        src={listing.images[0]}
+                        alt={listing.title}
+                        className="w-full h-[122px] object-cover group-hover:scale-105 transition-transform duration-200"
+                      />
+                    </div>
+                    <div className="mt-2">
+                      <p className="font-medium text-gray-900">
+                        {listing.name}
+                      </p>
+                      <p className="text-gray-600 text-sm truncate">
+                        {listing.description}
+                      </p>
+                    </div>
                   </div>
-                  <div className="mt-2">
-                    <p className="font-medium text-gray-900">{listing.name}</p>
-                    <p className="text-gray-600 text-sm truncate">
-                      {listing.description}
-                    </p>
-                  </div>
-                </div>
-                // </a>
-              ))}
-            </div>
+                  // </a>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-600">
+                {user.name} has no recent listings.
+              </p>
+            )}
           </div>
         </div>
       </div>

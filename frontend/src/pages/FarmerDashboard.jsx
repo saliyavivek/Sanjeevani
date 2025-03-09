@@ -196,105 +196,113 @@ const FarmerDashboard = () => {
               Recent Bookings
             </h3>
             <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="text-left text-gray-500 border-b">
-                    <th className="pb-3 pr-2">Warehouse</th>
-                    <th className="pb-3 pr-2 hidden md:table-cell">Location</th>
-                    <th className="pb-3 pr-2 hidden md:table-cell">Space</th>
-                    <th className="pb-3 pr-2 hidden md:table-cell">From</th>
-                    <th className="pb-3 pr-2 hidden md:table-cell">To</th>
-                    <th className="pb-3 pr-2 hidden md:table-cell">Days</th>
-                    <th className="pb-3">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {info
-                    .slice()
-                    .reverse()
-                    .map((booking, index) => (
-                      <tr key={index} className="border-b hover:bg-gray-50">
-                        <td className="py-3 pr-2">
-                          <a
-                            href={`/booking/${booking._id}`}
-                            className="hover:underline"
-                          >
-                            {booking.warehouseId.name}
-                          </a>
-                        </td>
-                        <td className="pr-2 hidden md:table-cell">
-                          <a
-                            href={`/booking/${booking._id}`}
-                            className="hover:underline"
-                          >
-                            {booking.warehouseId.location.formattedAddress
-                              .length > 50
-                              ? `${booking.warehouseId.location.formattedAddress.substring(
-                                  0,
-                                  50
-                                )}...`
-                              : booking.warehouseId.location.formattedAddress}
-                          </a>
-                        </td>
-                        <td className="pr-2 hidden md:table-cell">
-                          <a
-                            href={`/booking/${booking._id}`}
-                            className="hover:underline"
-                          >
-                            {booking.warehouseId.size} sq ft
-                          </a>
-                        </td>
-                        <td className="pr-2 hidden md:table-cell">
-                          <a
-                            href={`/booking/${booking._id}`}
-                            className="hover:underline"
-                          >
-                            {new Date(booking.startDate).toLocaleDateString()}
-                          </a>
-                        </td>
-                        <td className="pr-2 hidden md:table-cell">
-                          <a
-                            href={`/booking/${booking._id}`}
-                            className="hover:underline"
-                          >
-                            {new Date(booking.endDate).toLocaleDateString()}
-                          </a>
-                        </td>
-                        <td className="pr-2 hidden md:table-cell">
-                          {Math.abs(
-                            new Date(booking.endDate) -
-                              new Date(booking.startDate)
-                          ) /
-                            (1000 * 3600 * 24) +
-                            1}
-                        </td>
-                        <td>
-                          <span
-                            className={`text-xs font-medium bg-${
-                              upcoming.includes(booking)
-                                ? "blue"
+              {info.length > 0 ? (
+                <table className="w-full">
+                  <thead>
+                    <tr className="text-left text-gray-500 border-b">
+                      <th className="pb-3 pr-2">Warehouse</th>
+                      <th className="pb-3 pr-2 hidden md:table-cell">
+                        Location
+                      </th>
+                      <th className="pb-3 pr-2 hidden md:table-cell">Space</th>
+                      <th className="pb-3 pr-2 hidden md:table-cell">From</th>
+                      <th className="pb-3 pr-2 hidden md:table-cell">To</th>
+                      <th className="pb-3 pr-2 hidden md:table-cell">Days</th>
+                      <th className="pb-3">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {info
+                      .slice()
+                      .reverse()
+                      .map((booking, index) => (
+                        <tr key={index} className="border-b hover:bg-gray-50">
+                          <td className="py-3 pr-2">
+                            <a
+                              href={`/booking/${booking._id}`}
+                              className="hover:underline"
+                            >
+                              {booking.warehouseId.name}
+                            </a>
+                          </td>
+                          <td className="pr-2 hidden md:table-cell">
+                            <a
+                              href={`/booking/${booking._id}`}
+                              className="hover:underline"
+                            >
+                              {booking.warehouseId.location.formattedAddress
+                                .length > 50
+                                ? `${booking.warehouseId.location.formattedAddress.substring(
+                                    0,
+                                    50
+                                  )}...`
+                                : booking.warehouseId.location.formattedAddress}
+                            </a>
+                          </td>
+                          <td className="pr-2 hidden md:table-cell">
+                            <a
+                              href={`/booking/${booking._id}`}
+                              className="hover:underline"
+                            >
+                              {booking.warehouseId.size} sq ft
+                            </a>
+                          </td>
+                          <td className="pr-2 hidden md:table-cell">
+                            <a
+                              href={`/booking/${booking._id}`}
+                              className="hover:underline"
+                            >
+                              {new Date(booking.startDate).toLocaleDateString()}
+                            </a>
+                          </td>
+                          <td className="pr-2 hidden md:table-cell">
+                            <a
+                              href={`/booking/${booking._id}`}
+                              className="hover:underline"
+                            >
+                              {new Date(booking.endDate).toLocaleDateString()}
+                            </a>
+                          </td>
+                          <td className="pr-2 hidden md:table-cell">
+                            {Math.abs(
+                              new Date(booking.endDate) -
+                                new Date(booking.startDate)
+                            ) /
+                              (1000 * 3600 * 24) +
+                              1}
+                          </td>
+                          <td>
+                            <span
+                              className={`text-xs font-medium bg-${
+                                upcoming.includes(booking)
+                                  ? "blue"
+                                  : current.includes(booking)
+                                  ? "green"
+                                  : "gray"
+                              }-100 text-${
+                                upcoming.includes(booking)
+                                  ? "blue"
+                                  : current.includes(booking)
+                                  ? "green"
+                                  : "gray"
+                              }-800 px-2 py-1 rounded-full text-sm`}
+                            >
+                              {upcoming.includes(booking)
+                                ? "Upcoming"
                                 : current.includes(booking)
-                                ? "green"
-                                : "gray"
-                            }-100 text-${
-                              upcoming.includes(booking)
-                                ? "blue"
-                                : current.includes(booking)
-                                ? "green"
-                                : "gray"
-                            }-800 px-2 py-1 rounded-full text-sm`}
-                          >
-                            {upcoming.includes(booking)
-                              ? "Upcoming"
-                              : current.includes(booking)
-                              ? "Active"
-                              : "Completed"}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
+                                ? "Active"
+                                : "Completed"}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p className="text-gray-700">
+                  You don't have any recent bookings.
+                </p>
+              )}
             </div>
           </div>
         </div>

@@ -83,9 +83,6 @@ const WarehouseManagement = () => {
           />
           <Search className="absolute right-3 top-2 text-gray-400" size={20} />
         </div>
-        <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none">
-          Add Warehouse
-        </button>
       </div>
       <div className="bg-white rounded-lg shadow-sm overflow-x-auto">
         <table className="min-w-full">
