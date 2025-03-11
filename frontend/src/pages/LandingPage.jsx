@@ -29,6 +29,8 @@ const LandingPage = () => {
         setRole("owner");
       } else if (decodedToken.role === "farmer") {
         setRole("farmer");
+      } else if (decodedToken.role === "admin") {
+        setRole("admin");
       }
     } else {
       setIsLoggedIn(false);
@@ -76,7 +78,9 @@ const LandingPage = () => {
                     ? "/signup"
                     : role === "owner"
                     ? "/owner/dashboard"
-                    : "/farmer/dashboard"
+                    : role === "farmer"
+                    ? "/farmer/dashboard"
+                    : "/admin"
                 }
                 className="ml-4 px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition duration-300 cursor-pointer"
               >
@@ -128,7 +132,9 @@ const LandingPage = () => {
                     ? "/signup"
                     : role === "owner"
                     ? "/owner/dashboard"
-                    : "/farmer/dashboard"
+                    : role === "farmer"
+                    ? "/farmer/dashboard"
+                    : "/admin"
                 }
                 className="block px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition duration-300 cursor-pointer"
                 onClick={toggleMenu}
@@ -158,10 +164,12 @@ const LandingPage = () => {
                   <a
                     href={
                       !isLoggedIn
-                        ? "/signin"
+                        ? "/signup"
                         : role === "owner"
                         ? "/owner/dashboard"
-                        : "/warehouses/search"
+                        : role === "farmer"
+                        ? "/farmer/dashboard"
+                        : "/admin"
                     }
                     className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700 md:py-4 md:text-lg md:px-10"
                   >
@@ -371,7 +379,9 @@ const LandingPage = () => {
                     ? "/signup"
                     : role === "owner"
                     ? "/owner/dashboard"
-                    : "/farmer/dashboard"
+                    : role === "farmer"
+                    ? "/farmer/dashboard"
+                    : "/admin"
                 }
                 className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-green-600 bg-white hover:bg-green-50"
               >

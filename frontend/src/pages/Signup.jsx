@@ -53,6 +53,11 @@ const Signup = () => {
       return;
     }
 
+    if (password.length < 6) {
+      showErrorToast("Password must be atleast 6 digits.", loadingToastId);
+      return;
+    }
+
     const response = await fetch(`${API_BASE_URL}/users/signup`, {
       method: "POST",
       body: formData,
