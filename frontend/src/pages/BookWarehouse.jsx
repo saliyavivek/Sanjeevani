@@ -156,7 +156,7 @@ const BookWarehouse = () => {
                   </div>
 
                   <div className="space-y-6">
-                    <div className="space-y-4 md:flex flex-column">
+                    <div className="space-y-4 flex flex-column">
                       <DatePicker
                         label="Check-in Date"
                         value={startDate}

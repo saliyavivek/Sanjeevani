@@ -166,9 +166,9 @@ const LandingPage = () => {
                       !isLoggedIn
                         ? "/signup"
                         : role === "owner"
-                        ? "/owner/dashboard"
+                        ? "/listings"
                         : role === "farmer"
-                        ? "/farmer/dashboard"
+                        ? "/warehouses/search"
                         : "/admin"
                     }
                     className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700 md:py-4 md:text-lg md:px-10"
@@ -378,9 +378,9 @@ const LandingPage = () => {
                   !isLoggedIn
                     ? "/signup"
                     : role === "owner"
-                    ? "/owner/dashboard"
+                    ? "/listings"
                     : role === "farmer"
-                    ? "/farmer/dashboard"
+                    ? "/warehouses/search"
                     : "/admin"
                 }
                 className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-green-600 bg-white hover:bg-green-50"

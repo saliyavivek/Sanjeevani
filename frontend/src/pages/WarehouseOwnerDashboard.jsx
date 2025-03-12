@@ -52,7 +52,7 @@ const WarehouseOwnerDashboard = () => {
         }
         const data = await response.json();
         setInfo(data.warehouses);
-        // console.log(info);
+        // console.log(data);
       }
     } catch (error) {
       console.log(error);
