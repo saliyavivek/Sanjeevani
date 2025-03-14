@@ -477,6 +477,31 @@ const pendingPayments = async (req, res) => {
   }
 };
 
+const customerInfo = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      return res.status(404).json({ message: "userId is required." });
+    }
+
+    const warehouses = await Warehouse.find({ ownerId: userId });
+    if (warehouses.length < 1) {
+      return res.status(404).json({ message: "No warehouses found." });
+    }
+
+    const warehouseIds = warehouses.map((warehouse) => warehouse._id);
+
+    const bookings = await Booking.find({ warehouseId: { $in: warehouseIds } })
+      .populate("warehouseId")
+      .populate("userId");
+    if (bookings.length < 1) {
+      return res.status(404).json({ message: "No bookings found." });
+    }
+    return res.status(200).json({ message: "Your customers.", bookings });
+  } catch (error) {}
+};
+
 module.exports = {
   createBooking,
   getUserBookings,
@@ -489,5 +514,6 @@ module.exports = {
   getBookingRequests,
   handleRequest,
   pendingPayments,
+  customerInfo,
   // markCompleted,
 };

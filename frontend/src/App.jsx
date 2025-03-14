@@ -30,6 +30,7 @@ import Maintenance from "./pages/Maintenance";
 import AdminEditPage from "./pages/AdminEditPage";
 import DeactivationPage from "./pages/DeactivationPage";
 import RoleSelectionPage from "./pages/RoleSelectionPage";
+import MyCustomers from "./pages/MyCustomers";
 import useAuth from "./hooks/useAuth";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
@@ -80,6 +81,7 @@ const AppRoutes = () => {
         <Route path="/admin/edit/:id" element={<AdminEditPage />} />
         <Route path="/deactivated" element={<DeactivationPage />} />
         <Route path="/select-role" element={<RoleSelectionPage />} />
+        <Route path="/customers" element={<MyCustomers />} />
       </Routes>
     </>
   );

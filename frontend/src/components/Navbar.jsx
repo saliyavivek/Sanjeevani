@@ -11,6 +11,7 @@ import {
   SearchIcon,
   WarehouseIcon,
   Heart,
+  User2Icon,
 } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -219,6 +220,13 @@ const Navbar = () => {
                 >
                   <SearchIcon className="w-4 h-4 mr-2" />
                   Discover
+                </a>
+                <a
+                  href="/customers"
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  <User2Icon className="w-4 h-4 mr-2" />
+                  Customers
                 </a>
               </>
             ) : null}
@@ -550,6 +558,14 @@ const Navbar = () => {
                         >
                           <SearchIcon className="w-5 h-5" />
                           <span>Discover</span>
+                        </a>
+                        <a
+                          href="/warehouses/search"
+                          className="flex items-center space-x-3 p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+                          onClick={toggleMenu}
+                        >
+                          <User2Icon className="w-5 h-5" />
+                          <span>Customers</span>
                         </a>
                       </>
                     ) : (

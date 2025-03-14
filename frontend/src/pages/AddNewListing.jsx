@@ -63,7 +63,7 @@ const AddNewListing = () => {
 
   useEffect(() => {
     if (existingWarehouse) {
-      console.log(existingWarehouse);
+      // console.log(existingWarehouse);
 
       setFormData({
         name: existingWarehouse.name,
