@@ -560,7 +560,7 @@ const Navbar = () => {
                           <span>Discover</span>
                         </a>
                         <a
-                          href="/warehouses/search"
+                          href="/customers"
                           className="flex items-center space-x-3 p-2 text-gray-700 hover:bg-gray-100 rounded-lg"
                           onClick={toggleMenu}
                         >

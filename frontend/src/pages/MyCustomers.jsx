@@ -96,7 +96,7 @@ const MyCustomers = () => {
   };
 
   return (
-    <div className="container mx-auto px-16 py-8">
+    <div className="container mx-auto px-4 py-8">
       <div className="flex items-center gap-2 md:gap-4 mb-8">
         <button
           onClick={() => navigate(-1)}
@@ -129,37 +129,37 @@ const MyCustomers = () => {
                 <tr>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider"
                   >
-                    <button className="flex items-center space-x-1">
-                      <span>Customer</span>
-                    </button>
+                    <span className="flex items-center space-x-1">
+                      Customer
+                    </span>
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider hidden md:table-cell"
                   >
-                    <button className="flex items-center space-x-1">
-                      <span>Warehouse</span>
-                    </button>
+                    <span className="flex items-center space-x-1">
+                      Warehouse
+                    </span>
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500  tracking-wider hidden lg:table-cell"
                   >
-                    <button className="flex items-center space-x-1">
-                      <span>Booking Period</span>
-                    </button>
+                    <span className="flex items-center space-x-1">
+                      Booking Period
+                    </span>
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500  tracking-wider hidden md:table-cell"
                   >
                     <span>Status</span>
                   </th>
                   <th
                     scope="col"
-                    className="px-6 py-3  md:text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-6 py-3 md:text-right lg:text-left text-xs font-medium text-gray-500 tracking-wider"
                   >
                     <span>Details</span>
                   </th>
