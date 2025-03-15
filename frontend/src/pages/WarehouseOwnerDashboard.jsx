@@ -52,7 +52,6 @@ const WarehouseOwnerDashboard = () => {
         }
         const data = await response.json();
         setInfo(data.warehouses);
-        // console.log(data);
       }
     } catch (error) {
       console.log(error);
@@ -222,21 +221,14 @@ const WarehouseOwnerDashboard = () => {
                 }, 0)
                 .toLocaleString()} */}
               {info
-                .filter((warehouse) => warehouse.availability === "booked") // Only consider booked warehouses
                 .reduce((acc, warehouse) => {
-                  const warehouseRevenue = warehouse.bookings.reduce(
+                  const warehouseEarnings = warehouse.bookings.reduce(
                     (sum, booking) => {
-                      return (
-                        sum +
-                        (booking.ownerEarnings
-                          ? booking.ownerEarnings
-                          : booking.totalPrice)
-                      ); // Add ownerEarnings if present, else add totalPrice
+                      return sum + (booking.ownerEarnings || 0);
                     },
                     0
                   );
-
-                  return acc + warehouseRevenue; // Add warehouse revenue to total
+                  return acc + warehouseEarnings;
                 }, 0)
                 .toLocaleString()}
             </p>

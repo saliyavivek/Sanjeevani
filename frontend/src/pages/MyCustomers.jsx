@@ -175,23 +175,25 @@ const MyCustomers = () => {
                       <React.Fragment key={customer._id}>
                         <tr className="hover:bg-gray-50">
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <div className="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-full flex items-center justify-center">
-                                <img
-                                  src={customer.userId.avatar}
-                                  alt={customer.userId._id}
-                                  className="w-9 h-9 rounded-full object-cover"
-                                />
-                              </div>
-                              <div className="ml-4">
-                                <div className="text-sm font-medium text-gray-900">
-                                  {customer.userId.name}
+                            <a href={`users/f/show/${customer.userId._id}`}>
+                              <div className="flex items-center">
+                                <div className="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-full flex items-center justify-center">
+                                  <img
+                                    src={customer.userId.avatar}
+                                    alt={customer.userId._id}
+                                    className="w-9 h-9 rounded-full object-cover"
+                                  />
                                 </div>
-                                <div className="text-sm text-gray-500 hidden sm:block">
-                                  {customer.userId.email}
+                                <div className="ml-4">
+                                  <div className="text-sm font-medium text-gray-900">
+                                    {customer.userId.name}
+                                  </div>
+                                  <div className="text-sm text-gray-500 hidden sm:block">
+                                    {customer.userId.email}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
+                            </a>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap hidden md:table-cell">
                             <div className="text-sm text-gray-900">
