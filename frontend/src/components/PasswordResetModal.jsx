@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { ArrowLeft } from "lucide-react";
-import { showSuccessToast } from "./toast";
+import { showErrorToast, showSuccessToast } from "./toast";
+import { useNavigate } from "react-router-dom";
 
 const PasswordResetModal = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,9 +26,15 @@ const PasswordResetModal = ({ isOpen, onClose }) => {
       );
 
       const data = await response.json();
-
-      showSuccessToast(data.message);
-      onClose();
+      if (!response.ok) {
+        const id = data.userId;
+        navigate(`/reset-code?id=${id}`);
+        // showErrorToast(data.message);
+        onClose();
+      } else {
+        showSuccessToast(data.message);
+        onClose();
+      }
     } catch (error) {
       console.error("Password reset error:", error);
     } finally {

@@ -34,6 +34,7 @@ import MyCustomers from "./pages/MyCustomers";
 import useAuth from "./hooks/useAuth";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import ResetCodePage from "./pages/ResetCodePage";
 
 const AppRoutes = () => {
   const location = useLocation();
@@ -82,6 +83,7 @@ const AppRoutes = () => {
         <Route path="/deactivated" element={<DeactivationPage />} />
         <Route path="/select-role" element={<RoleSelectionPage />} />
         <Route path="/customers" element={<MyCustomers />} />
+        <Route path="/reset-code" element={<ResetCodePage />} />
       </Routes>
     </>
   );

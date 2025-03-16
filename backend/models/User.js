@@ -22,6 +22,7 @@ const userSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  isAssociatedWithGoogle: { type: Boolean, default: false },
   resetToken: { type: String, default: null },
   resetTokenExpiry: { type: Date, default: null },
 });

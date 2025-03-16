@@ -70,6 +70,7 @@ const handleGoogleCallback = async (req, res) => {
         name: data.name,
         email: data.email,
         avatar: uploadedAvatar.secure_url,
+        isAssociatedWithGoogle: true,
       });
       //   console.log(user);
       const token = jwt.sign(

@@ -14,6 +14,7 @@ const {
   fetchUserDetailsForAdmin,
   manageUser,
   assignRole,
+  verifyResetToken,
 } = require("../controllers/userController");
 const upload = require("../middlewares/multer");
 
@@ -30,5 +31,6 @@ router.get("/all-users", fetchAllUsers);
 router.get("/user/:userId", fetchUserDetailsForAdmin);
 router.put("/user/:userId/manage", manageUser);
 router.put("/:userId/assign-role", assignRole);
+router.post("/verify-reset-token", verifyResetToken);
 
 module.exports = router;

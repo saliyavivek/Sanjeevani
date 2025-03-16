@@ -55,6 +55,7 @@ const AdminEditPage = () => {
 
         if (response.ok) {
           showSuccessToast("User updated.");
+          navigate(-1);
         } else {
           showErrorToast("Error while updating user.");
         }
@@ -69,6 +70,7 @@ const AdminEditPage = () => {
 
         if (response.ok) {
           showSuccessToast("Warehouse updated.");
+          navigate(-1);
         } else {
           showErrorToast("Error while updating warehouse.");
         }
@@ -81,19 +83,15 @@ const AdminEditPage = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      // Optionally, update the local state with the new data
       setData(updatedData);
 
-      // Handle success (e.g., show a success message, navigate back)
       console.log("Data updated successfully!");
     } catch (error) {
       console.error("Error updating data:", error);
-      // Handle error (e.g., show an error message)
     }
   };
 
   const handleCancel = () => {
-    // Handle cancellation (e.g., navigate back)
     navigate(-1);
     // console.log("Cancelled");
   };
@@ -107,6 +105,7 @@ const AdminEditPage = () => {
       if (response.ok) {
         const data = await response.json();
         showSuccessToast(data.message);
+        navigate(-1);
       } else {
         showErrorToast("Error while managing user.");
       }

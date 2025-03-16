@@ -100,13 +100,13 @@ const Overview = () => {
           color="bg-green-500"
         />
         <StatCard
-          title="Active Bookings"
+          title="Total Bookings"
           value={totalBookings}
           icon={Calendar}
           color="bg-yellow-500"
         />
         <StatCard
-          title="Monthly Revenue"
+          title="Total Revenue"
           value={`₹${revenue.toLocaleString()}`}
           icon={TrendingUp}
           color="bg-purple-500"

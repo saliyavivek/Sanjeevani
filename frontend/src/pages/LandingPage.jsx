@@ -164,7 +164,7 @@ const LandingPage = () => {
                   <a
                     href={
                       !isLoggedIn
-                        ? "/signup"
+                        ? "/signin"
                         : role === "owner"
                         ? "/listings"
                         : role === "farmer"
@@ -376,7 +376,7 @@ const LandingPage = () => {
               <a
                 href={
                   !isLoggedIn
-                    ? "/signup"
+                    ? "/signin"
                     : role === "owner"
                     ? "/listings"
                     : role === "farmer"

@@ -213,6 +213,7 @@ const updateUserAvatar = async (req, res) => {
 
 const requestPasswordReset = async (req, res) => {
   const { email } = req.body;
+
   const user = await User.findOne({ email });
 
   if (!user) {
@@ -226,6 +227,13 @@ const requestPasswordReset = async (req, res) => {
     { email },
     { resetToken: token, resetTokenExpiry: expiresAt }
   );
+
+  if (!user.isAssociatedWithGoogle) {
+    return res.status(404).json({
+      userId: user._id,
+      message: "Email is not associated with Google",
+    });
+  }
 
   // Send the email
   const transporter = nodemailer.createTransport({
@@ -397,6 +405,27 @@ const assignRole = async (req, res) => {
   }
 };
 
+const verifyResetToken = async (req, res) => {
+  try {
+    const { userId, token } = req.body;
+
+    const user = await User.findOne({
+      _id: userId,
+      resetToken: token,
+    });
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "Your token is either invalid or is expired." });
+    }
+
+    res.status(200).json({ message: "Reset Code is verified successfully." });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to assign role" });
+  }
+};
+
 module.exports = {
   signup,
   signin,
@@ -411,4 +440,5 @@ module.exports = {
   fetchUserDetailsForAdmin,
   manageUser,
   assignRole,
+  verifyResetToken,
 };

@@ -47,8 +47,7 @@ const ResetPassword = () => {
     if (!validatePassword(formData.password)) {
       setErrors((prev) => ({
         ...prev,
-        password:
-          "Password must be at least 8 characters and include a symbol or number",
+        password: "Password must be at least 6 characters.",
       }));
       return;
     }
