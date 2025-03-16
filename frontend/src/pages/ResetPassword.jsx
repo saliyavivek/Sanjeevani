@@ -91,16 +91,15 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <h2 className="text-2xl font-semibold text-gray-900 text-center mb-6">
             Update password
           </h2>
 
-          <p className="text-sm text-gray-600 mb-6">
-            Must include at least one symbol or number and have at least 8
-            characters.
+          <p className="text-sm text-center text-gray-600 mb-6">
+            Your password must have at least 6 characters.
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">

@@ -167,8 +167,8 @@ const ResetCodePage = () => {
                     onClick={handleCopyCode}
                   >
                     <span className="text-md font-mono tracking-wider text-gray-800">
-                      {resetCode?.length > 20
-                        ? `${resetCode.substring(0, 20)}...`
+                      {resetCode?.length > 18
+                        ? `${resetCode.substring(0, 18)}...`
                         : resetCode}
                     </span>
                   </div>
