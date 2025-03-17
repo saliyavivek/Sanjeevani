@@ -79,6 +79,7 @@ const BookingDetails = () => {
   // const token = useAuth();
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [paidBooking, setPaidBooking] = useState(null);
+  const [paying, setPaying] = useState(false);
 
   // console.log(token);
   useEffect(() => {
@@ -133,6 +134,7 @@ const BookingDetails = () => {
   }
 
   const handlePayment = async () => {
+    setPaying(true);
     const response = await fetch(`${API_BASE_URL}/bookings/${id}`, {
       method: "PUT",
       body: JSON.stringify({
@@ -150,8 +152,8 @@ const BookingDetails = () => {
       return;
     }
     const data = await response.json();
-
     showSuccessToast("Payment successfull.");
+    setPaying(false);
     // console.log(data.message, data.booking);
     // console.log(data.booking);
     // generateInvoice(data.booking);
@@ -399,9 +401,12 @@ const BookingDetails = () => {
           </button>
           <button
             onClick={handlePayment}
-            className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+            disabled={paying}
+            className={`px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors
+              ${paying ? "opacity-50 cursor-not-allowes" : ""}
+              `}
           >
-            Pay Now
+            {paying ? "Processing..." : "Pay Now"}
           </button>
         </div>
       </Modal>

@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
-import { Check, X, User } from "lucide-react";
+import { Check, X, User, ArrowLeft } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 import { jwtDecode } from "jwt-decode";
 import { showSuccessToast } from "../components/toast";
+import { useNavigate } from "react-router-dom";
 
 const BookingRequests = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const token = useAuth();
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -116,8 +118,16 @@ const BookingRequests = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-2xl font-bold mb-6">Booking Requests</h1>
+    <div className="max-w-7xl mx-auto px-1 sm:px-6 lg:px-8 py-6">
+      <div className="flex items-center gap-1 mb-6">
+        <button
+          onClick={() => navigate(-1)}
+          className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200"
+        >
+          <ArrowLeft className="h-5 w-5 text-gray-600" />
+        </button>
+        <h2 className="text-xl font-semibold">Booking Requests</h2>
+      </div>
       <div className="space-y-4">
         {requests.map((request) => (
           <div
