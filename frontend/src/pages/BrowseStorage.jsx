@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import StorageCard from "../components/StorageCard";
 import StorageCardSkeleton from "../components/StorageCardSkeleton";
 import useAuth from "../hooks/useAuth";
-import { ArrowLeft, SlidersHorizontal } from "lucide-react";
+import { ArrowLeft, Search, SlidersHorizontal } from "lucide-react";
 import FilterModal from "../components/FilterModal";
 import { useNavigate } from "react-router-dom";
 
@@ -12,6 +12,7 @@ export default function BrowseStorage() {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [filteredWarehouses, setFilteredWarehouses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
 
@@ -60,10 +61,14 @@ export default function BrowseStorage() {
   // Generate skeleton array based on grid layout
   const skeletons = Array(8).fill(null);
 
+  const displayedWarehouses = filteredWarehouses.filter((warehouse) =>
+    warehouse.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen bg-white py-8">
       <div className="max-w-[1400px] mx-auto px-4">
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-column justify-start items-start mb-6">
           <div className="flex items-center gap-2 md:gap-4 mb-8">
             <button
               onClick={() => navigate(-1)}
@@ -76,21 +81,36 @@ export default function BrowseStorage() {
               Available Storage Spaces
             </h1>
           </div>
-          <div>
-            <button
-              className="flex justify-center items-center mb-8 gap-2 hover:bg-gray-100 rounded-md h-10 px-1 md:px-5 py-2"
-              onClick={() => setIsFilterModalOpen(true)}
-            >
-              <SlidersHorizontal className="w-5 h-5" />
-              Filters
-            </button>
+          <div className="w-full flex gap-2">
+            <div className="relative w-[95%]">
+              <input
+                type="text"
+                placeholder="Search warehouses..."
+                className="w-full px-4 py-2 border rounded-lg text-gray-700 focus:outline-none focus:border-green-500 hover:bg-gray-50"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <Search
+                className="absolute right-3 top-2 text-gray-400"
+                size={20}
+              />
+            </div>
+            <div>
+              <button
+                className="flex justify-center items-center mb-8 gap-2 hover:bg-gray-100 rounded-md h-10 px-1 md:px-5 py-2"
+                onClick={() => setIsFilterModalOpen(true)}
+              >
+                <SlidersHorizontal className="w-5 h-5" />
+                Filters
+              </button>
+            </div>
           </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {isLoading ? (
             skeletons.map((_, index) => <StorageCardSkeleton key={index} />)
-          ) : filteredWarehouses.length > 0 ? (
-            filteredWarehouses.map((warehouse) => (
+          ) : displayedWarehouses.length > 0 ? (
+            displayedWarehouses.map((warehouse) => (
               <StorageCard key={warehouse._id} warehouse={warehouse} />
             ))
           ) : (

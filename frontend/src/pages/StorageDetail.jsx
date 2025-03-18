@@ -370,6 +370,7 @@ const StorageDetail = () => {
             isOpen={isUploadModalOpen}
             onClose={() => setIsUploadModalOpen(false)}
             onUpload={handleUpload}
+            imagesCount={warehouse.images.length}
           />
         )}
         {showGallery && (

@@ -92,57 +92,74 @@ const BookingManagement = () => {
                 >
                   <td className="py-3 px-6">
                     <div className="flex items-center">
-                      <User size={16} className="mr-2 text-gray-400" />
+                      <a href={`/booking/${booking._id}`}>
+                        <User
+                          size={16}
+                          className="mr-2 text-gray-400 hidden lg:table-cell"
+                        />
+                      </a>
                       <div>
-                        <p className="font-medium">{booking.userId.name}</p>
-                        <p className="text-xs text-gray-500 sm:hidden">
-                          {booking.warehouseId.name}
-                        </p>
-                        <p className="text-xs text-gray-500 md:hidden">
-                          {normalizeDate(booking.startDate)}
-                        </p>
-                        <p className="text-xs text-gray-500 lg:hidden">
-                          {normalizeDate(booking.endDate)}
-                        </p>
+                        <a href={`/booking/${booking._id}`}>
+                          <p className="font-medium">{booking.userId.name}</p>
+                          <p className="text-xs text-gray-500 sm:hidden">
+                            {booking.warehouseId.name}
+                          </p>
+                          <p className="text-xs text-gray-500 md:hidden">
+                            {normalizeDate(booking.startDate)}
+                          </p>
+                          <p className="text-xs text-gray-500 lg:hidden">
+                            {normalizeDate(booking.endDate)}
+                          </p>
+                        </a>
                       </div>
                     </div>
                   </td>
                   <td className="py-3 px-6 hidden sm:table-cell">
-                    <div className="flex items-center">
-                      <Warehouse size={16} className="mr-2 text-gray-400" />
-                      {booking.warehouseId.name}
-                    </div>
+                    <a href={`/booking/${booking._id}`}>
+                      <div className="flex items-center">
+                        <Warehouse size={16} className="mr-2 text-gray-400" />
+                        {booking.warehouseId.name}
+                      </div>
+                    </a>
                   </td>
                   <td className="text-gray-500 hidden md:table-cell">
-                    {booking.warehouseId.ownerId.name}
+                    <a href={`/booking/${booking._id}`}>
+                      {booking.warehouseId.ownerId.name}
+                    </a>
                   </td>
                   <td className="py-3 px-6 hidden md:table-cell">
-                    <div className="flex items-center">
-                      <Calendar size={16} className="mr-2 text-gray-400" />
-                      {normalizeDate(booking.startDate)}
-                    </div>
+                    <a href={`/booking/${booking._id}`}>
+                      <div className="flex items-center">
+                        <Calendar size={16} className="mr-2 text-gray-400" />
+                        {normalizeDate(booking.startDate)}
+                      </div>
+                    </a>
                   </td>
                   <td className="py-3 px-6 hidden lg:table-cell">
-                    <div className="flex items-center">
-                      <Calendar size={16} className="mr-2 text-gray-400" />
-                      {normalizeDate(booking.endDate)}
-                    </div>
+                    <a href={`/booking/${booking._id}`}>
+                      <div className="flex items-center">
+                        <Calendar size={16} className="mr-2 text-gray-400" />
+                        {normalizeDate(booking.endDate)}
+                      </div>
+                    </a>
                   </td>
                   <td className="py-3 px-6">
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs ${
-                        booking.status === "completed"
-                          ? "bg-gray-200 text-gray-800"
-                          : booking.status === "pending"
-                          ? "bg-yellow-200 text-yellow-800"
-                          : booking.status === "active"
-                          ? "bg-green-200 text-green-800"
-                          : "bg-red-200 text-red-800"
-                      }`}
-                    >
-                      {booking.status.charAt(0).toUpperCase() +
-                        booking.status.slice(1)}
-                    </span>
+                    <a href={`/booking/${booking._id}`}>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs ${
+                          booking.status === "completed"
+                            ? "bg-gray-200 text-gray-800"
+                            : booking.status === "pending"
+                            ? "bg-yellow-200 text-yellow-800"
+                            : booking.status === "active"
+                            ? "bg-green-200 text-green-800"
+                            : "bg-red-200 text-red-800"
+                        }`}
+                      >
+                        {booking.status.charAt(0).toUpperCase() +
+                          booking.status.slice(1)}
+                      </span>
+                    </a>
                   </td>
                 </tr>
               ))}

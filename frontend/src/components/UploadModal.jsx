@@ -1,7 +1,8 @@
 import React, { useState, useRef } from "react";
 import { X, Plus, Trash2 } from "lucide-react";
+import { showErrorToast } from "./toast";
 
-const UploadModal = ({ isOpen, onClose, onUpload }) => {
+const UploadModal = ({ isOpen, onClose, onUpload, imagesCount }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -55,6 +56,10 @@ const UploadModal = ({ isOpen, onClose, onUpload }) => {
   };
 
   const handleUpload = async () => {
+    if (selectedFiles.length + imagesCount > 5) {
+      showErrorToast("You can upload up to 5 images per warehouse.");
+      return;
+    }
     setUploading(true);
     await onUpload(selectedFiles.map((f) => f.file));
     setUploading(false);
@@ -80,12 +85,7 @@ const UploadModal = ({ isOpen, onClose, onUpload }) => {
               </span>
             )}
           </h2>
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-          >
-            <Plus className="w-5 h-5" />
-          </button>
+          <div></div>
         </div>
 
         {/* Content */}
@@ -130,23 +130,31 @@ const UploadModal = ({ isOpen, onClose, onUpload }) => {
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {selectedFiles.map((file, index) => (
-                <div key={index} className="relative group aspect-square">
-                  <img
-                    src={file.preview}
-                    alt={`Selected ${index + 1}`}
-                    className="w-full h-full object-cover rounded-lg"
-                  />
-                  <button
-                    onClick={() => removeFile(index)}
-                    className="absolute top-2 right-2 p-1.5 bg-gray-50 rounded-full opacity-100 hover:bg-gray-100"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {selectedFiles.map((file, index) => (
+                  <div key={index} className="relative group aspect-square">
+                    <img
+                      src={file.preview}
+                      alt={`Selected ${index + 1}`}
+                      className="w-full h-full object-cover rounded-lg"
+                    />
+                    <button
+                      onClick={() => removeFile(index)}
+                      className="absolute top-2 right-2 p-1.5 bg-gray-50 rounded-full opacity-100 hover:bg-gray-100"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+              {selectedFiles.length + imagesCount > 5 && (
+                <p className="text-red-500 mt-2 font-semibold">
+                  Limit Exceeded! Your warehouse already has {imagesCount}{" "}
+                  image(s). You can upload only {5 - imagesCount} more image(s).
+                </p>
+              )}
+            </>
           )}
         </div>
 
