@@ -155,12 +155,12 @@ const AdminEditUser = ({ user, onSave, onCancel, handleDeactivation }) => {
             ></textarea>
           </div>
         </div>
-        <div className="mt-6 flex items-center gap-2">
+        <div className="mt-6 flex flex-col md:flex-row md:items-center gap-2">
           <button
             type="button"
             name="isDeactivated"
             onClick={handleDeactivation}
-            className={`flex items-center px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500
+            className={`flex items-center justify-center px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500
               ${
                 formData.isDeactivated
                   ? "border-green-300 text-green-700 hover:bg-green-50"
@@ -183,14 +183,14 @@ const AdminEditUser = ({ user, onSave, onCancel, handleDeactivation }) => {
           <button
             type="button"
             onClick={onCancel}
-            className="px-3 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center"
+            className="px-3 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 flex items-center justify-center"
           >
             <X className="w-5 h-5 inline-block mr-1" />
             Cancel
           </button>
           <button
             type="submit"
-            className="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center"
+            className="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center justify-center"
           >
             <Save className="w-5 h-5 inline-block mr-1" />
             Save

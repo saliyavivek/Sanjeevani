@@ -116,7 +116,7 @@ const WarehouseManagement = () => {
                     <div>
                       <p className="font-medium">{warehouse.name}</p>
                       <p className="text-xs text-gray-500 flex sm:hidden">
-                        <MapPin className="w-4 h-4 mr-1 text-gray-400" />
+                        <MapPin className="w-4 h-4 mr-1 text-gray-400 hidden" />
                         {warehouse.location.formattedAddress.substring(0, 35) +
                           "..."}
                       </p>
