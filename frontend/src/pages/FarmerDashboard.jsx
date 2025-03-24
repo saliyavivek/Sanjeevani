@@ -51,7 +51,7 @@ const FarmerDashboard = () => {
         }
         const data = await response.json();
         setInfo(data);
-        console.log(data);
+        // console.log(data);
       }
     } catch (error) {
       console.log(error);
@@ -67,19 +67,30 @@ const FarmerDashboard = () => {
   const categorizeBookings = () => {
     const today = normalizeDate(new Date());
     return {
-      past: info.filter((booking) => normalizeDate(booking.endDate) < today),
+      past: info.filter(
+        (booking) =>
+          normalizeDate(booking.endDate) < today &&
+          booking.approvalStatus == "approved"
+      ),
       current: info.filter(
         (booking) =>
           normalizeDate(booking.startDate) <= today &&
-          normalizeDate(booking.endDate) >= today
+          normalizeDate(booking.endDate) >= today &&
+          booking.approvalStatus == "approved"
       ),
       upcoming: info.filter(
-        (booking) => normalizeDate(booking.startDate) > today
+        (booking) =>
+          normalizeDate(booking.startDate) > today &&
+          booking.approvalStatus == "approved"
+      ),
+      declined: info.filter(
+        (booking) =>
+          booking.approvalStatus == "rejected" && booking.status == "declined"
       ),
     };
   };
 
-  const { past, current, upcoming } = categorizeBookings();
+  const { past, current, upcoming, declined } = categorizeBookings();
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -170,7 +181,9 @@ const FarmerDashboard = () => {
                   const endDate = normalizeDate(booking.endDate);
                   const now = normalizeDate(new Date());
                   return (
-                    endDate >= now && endDate - now <= 2 * 24 * 60 * 60 * 1000
+                    endDate >= now &&
+                    endDate - now <= 2 * 24 * 60 * 60 * 1000 &&
+                    booking.approvalStatus != "rejected"
                   );
                 }).length
               }
@@ -201,6 +214,7 @@ const FarmerDashboard = () => {
                   <thead>
                     <tr className="text-left text-gray-500 border-b">
                       <th className="pb-3 pr-2">Warehouse</th>
+                      <th className="pb-3 pr-2">Owner</th>
                       <th className="pb-3 pr-2 hidden md:table-cell">
                         Location
                       </th>
@@ -217,7 +231,7 @@ const FarmerDashboard = () => {
                       .reverse()
                       .map((booking, index) => (
                         <tr key={index} className="border-b hover:bg-gray-50">
-                          <td className="py-3 pr-2">
+                          <td className="py-3 pr-2 text-sm md:text-md font-medium">
                             <a
                               href={`/booking/${booking._id}`}
                               className="hover:underline"
@@ -225,7 +239,15 @@ const FarmerDashboard = () => {
                               {booking.warehouseId.name}
                             </a>
                           </td>
-                          <td className="pr-2 hidden md:table-cell">
+                          <td className="py-3 pr-2 text-sm md:text-md font-medium">
+                            <a
+                              href={`/booking/${booking._id}`}
+                              className="hover:underline"
+                            >
+                              {booking.warehouseId.ownerId.name}
+                            </a>
+                          </td>
+                          <td className="pr-2 hidden md:table-cell text-sm md:text-md font-medium">
                             <a
                               href={`/booking/${booking._id}`}
                               className="hover:underline"
@@ -239,7 +261,7 @@ const FarmerDashboard = () => {
                                 : booking.warehouseId.location.formattedAddress}
                             </a>
                           </td>
-                          <td className="pr-2 hidden md:table-cell">
+                          <td className="pr-2 hidden md:table-cell text-sm md:text-md font-medium">
                             <a
                               href={`/booking/${booking._id}`}
                               className="hover:underline"
@@ -247,7 +269,7 @@ const FarmerDashboard = () => {
                               {booking.warehouseId.size} sq ft
                             </a>
                           </td>
-                          <td className="pr-2 hidden md:table-cell">
+                          <td className="pr-2 hidden md:table-cell text-sm md:text-md font-medium">
                             <a
                               href={`/booking/${booking._id}`}
                               className="hover:underline"
@@ -255,7 +277,7 @@ const FarmerDashboard = () => {
                               {new Date(booking.startDate).toLocaleDateString()}
                             </a>
                           </td>
-                          <td className="pr-2 hidden md:table-cell">
+                          <td className="pr-2 hidden md:table-cell text-sm md:text-md font-medium">
                             <a
                               href={`/booking/${booking._id}`}
                               className="hover:underline"
@@ -263,7 +285,7 @@ const FarmerDashboard = () => {
                               {new Date(booking.endDate).toLocaleDateString()}
                             </a>
                           </td>
-                          <td className="pr-2 hidden md:table-cell">
+                          <td className="pr-2 hidden md:table-cell text-sm md:text-md font-medium">
                             {Math.abs(
                               new Date(booking.endDate) -
                                 new Date(booking.startDate)
@@ -271,19 +293,23 @@ const FarmerDashboard = () => {
                               (1000 * 3600 * 24) +
                               1}
                           </td>
-                          <td>
+                          <td className="text-center">
                             <span
                               className={`text-xs font-medium bg-${
                                 upcoming.includes(booking)
                                   ? "blue"
                                   : current.includes(booking)
                                   ? "green"
+                                  : declined.includes(booking)
+                                  ? "red"
                                   : "gray"
                               }-100 text-${
                                 upcoming.includes(booking)
                                   ? "blue"
                                   : current.includes(booking)
                                   ? "green"
+                                  : declined.includes(booking)
+                                  ? "red"
                                   : "gray"
                               }-800 px-2 py-1 rounded-full text-sm`}
                             >
@@ -291,6 +317,8 @@ const FarmerDashboard = () => {
                                 ? "Upcoming"
                                 : current.includes(booking)
                                 ? "Active"
+                                : declined.includes(booking)
+                                ? "Declined"
                                 : "Completed"}
                             </span>
                           </td>

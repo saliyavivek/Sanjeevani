@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
-import { Check, X, User, ArrowLeft } from "lucide-react";
+import { Check, X, User, ArrowLeft, User2Icon } from "lucide-react";
 import useAuth from "../hooks/useAuth";
 import { jwtDecode } from "jwt-decode";
 import { showSuccessToast } from "../components/toast";
@@ -132,7 +132,7 @@ const BookingRequests = () => {
         {requests.map((request) => (
           <div
             key={request._id}
-            className="bg-white rounded-lg overflow-hidden"
+            className="bg-white border-b pb-6 rounded-lg overflow-hidden"
           >
             <div className="p-4">
               <div className="flex justify-between items-center mb-2">
@@ -161,20 +161,22 @@ const BookingRequests = () => {
                   />
                 </div>
                 <div className="w-full md:w-2/3 space-y-2">
-                  <div className="flex items-center space-x-2">
-                    {request.userId.avatar ? (
-                      <img
-                        src={request.userId.avatar || "/placeholder.svg"}
-                        alt={request.userId.name}
-                        className="w-8 h-8 rounded-full"
-                      />
-                    ) : (
-                      <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                        <User className="w-4 h-4 text-gray-500" />
-                      </div>
-                    )}
-                    <span className="font-medium">{request.userId.name}</span>
-                  </div>
+                  <a href={`/users/f/show/${request.userId._id}`}>
+                    <div className="flex items-center space-x-2">
+                      {request.userId.avatar ? (
+                        <img
+                          src={request.userId.avatar || "/placeholder.svg"}
+                          alt={request.userId.name}
+                          className="w-8 h-8 rounded-full"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                          <User className="w-4 h-4 text-gray-500" />
+                        </div>
+                      )}
+                      <span className="font-medium">{request.userId.name}</span>
+                    </div>
+                  </a>
                   <p className="text-sm text-gray-500">
                     From: {format(new Date(request.startDate), "MMM dd, yyyy")}
                   </p>
@@ -188,21 +190,36 @@ const BookingRequests = () => {
               </div>
             </div>
             {request.status === "pending" && (
-              <div className="px-4 py-3 flex justify-end space-x-2">
-                <button
-                  onClick={() => handleDecline(request._id, request.userId._id)}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              <div className="px-4 py-3 flex justify-end md:justify-between space-x-2">
+                <a
+                  href={`/users/f/show/${request.userId._id}`}
+                  className="hidden md:block"
                 >
-                  <X className="inline-block w-4 h-4 mr-2" />
-                  Decline
-                </button>
-                <button
-                  onClick={() => handleApprove(request._id, request.userId._id)}
-                  className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                  <Check className="inline-block w-4 h-4 mr-2" />
-                  Approve
-                </button>
+                  <button className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <User2Icon className="inline-block w-4 h-4 mr-2" />
+                    View this Customer
+                  </button>
+                </a>
+                <div className="flex justify-end space-x-2">
+                  <button
+                    onClick={() =>
+                      handleDecline(request._id, request.userId._id)
+                    }
+                    className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  >
+                    <X className="inline-block w-4 h-4 mr-2" />
+                    Decline
+                  </button>
+                  <button
+                    onClick={() =>
+                      handleApprove(request._id, request.userId._id)
+                    }
+                    className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                  >
+                    <Check className="inline-block w-4 h-4 mr-2" />
+                    Approve
+                  </button>
+                </div>
               </div>
             )}
           </div>

@@ -87,9 +87,9 @@ const getUserBookings = async (req, res) => {
   try {
     let filter = { userId: req.body.userId };
 
-    if (!req.body.isFetchAll) {
-      filter.status = { $ne: "declined" };
-    }
+    // if (!req.body.isFetchAll) {
+    //   filter.status = { $ne: "declined" };
+    // }
 
     const bookings = await Booking.find(filter)
       .populate({

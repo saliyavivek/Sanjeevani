@@ -52,6 +52,7 @@ const WarehouseOwnerDashboard = () => {
         }
         const data = await response.json();
         setInfo(data.warehouses);
+        console.log(data.warehouses);
       }
     } catch (error) {
       console.log(error);
@@ -71,7 +72,9 @@ const WarehouseOwnerDashboard = () => {
         (acc, warehouse) =>
           acc.concat(
             warehouse.bookings.filter(
-              (booking) => normalizeDate(booking.endDate) < today
+              (booking) =>
+                normalizeDate(booking.endDate) < today &&
+                booking.approvalStatus == "approved"
             )
           ),
         []
@@ -82,7 +85,8 @@ const WarehouseOwnerDashboard = () => {
             warehouse.bookings.filter(
               (booking) =>
                 normalizeDate(booking.startDate) <= today &&
-                normalizeDate(booking.endDate) >= today
+                normalizeDate(booking.endDate) >= today &&
+                booking.approvalStatus == "approved"
             )
           ),
         []
@@ -91,7 +95,20 @@ const WarehouseOwnerDashboard = () => {
         (acc, warehouse) =>
           acc.concat(
             warehouse.bookings.filter(
-              (booking) => normalizeDate(booking.startDate) > today
+              (booking) =>
+                normalizeDate(booking.startDate) > today &&
+                booking.approvalStatus == "approved"
+            )
+          ),
+        []
+      ),
+      declined: info.reduce(
+        (acc, warehouse) =>
+          acc.concat(
+            warehouse.bookings.filter(
+              (booking) =>
+                booking.approvalStatus == "rejected" &&
+                booking.status == "declined"
             )
           ),
         []
@@ -99,7 +116,7 @@ const WarehouseOwnerDashboard = () => {
     };
   };
 
-  const { past, current, upcoming } = categorizeBookings();
+  const { past, current, upcoming, declined } = categorizeBookings();
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -257,12 +274,14 @@ const WarehouseOwnerDashboard = () => {
               <tbody>
                 {info.map((listing) =>
                   listing.bookings
-                    .slice()
                     .sort(
-                      (a, b) => new Date(b.startDate) - new Date(a.startDate)
+                      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
                     )
                     .map((booking) => (
-                      <tr key={booking._id} className="border-b text-sm">
+                      <tr
+                        key={booking._id}
+                        className="border-b text-sm font-medium"
+                      >
                         <td className="py-3 md:pr-4">
                           <a
                             href={`/booking/${booking._id}`}
@@ -316,7 +335,7 @@ const WarehouseOwnerDashboard = () => {
                               1}
                           </a>
                         </td>
-                        <td>
+                        <td className="text-center">
                           <a
                             href={`/booking/${booking._id}`}
                             className="hover:underline"
@@ -327,20 +346,26 @@ const WarehouseOwnerDashboard = () => {
                                   ? "blue"
                                   : current.includes(booking)
                                   ? "green"
+                                  : declined.includes(booking)
+                                  ? "red"
                                   : "gray"
                               }-100 text-${
                                 upcoming.includes(booking)
                                   ? "blue"
                                   : current.includes(booking)
                                   ? "green"
+                                  : declined.includes(booking)
+                                  ? "red"
                                   : "gray"
                               }-800 px-2 py-1 rounded-full text-sm`}
                             >
                               {upcoming.includes(booking)
-                                ? "upcoming"
+                                ? "Upcoming"
                                 : current.includes(booking)
-                                ? "active"
-                                : "completed"}
+                                ? "Active"
+                                : declined.includes(booking)
+                                ? "Declined"
+                                : "Completed"}
                             </span>
                           </a>
                         </td>

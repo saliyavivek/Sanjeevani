@@ -33,7 +33,7 @@ const getGoogleAuthURL = (req, res) => {
     access_type: "offline",
     scope: scopes,
   });
-  res.redirect(url);
+  res.redirect(url); // this 'url' takes us to the page where they ask us about which email to use to login/signup
 };
 
 // Cloudinary configuration
@@ -45,9 +45,6 @@ cloudinary.config({
 
 const handleGoogleCallback = async (req, res) => {
   try {
-    // console.log(req.query);
-    // console.log(req.body);
-
     const { code } = req.query;
 
     const { tokens } = await oauth2Client.getToken(code);
