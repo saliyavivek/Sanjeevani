@@ -39,7 +39,6 @@ const MyCustomers = () => {
 
   useEffect(() => {
     const fetchCustomers = async () => {
-      console.log(userId);
       setIsLoading(true);
       try {
         const response = await fetch(`${API_BASE_URL}/bookings/customers`, {

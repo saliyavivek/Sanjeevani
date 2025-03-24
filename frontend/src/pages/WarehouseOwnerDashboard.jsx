@@ -19,7 +19,8 @@ const WarehouseOwnerDashboard = () => {
   const [name, setName] = useState("");
   const [userId, setUserId] = useState(null);
   const [info, setInfo] = useState([]);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [totListings, setTotListings] = useState(0);
+  // const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
@@ -37,11 +38,9 @@ const WarehouseOwnerDashboard = () => {
   const fetchOwnerInfo = async () => {
     try {
       if (userId) {
-        const response = await fetch(`${API_BASE_URL}/warehouses/listings`, {
+        const response = await fetch(`${API_BASE_URL}/bookings/customers`, {
           method: "POST",
-          body: JSON.stringify({
-            user: userId,
-          }),
+          body: JSON.stringify({ userId }),
           headers: {
             "Content-Type": "application/json",
           },
@@ -51,76 +50,39 @@ const WarehouseOwnerDashboard = () => {
           return;
         }
         const data = await response.json();
-        setInfo(data.warehouses);
-        console.log(data.warehouses);
+        setInfo(data.bookings);
+        setTotListings(data.totalListings);
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const normalizeDate = (date) => {
-    const normalizedDate = new Date(date);
-    normalizedDate.setHours(0, 0, 0, 0);
-    return normalizedDate;
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "short", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  const categorizeBookings = () => {
-    const today = normalizeDate(new Date());
-    return {
-      past: info.reduce(
-        (acc, warehouse) =>
-          acc.concat(
-            warehouse.bookings.filter(
-              (booking) =>
-                normalizeDate(booking.endDate) < today &&
-                booking.approvalStatus == "approved"
-            )
-          ),
-        []
-      ),
-      current: info.reduce(
-        (acc, warehouse) =>
-          acc.concat(
-            warehouse.bookings.filter(
-              (booking) =>
-                normalizeDate(booking.startDate) <= today &&
-                normalizeDate(booking.endDate) >= today &&
-                booking.approvalStatus == "approved"
-            )
-          ),
-        []
-      ),
-      upcoming: info.reduce(
-        (acc, warehouse) =>
-          acc.concat(
-            warehouse.bookings.filter(
-              (booking) =>
-                normalizeDate(booking.startDate) > today &&
-                booking.approvalStatus == "approved"
-            )
-          ),
-        []
-      ),
-      declined: info.reduce(
-        (acc, warehouse) =>
-          acc.concat(
-            warehouse.bookings.filter(
-              (booking) =>
-                booking.approvalStatus == "rejected" &&
-                booking.status == "declined"
-            )
-          ),
-        []
-      ),
-    };
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "active":
+        return "bg-green-100 text-green-800";
+      case "upcoming":
+        return "bg-blue-100 text-blue-800";
+      case "completed":
+        return "bg-gray-100 text-gray-800";
+      case "pending":
+        return "bg-yellow-100 text-yellow-800";
+      case "declined":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
   };
 
-  const { past, current, upcoming, declined } = categorizeBookings();
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+  // const toggleSidebar = () => {
+  //   setIsSidebarOpen(!isSidebarOpen);
+  // };
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
@@ -184,7 +146,7 @@ const WarehouseOwnerDashboard = () => {
               Total Listings
             </h3>
             <p className="text-2xl lg:text-3xl font-bold text-blue-600">
-              {info && info.length}
+              {info && totListings}
             </p>
           </div>
           <div className="bg-white rounded-lg shadow p-4 lg:p-6">
@@ -193,8 +155,11 @@ const WarehouseOwnerDashboard = () => {
             </h3>
             <p className="text-2xl lg:text-3xl font-bold text-blue-600">
               {
-                info.filter((booking) => booking.availability === "booked")
-                  .length
+                info.filter(
+                  (booking) =>
+                    booking.approvalStatus == "approved" &&
+                    booking.status == "active"
+                ).length
               }
             </p>
           </div>
@@ -204,9 +169,9 @@ const WarehouseOwnerDashboard = () => {
             </h3>
             <p className="text-2xl lg:text-3xl font-bold text-blue-600">
               {info
-                .reduce((acc, curr) => acc + Number(curr.size), 0)
+                .reduce((acc, curr) => acc + Number(curr.warehouseId.size), 0)
                 .toLocaleString()}{" "}
-              sq ft
+              sq ft.
             </p>
           </div>
           <div className="bg-white rounded-lg shadow p-4 lg:p-6">
@@ -237,7 +202,7 @@ const WarehouseOwnerDashboard = () => {
                   return acc + revenueForListing;
                 }, 0)
                 .toLocaleString()} */}
-              {info
+              {/* {info
                 .reduce((acc, warehouse) => {
                   const warehouseEarnings = warehouse.bookings.reduce(
                     (sum, booking) => {
@@ -247,6 +212,12 @@ const WarehouseOwnerDashboard = () => {
                   );
                   return acc + warehouseEarnings;
                 }, 0)
+                .toLocaleString()} */}
+              {info
+                ?.reduce(
+                  (acc, curr) => acc + (Number(curr.ownerEarnings) || 0),
+                  0
+                )
                 .toLocaleString()}
             </p>
           </div>
@@ -272,8 +243,8 @@ const WarehouseOwnerDashboard = () => {
               </thead>
 
               <tbody>
-                {info.map((listing) =>
-                  listing.bookings
+                {info &&
+                  info
                     .sort(
                       (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
                     )
@@ -287,7 +258,7 @@ const WarehouseOwnerDashboard = () => {
                             href={`/booking/${booking._id}`}
                             className="hover:underline"
                           >
-                            {listing.name}
+                            {booking.warehouseId.name}
                           </a>
                         </td>
                         <td className="py-3 md:pr-4">
@@ -303,7 +274,7 @@ const WarehouseOwnerDashboard = () => {
                             href={`/booking/${booking._id}`}
                             className="hover:underline"
                           >
-                            {listing.size} sq ft
+                            {booking.warehouseId.size} sq ft
                           </a>
                         </td>
                         <td className="pr-4 hidden md:table-cell">
@@ -311,7 +282,7 @@ const WarehouseOwnerDashboard = () => {
                             href={`/booking/${booking._id}`}
                             className="hover:underline"
                           >
-                            {new Date(booking.startDate).toLocaleDateString()}
+                            {formatDate(booking.startDate)}
                           </a>
                         </td>
                         <td className="pr-4 hidden md:table-cell">
@@ -319,7 +290,7 @@ const WarehouseOwnerDashboard = () => {
                             href={`/booking/${booking._id}`}
                             className="hover:underline"
                           >
-                            {new Date(booking.endDate).toLocaleDateString()}
+                            {formatDate(booking.endDate)}
                           </a>
                         </td>
                         <td className="pr-4 hidden md:table-cell">
@@ -341,37 +312,17 @@ const WarehouseOwnerDashboard = () => {
                             className="hover:underline"
                           >
                             <span
-                              className={`bg-${
-                                upcoming.includes(booking)
-                                  ? "blue"
-                                  : current.includes(booking)
-                                  ? "green"
-                                  : declined.includes(booking)
-                                  ? "red"
-                                  : "gray"
-                              }-100 text-${
-                                upcoming.includes(booking)
-                                  ? "blue"
-                                  : current.includes(booking)
-                                  ? "green"
-                                  : declined.includes(booking)
-                                  ? "red"
-                                  : "gray"
-                              }-800 px-2 py-1 rounded-full text-sm`}
+                              className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full  ${getStatusColor(
+                                booking.status
+                              )}`}
                             >
-                              {upcoming.includes(booking)
-                                ? "Upcoming"
-                                : current.includes(booking)
-                                ? "Active"
-                                : declined.includes(booking)
-                                ? "Declined"
-                                : "Completed"}
+                              {booking.status.charAt(0).toUpperCase() +
+                                booking.status.slice(1)}
                             </span>
                           </a>
                         </td>
                       </tr>
-                    ))
-                )}
+                    ))}
               </tbody>
             </table>
           </div>

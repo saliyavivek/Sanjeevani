@@ -64,6 +64,11 @@ const FarmerDashboard = () => {
     return normalizedDate;
   };
 
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "short", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   const categorizeBookings = () => {
     const today = normalizeDate(new Date());
     return {
@@ -92,9 +97,9 @@ const FarmerDashboard = () => {
 
   const { past, current, upcoming, declined } = categorizeBookings();
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+  // const toggleSidebar = () => {
+  //   setIsSidebarOpen(!isSidebarOpen);
+  // };
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
@@ -227,8 +232,9 @@ const FarmerDashboard = () => {
                   </thead>
                   <tbody>
                     {info
-                      .slice()
-                      .reverse()
+                      .sort(
+                        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+                      )
                       .map((booking, index) => (
                         <tr key={index} className="border-b hover:bg-gray-50">
                           <td className="py-3 pr-2 text-sm md:text-md font-medium">
@@ -274,7 +280,7 @@ const FarmerDashboard = () => {
                               href={`/booking/${booking._id}`}
                               className="hover:underline"
                             >
-                              {new Date(booking.startDate).toLocaleDateString()}
+                              {formatDate(booking.startDate)}
                             </a>
                           </td>
                           <td className="pr-2 hidden md:table-cell text-sm md:text-md font-medium">
@@ -282,7 +288,7 @@ const FarmerDashboard = () => {
                               href={`/booking/${booking._id}`}
                               className="hover:underline"
                             >
-                              {new Date(booking.endDate).toLocaleDateString()}
+                              {formatDate(booking.endDate)}
                             </a>
                           </td>
                           <td className="pr-2 hidden md:table-cell text-sm md:text-md font-medium">

@@ -498,9 +498,30 @@ const customerInfo = async (req, res) => {
     if (bookings.length < 1) {
       return res.status(404).json({ message: "No bookings found." });
     }
-    return res.status(200).json({ message: "Your customers.", bookings });
+
+    return res
+      .status(200)
+      .json({
+        message: "Your customers.",
+        bookings,
+        totalListings: warehouseIds.length,
+      });
   } catch (error) {}
 };
+
+// const getBookingsForDashboard = async(req, res) => {
+//   try {
+//     const {userId} = req.body;
+
+//     if (!userId) {
+//       return res.status(404).json({ message: "userId is required." });
+//     }
+
+//     const bookings = await
+//   } catch (error) {
+
+//   }
+// }
 
 module.exports = {
   createBooking,
@@ -515,5 +536,6 @@ module.exports = {
   handleRequest,
   pendingPayments,
   customerInfo,
+  // getBookingsForDashboard
   // markCompleted,
 };

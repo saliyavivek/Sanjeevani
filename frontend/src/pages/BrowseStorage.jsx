@@ -22,8 +22,8 @@ export default function BrowseStorage() {
       const response = await fetch(`${API_BASE_URL}/warehouses/`);
       if (response.ok) {
         const data = await response.json();
-        setWarehouses(data.warehouses);
-        setFilteredWarehouses(data.warehouses);
+        setWarehouses(shuffleArray(data.warehouses));
+        setFilteredWarehouses(shuffleArray(data.warehouses));
       }
     } catch (error) {
       console.error("Error fetching warehouses:", error);
@@ -35,6 +35,14 @@ export default function BrowseStorage() {
   useEffect(() => {
     fetchStorages();
   }, []);
+
+  const shuffleArray = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  };
 
   const handleApplyFilters = (filters) => {
     console.log("Applied filters:", filters);

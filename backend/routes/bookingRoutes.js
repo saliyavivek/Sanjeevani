@@ -12,6 +12,7 @@ const {
   handleRequest,
   pendingPayments,
   customerInfo,
+  // getBookingsForDashboard,
   // markCompleted,
 } = require("../controllers/bookingController");
 const router = express.Router();
@@ -28,6 +29,7 @@ router.post("/booking-requests", getBookingRequests);
 router.put("/booking-requests/:bookingId", handleRequest);
 router.get("/pending-payments/:userId", pendingPayments);
 router.post("/customers", customerInfo);
+// router.post("/dashboard-booking", getBookingsForDashboard);
 // router.post("/completed", markCompleted);
 
 module.exports = router;

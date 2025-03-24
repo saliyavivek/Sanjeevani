@@ -24,11 +24,17 @@ const StatusBadge = ({ status }) => {
 
   return (
     <span
-      className={`px-2 py-1 rounded-full text-xs font-medium ${statusStyles[status]}`}
+      className={`px-2 py-1 rounded-full text-xs font-medium border ${statusStyles[status]}`}
     >
       {status.charAt(0).toUpperCase() + status.slice(1)}
     </span>
   );
+};
+
+const normalizeDate = (date) => {
+  const normalizedDate = new Date(date);
+  normalizedDate.setHours(0, 0, 0, 0);
+  return normalizedDate;
 };
 
 const BookingCard = ({ booking, navigate }) => (
@@ -48,7 +54,14 @@ const BookingCard = ({ booking, navigate }) => (
           className="w-full h-full object-cover transition-transform duration-300 rounded-xl"
         />
         <div className="absolute top-4 right-4">
-          <StatusBadge status={booking.status} />
+          {booking.status !== "pending" &&
+          normalizeDate(booking.startDate) > normalizeDate(new Date()) ? (
+            <StatusBadge status="upcoming" />
+          ) : normalizeDate(new Date()) > normalizeDate(booking.endDate) ? (
+            <StatusBadge status="completed" />
+          ) : (
+            <StatusBadge status={booking.status} />
+          )}
         </div>
       </div>
     </div>
