@@ -248,7 +248,7 @@ const WarehouseOwnerDashboard = () => {
                   <th className="pb-3 md:pr-4 hidden md:table-cell">From</th>
                   <th className="pb-3 md:pr-4 hidden md:table-cell">To</th>
                   <th className="pb-3 md:pr-4 hidden md:table-cell">Days</th>
-                  <th className="pb-3">Status</th>
+                  <th className="pb-3 text-center">Status</th>
                 </tr>
               </thead>
 

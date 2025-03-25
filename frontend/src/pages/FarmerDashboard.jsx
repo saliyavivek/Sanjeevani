@@ -92,10 +92,14 @@ const FarmerDashboard = () => {
         (booking) =>
           booking.approvalStatus == "rejected" && booking.status == "declined"
       ),
+      pending: info.filter(
+        (booking) =>
+          booking.approvalStatus == "pending" && booking.status == "pending"
+      ),
     };
   };
 
-  const { past, current, upcoming, declined } = categorizeBookings();
+  const { past, current, upcoming, declined, pending } = categorizeBookings();
 
   // const toggleSidebar = () => {
   //   setIsSidebarOpen(!isSidebarOpen);
@@ -237,7 +241,7 @@ const FarmerDashboard = () => {
                       <th className="pb-3 pr-2 hidden md:table-cell">From</th>
                       <th className="pb-3 pr-2 hidden md:table-cell">To</th>
                       <th className="pb-3 pr-2 hidden md:table-cell">Days</th>
-                      <th className="pb-3">Status</th>
+                      <th className="pb-3 text-center">Status</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -318,6 +322,8 @@ const FarmerDashboard = () => {
                                   ? "green"
                                   : declined.includes(booking)
                                   ? "red"
+                                  : pending.includes(booking)
+                                  ? "yellow"
                                   : "gray"
                               }-100 text-${
                                 upcoming.includes(booking)
@@ -326,6 +332,8 @@ const FarmerDashboard = () => {
                                   ? "green"
                                   : declined.includes(booking)
                                   ? "red"
+                                  : pending.includes(booking)
+                                  ? "yellow"
                                   : "gray"
                               }-800 px-2 py-1 rounded-full text-sm`}
                             >
@@ -335,6 +343,8 @@ const FarmerDashboard = () => {
                                 ? "Active"
                                 : declined.includes(booking)
                                 ? "Declined"
+                                : pending.includes(booking)
+                                ? "Pending"
                                 : "Completed"}
                             </span>
                           </td>
