@@ -169,6 +169,11 @@ const WarehouseOwnerDashboard = () => {
             </h3>
             <p className="text-2xl lg:text-3xl font-bold text-blue-600">
               {info
+                .filter(
+                  (booking) =>
+                    booking.approvalStatus == "approved" &&
+                    booking.status != "pending"
+                )
                 .reduce((acc, curr) => acc + Number(curr.warehouseId.size), 0)
                 .toLocaleString()}{" "}
               sq ft.
@@ -214,7 +219,12 @@ const WarehouseOwnerDashboard = () => {
                 }, 0)
                 .toLocaleString()} */}
               {info
-                ?.reduce(
+                ?.filter(
+                  (booking) =>
+                    booking.approvalStatus == "approved" &&
+                    booking.status != "pending"
+                )
+                .reduce(
                   (acc, curr) => acc + (Number(curr.ownerEarnings) || 0),
                   0
                 )
@@ -243,7 +253,7 @@ const WarehouseOwnerDashboard = () => {
               </thead>
 
               <tbody>
-                {info &&
+                {info.length > 0 ? (
                   info
                     .sort(
                       (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
@@ -322,7 +332,12 @@ const WarehouseOwnerDashboard = () => {
                           </a>
                         </td>
                       </tr>
-                    ))}
+                    ))
+                ) : (
+                  <p className="text-gray-700">
+                    You don't have any recent bookings.
+                  </p>
+                )}
               </tbody>
             </table>
           </div>

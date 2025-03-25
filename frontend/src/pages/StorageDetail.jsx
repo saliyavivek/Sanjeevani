@@ -194,7 +194,11 @@ const StorageDetail = () => {
     const totalYears = difference / (1000 * 60 * 60 * 24 * 365);
 
     if (currentDate.getMonth() === targetDate.getMonth()) {
-      return `${Math.round(totalDays)} day(s)`;
+      if (Math.round(totalDays) == 0) {
+        return `${Math.round(totalDays) + 1} day(s)`;
+      } else {
+        return `${Math.round(totalDays)} day(s)`;
+      }
     } else if (totalMonths < 12) {
       return `${Math.round(totalMonths)} month(s)`;
     } else {

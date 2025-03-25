@@ -171,6 +171,11 @@ const FarmerDashboard = () => {
             </h3>
             <p className="text-2xl md:text-3xl font-bold text-green-600">
               {info
+                .filter(
+                  (booking) =>
+                    booking.approvalStatus == "approved" &&
+                    booking.status != "pending"
+                )
                 .reduce((acc, curr) => acc + Number(curr.warehouseId.size), 0)
                 .toLocaleString()}{" "}
               sq ft
@@ -201,6 +206,11 @@ const FarmerDashboard = () => {
             <p className="text-2xl md:text-3xl font-bold text-green-600">
               ₹
               {info
+                .filter(
+                  (booking) =>
+                    booking.approvalStatus == "approved" &&
+                    booking.status != "pending"
+                )
                 .reduce((acc, curr) => acc + curr.totalPrice, 0)
                 .toLocaleString()}
             </p>
