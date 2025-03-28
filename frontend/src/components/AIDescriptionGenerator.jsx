@@ -6,9 +6,11 @@ const AIDescriptionGenerator = ({
   size,
   location,
   onDescriptionGenerated,
+  isDisabled,
 }) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  console.log(isDisabled);
 
   const generateDescription = async () => {
     setIsGenerating(true);
@@ -35,8 +37,10 @@ const AIDescriptionGenerator = ({
   return (
     <button
       onClick={generateDescription}
-      // disabled={true}
-      className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+      disabled={true}
+      className={`inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500
+        ${isDisabled && "opacity-50 cursor-not-allowed"}
+      `}
     >
       {isGenerating ? (
         <svg

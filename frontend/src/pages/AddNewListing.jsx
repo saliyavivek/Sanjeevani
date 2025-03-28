@@ -215,6 +215,21 @@ const AddNewListing = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (Number(formData.size) <= 0) {
+      showErrorToast("Please enter a valid size.");
+      return;
+    }
+
+    if (Number(formData.pricePerDay) <= 0) {
+      showErrorToast("Please enter a valid price.");
+      return;
+    }
+
+    if (!formData.image) {
+      showErrorToast("Please select an image for your warehouse.");
+      return;
+    }
+
     setIsLoading(true);
     const loadingToastId = showLoadingToast(
       warehouseId ? "Updating your warehouse..." : "Listing your warehouse..."
@@ -485,6 +500,12 @@ const AddNewListing = () => {
                       size={formData.size}
                       location={formData.location.formattedAddress}
                       onDescriptionGenerated={handleDescriptionGenerated}
+                      isDisabled={
+                        formData.name == "" ||
+                        formData.location.formattedAddress == "" ||
+                        formData.size == "" ||
+                        formData.pricePerDay == ""
+                      }
                     />
                   </div>
                 </div>
@@ -565,7 +586,7 @@ const AddNewListing = () => {
                         </div>
                       </div>
                       {/* Mobile Camera Capture */}
-                      <div className="mt-4">
+                      <div className="mt-4 md:hidden">
                         <label className="block text-sm font-medium text-gray-700">
                           Or take a photo
                         </label>
