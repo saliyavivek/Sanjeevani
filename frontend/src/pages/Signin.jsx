@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Leaf, ArrowRight, Mail, Lock } from "lucide-react";
 import PasswordResetModal from "../components/PasswordResetModal";
@@ -15,6 +15,14 @@ const Signin = () => {
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+
+    if (storedToken) {
+      navigate(-1);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

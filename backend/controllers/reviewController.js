@@ -14,6 +14,7 @@ const addReview = async (req, res) => {
       ownerId,
     } = req.body;
     // console.log(req.body);
+
     const addedReview = new Review({
       userId,
       ratings,
@@ -21,6 +22,10 @@ const addReview = async (req, res) => {
       warehouseId,
     });
     await addedReview.save();
+
+    const warehouse = await Warehouse.findOne({ _id: warehouseId });
+    warehouse.reviews.push(addedReview._id);
+    await warehouse.save();
 
     await Notification.create({
       userId: ownerId,

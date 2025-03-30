@@ -176,14 +176,14 @@ const MyBookings = () => {
     return {
       past: bookings.filter(
         (booking) =>
-          normalizeDate(booking.endDate) < today &&
+          normalizeDate(booking.endDate) <= today &&
           booking.status !== "declined" &&
           booking.status !== "pending"
       ),
       current: bookings.filter(
         (booking) =>
           normalizeDate(booking.startDate) <= today &&
-          normalizeDate(booking.endDate) >= today &&
+          normalizeDate(booking.endDate) > today &&
           booking.status !== "declined" && // Exclude declined bookings
           booking.status !== "pending"
       ),

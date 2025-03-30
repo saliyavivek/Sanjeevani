@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Leaf,
@@ -28,6 +28,14 @@ const Signup = () => {
   const fileInputRef = useRef(null);
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+
+    if (storedToken) {
+      navigate(-1);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

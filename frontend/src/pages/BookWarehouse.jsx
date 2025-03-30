@@ -118,6 +118,7 @@ const BookWarehouse = () => {
       } else {
         const error = await response.json();
         showErrorToast(error.message);
+        setSending(false);
       }
     } catch (error) {
       console.error(error);

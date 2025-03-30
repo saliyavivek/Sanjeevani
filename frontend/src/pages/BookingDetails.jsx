@@ -343,7 +343,7 @@ const BookingDetails = () => {
                         : ""
                     }
                   >
-                    Complete Payment
+                    Make a Payment
                   </button>
                 )}
 

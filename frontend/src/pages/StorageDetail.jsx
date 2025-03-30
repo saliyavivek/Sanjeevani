@@ -399,7 +399,7 @@ const StorageDetail = () => {
               <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900">
                 {warehouse.name}
               </h1>
-              <p className="mt-2 text-sm sm:text-base text-gray-600 flex items-start md:items-center">
+              <p className="mt-2 text-sm sm:text-base text-gray-600 flex items-start">
                 <MapPin className="w-4 h-4 mr-1 mt-1 flex-shrink-0" />
                 <span className="break-words">
                   {warehouse.location.formattedAddress}
@@ -499,19 +499,25 @@ const StorageDetail = () => {
                   <p className="text-sm text-gray-600">per day</p>
                 </div>
                 <span
-                  className={`px-3 py-1 rounded-full text-xs sm:text-sm ${
-                    warehouse.availability === "available"
+                  className={`px-3 py-1 rounded-full text-xs font-medium sm:text-sm ${
+                    warehouse.availability === "available" &&
+                    warehouse.isStandBy === false
                       ? "bg-green-100 text-green-800"
                       : warehouse.availability === "booked"
                       ? "bg-red-100 text-red-800"
-                      : "bg-yellow-100 text-yellow-800"
+                      : warehouse.availability === "maintenance"
+                      ? "bg-yellow-100 text-yellow-800"
+                      : "bg-orange-100 text-orange-800"
                   }`}
                 >
-                  {warehouse.availability === "available"
+                  {warehouse.availability === "available" &&
+                  warehouse.isStandBy === false
                     ? "Available"
                     : warehouse.availability === "booked"
                     ? "Booked"
-                    : "Under Maintenance"}
+                    : warehouse.availability === "maintenance"
+                    ? "Under Maintenance"
+                    : "Awaiting Payment"}
                 </span>
               </div>
 
@@ -522,6 +528,7 @@ const StorageDetail = () => {
                 className={`w-full bg-blue-600 text-white py-2 sm:py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors ${
                   warehouse.availability === "booked" ||
                   warehouse.availability === "maintenance" ||
+                  warehouse.isStandBy === true ||
                   user.role === "owner"
                     ? "opacity-50 cursor-not-allowed"
                     : ""
@@ -529,14 +536,18 @@ const StorageDetail = () => {
                 disabled={
                   warehouse.availability === "booked" ||
                   warehouse.availability === "maintenance" ||
+                  warehouse.isStandBy === true ||
                   user.role === "owner"
                 }
               >
-                {warehouse.availability === "available"
+                {warehouse.availability === "available" &&
+                warehouse.isStandBy === false
                   ? "Book Now"
                   : warehouse.availability === "booked"
                   ? "Booked"
-                  : "Under Maintenance"}
+                  : warehouse.availability === "maintenance"
+                  ? "Under Maintenance"
+                  : "Awaiting Payment"}
               </button>
             </div>
           )}

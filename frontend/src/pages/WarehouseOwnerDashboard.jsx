@@ -128,13 +128,24 @@ const WarehouseOwnerDashboard = () => {
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto p-4 lg:p-8">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6">
-          <h2 className="text-2xl lg:text-3xl font-semibold text-gray-800 mb-4 lg:mb-0">
+          <h2 className="text-2xl lg:text-3xl font-semibold text-gray-800 mb-2">
             Welcome back, {name ? name : "John"}!
           </h2>
           <a href="/warehouse/list">
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center hover:bg-blue-700 transition-colors duration-200">
-              <PlusCircle className="w-5 h-5 mr-2" />
-              Add New Listing
+            <button
+              className={`
+                    group relative overflow-hidden bg-gradient-to-r from-blue-500 to-blue-600 
+                    hover:from-blue-600 hover:to-blue-700 text-white font-medium
+                    px-6 py-2.5 rounded-md shadow-sm 
+                    inline-flex items-center justify-center
+                    transition-all duration-300 ease-in-out
+                    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+                    active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed
+                  `}
+            >
+              <span className="absolute inset-0 w-full h-full bg-white/10 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500"></span>
+              <PlusCircle className="w-4 h-4 mr-2 transition-transform group-hover:rotate-90 duration-300" />
+              <span>Add New Listing</span>
             </button>
           </a>
         </div>

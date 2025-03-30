@@ -25,6 +25,19 @@ const createBooking = async (req, res) => {
       return res.status(400).json({ message: "Warehouse is not available" });
     }
 
+    const existingBooking = await Booking.findOne({
+      userId,
+      warehouseId,
+      status: "pending",
+      approvalStatus: "pending",
+    });
+
+    if (existingBooking) {
+      return res.status(400).json({
+        message: "You have already sent a booking request for this warehouse.",
+      });
+    }
+
     // const totalPrice =
     //   warehouse.pricePerDay *
     //   ((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24 * 30));
@@ -121,6 +134,7 @@ const cancelBooking = async (req, res) => {
 
     const warehouse = await Warehouse.findById(booking.warehouseId);
     warehouse.availability = "available";
+    warehouse.isStandBy = false;
     warehouse.bookings = warehouse.bookings.filter(
       (bId) => bId.toString() !== req.params.bookingId
     );
@@ -177,6 +191,8 @@ const getBookingDetails = async (req, res) => {
 const confirmBooking = async (req, res) => {
   try {
     // console.log(req.body);
+    // Finds all pending bookings for the warehouse excluding the current user (userId: { $ne: req.body.userId }).
+    // This is done to remove any other pending requests once one booking is confirmed.
     const pendingBooking = await Booking.find({
       warehouseId: req.body.warehouseId,
       status: "pending",
@@ -184,6 +200,7 @@ const confirmBooking = async (req, res) => {
     });
     // console.log(pendingBooking);
 
+    // If there are other pending bookings for the warehouse, they are deleted because another user has confirmed their booking.
     if (pendingBooking.length > 0) {
       await Booking.deleteMany({
         _id: { $in: pendingBooking.map((booking) => booking._id) },
@@ -221,6 +238,7 @@ const confirmBooking = async (req, res) => {
       req.body.warehouseId,
       {
         availability: "booked",
+        isStandBy: false,
       },
       {
         new: true,
@@ -375,6 +393,40 @@ const getBookingRequests = async (req, res) => {
     }
 
     const warehouseIds = ownerWarehouses.map((warehouse) => warehouse._id);
+    const today = new Date();
+
+    // Find all bookings with 'pending' approvalStatus where startDate is in the past
+    const expiredBookings = await Booking.find({
+      warehouseId: { $in: warehouseIds },
+      approvalStatus: "pending",
+      startDate: { $lt: today },
+    });
+
+    if (expiredBookings.length > 0) {
+      const affectedWarehouseIds = [
+        ...new Set(
+          expiredBookings.map((booking) => booking.warehouseId.toString())
+        ),
+      ];
+
+      // Update all found bookings to 'rejected' and status to 'completed'
+      await Booking.updateMany(
+        { _id: { $in: expiredBookings.map((booking) => booking._id) } },
+        { $set: { approvalStatus: "rejected", status: "completed" } }
+      );
+
+      // Set isStandBy to false for the affected warehouses
+      await Warehouse.updateMany(
+        { _id: { $in: affectedWarehouseIds } },
+        { $set: { isStandBy: false } }
+      );
+
+      console.log(
+        `Updated ${expiredBookings.length} expired pending bookings.`
+      );
+    } else {
+      console.log("No expired pending bookings found.");
+    }
 
     const pendingBookings = await Booking.find({
       warehouseId: { $in: warehouseIds },
@@ -403,9 +455,15 @@ const handleRequest = async (req, res) => {
       return res.status(404).json({ message: "Booking not found" });
     }
 
+    const warehouse = await Warehouse.findOne({ _id: booking.warehouseId });
+    if (!warehouse) {
+      return res.status(404).json({ message: "Warehouse not found" });
+    }
+
     if (approvalStatus === "approved") {
       // booking.status = "active";
       booking.approvalStatus = "approved";
+      warehouse.isStandBy = true;
 
       await Notification.create({
         userId,
@@ -423,6 +481,7 @@ const handleRequest = async (req, res) => {
       });
     }
 
+    await warehouse.save();
     await booking.save();
 
     await Warehouse.findByIdAndUpdate(booking.warehouseId, {
@@ -499,14 +558,14 @@ const customerInfo = async (req, res) => {
       return res.status(404).json({ message: "No bookings found." });
     }
 
-    return res
-      .status(200)
-      .json({
-        message: "Your customers.",
-        bookings,
-        totalListings: warehouseIds.length,
-      });
-  } catch (error) {}
+    return res.status(200).json({
+      message: "Your customers.",
+      bookings,
+      totalListings: warehouseIds.length,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "No bookings found." });
+  }
 };
 
 // const getBookingsForDashboard = async(req, res) => {

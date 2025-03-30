@@ -302,9 +302,20 @@ const deleteAccount = async (req, res) => {
       return res.status(401).json({ message: "no such user found." });
     }
 
+    const warehousesToDelete = await Warehouse.find({ ownerId: userId });
+
+    const bookingIdsToDelete = warehousesToDelete.flatMap(
+      (warehouse) => warehouse.bookings
+    );
+
     await User.findByIdAndDelete(userId);
     await Warehouse.deleteMany({ ownerId: userId });
-    await Booking.deleteMany({ userId: userId });
+    await Booking.deleteMany({
+      $or: [
+        { userId: userId }, // Delete user's own bookings
+        { _id: { $in: bookingIdsToDelete } }, // Delete bookings of deleted warehouses
+      ],
+    });
     await Notification.deleteMany({ userId: userId });
     await Review.deleteMany({ userId: userId });
     await Wishlist.deleteMany({ user: userId });

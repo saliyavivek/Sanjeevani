@@ -119,10 +119,12 @@ const addWarehouse = async (req, res) => {
 
 const getAllWarehouses = async (req, res) => {
   try {
-    const warehouses = await Warehouse.find({}).populate({
-      path: "ownerId",
-      match: { isDeactivated: { $ne: true } },
-    });
+    const warehouses = await Warehouse.find({})
+      .populate("reviews")
+      .populate({
+        path: "ownerId",
+        match: { isDeactivated: { $ne: true } },
+      });
 
     if (warehouses.length > 0) {
       const updatePromises = warehouses.map(async (warehouse) => {
@@ -161,10 +163,12 @@ const getAllWarehouses = async (req, res) => {
       await Promise.all(updatePromises);
 
       // Fetch updated warehouses to send in response
-      const updatedWarehouses = await Warehouse.find({}).populate({
-        path: "ownerId",
-        match: { isDeactivated: { $ne: true } }, // Ensure updated query
-      });
+      const updatedWarehouses = await Warehouse.find({})
+        .populate("reviews")
+        .populate({
+          path: "ownerId",
+          match: { isDeactivated: { $ne: true } }, // Ensure updated query
+        });
 
       return res.status(201).send({
         message: "Warehouses updated successfully.",
@@ -182,6 +186,7 @@ const getAllWarehouses = async (req, res) => {
 const getMyListings = async (req, res) => {
   try {
     const warehouses = await Warehouse.find({ ownerId: req.body.user })
+      .populate("reviews")
       .populate("ownerId")
       .populate({
         path: "bookings",
