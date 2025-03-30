@@ -79,7 +79,7 @@ export default function Listings() {
               className={`
         group relative overflow-hidden bg-gradient-to-r from-emerald-500 to-emerald-600 
         hover:from-emerald-600 hover:to-emerald-700 text-white font-medium
-        px-6 py-2.5 rounded-md shadow-sm 
+        px-2 md:px-6 py-2.5 rounded-md shadow-sm 
         inline-flex items-center justify-center
         transition-all duration-300 ease-in-out
         focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2
@@ -88,7 +88,7 @@ export default function Listings() {
             >
               <span className="absolute inset-0 w-full h-full bg-white/10 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500"></span>
               <PlusCircle className="w-4 h-4 mr-2 transition-transform group-hover:rotate-90 duration-300" />
-              <span>Add New Listing</span>
+              <span className="text-sm md:text-md">Add New Listing</span>
             </button>
           </a>
         </div>
