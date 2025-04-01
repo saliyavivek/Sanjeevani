@@ -73,6 +73,7 @@ const BookingDetails = () => {
   const [booking, setBooking] = useState(null);
   const [warehouseId, setWarehouseId] = useState("");
   const [userId, setUserId] = useState("");
+  const [userRole, setUserRole] = useState("");
   // const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -90,6 +91,7 @@ const BookingDetails = () => {
       try {
         const decodedToken = jwtDecode(token);
         setUserId(decodedToken.userId);
+        setUserRole(decodedToken.role);
       } catch (error) {
         console.error("Invalid token", error);
         localStorage.removeItem("token");
@@ -329,10 +331,14 @@ const BookingDetails = () => {
                 {booking.status === "pending" && (
                   <button
                     onClick={() => setIsPaymentModalOpen(true)}
-                    disabled={booking.approvalStatus === "pending"}
+                    disabled={
+                      booking.approvalStatus === "pending" ||
+                      userRole === "admin"
+                    }
                     className={`w-full bg-emerald-600 text-white py-2 px-4 rounded-lg hover:bg-emerald-700 transition-colors
                         ${
-                          booking.approvalStatus === "pending"
+                          booking.approvalStatus === "pending" ||
+                          userRole === "admin"
                             ? "opacity-50 cursor-not-allowed"
                             : ""
                         }
@@ -352,12 +358,14 @@ const BookingDetails = () => {
                   disabled={
                     booking.status === "active" ||
                     booking.status === "completed" ||
-                    booking.status === "declined"
+                    booking.status === "declined" ||
+                    userRole === "admin"
                   }
                   className={`w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-100 transition-colors ${
                     booking.status === "active" ||
                     booking.status === "completed" ||
-                    booking.status === "declined"
+                    booking.status === "declined" ||
+                    userRole === "admin"
                       ? "opacity-50 cursor-not-allowed"
                       : ""
                   }`}

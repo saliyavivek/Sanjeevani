@@ -394,8 +394,8 @@ const getBookingRequests = async (req, res) => {
 
     const warehouseIds = ownerWarehouses.map((warehouse) => warehouse._id);
     const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to 00:00:00
 
-    // Find all bookings with 'pending' approvalStatus where startDate is in the past
     const expiredBookings = await Booking.find({
       warehouseId: { $in: warehouseIds },
       approvalStatus: "pending",
@@ -409,10 +409,10 @@ const getBookingRequests = async (req, res) => {
         ),
       ];
 
-      // Update all found bookings to 'rejected' and status to 'completed'
+      // Update all found bookings to 'rejected' and status to 'declined'
       await Booking.updateMany(
         { _id: { $in: expiredBookings.map((booking) => booking._id) } },
-        { $set: { approvalStatus: "rejected", status: "completed" } }
+        { $set: { approvalStatus: "rejected", status: "declined" } }
       );
 
       // Set isStandBy to false for the affected warehouses
