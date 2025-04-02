@@ -393,24 +393,13 @@ const getBookingRequests = async (req, res) => {
     }
 
     const warehouseIds = ownerWarehouses.map((warehouse) => warehouse._id);
-    // const today = new Date();
-    // today.setHours(0, 0, 0, 0); // works on local machine, but not on deployed version.
-
-    // Get today's date
     const today = new Date();
-
-    // Create a date for yesterday (one day before today)
-    const yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
-    yesterday.setHours(23, 59, 59, 999);
-    const yesterdayISOString = yesterday.toISOString();
-
-    // console.log("Yesterday:", yesterdayISOString);
+    today.setHours(0, 0, 0, 0); // works on local machine, but not on deployed version.
 
     const expiredBookings = await Booking.find({
       warehouseId: { $in: warehouseIds },
       approvalStatus: "pending",
-      startDate: { $lt: yesterdayISOString },
+      startDate: { $lt: today },
     });
 
     if (expiredBookings.length > 0) {

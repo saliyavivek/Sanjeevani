@@ -166,6 +166,7 @@ const BookWarehouse = () => {
                           <TextField {...params} fullWidth />
                         )}
                         disablePast
+                        minDate={dayjs(new Date()).add(1, "day")}
                       />
                       <DatePicker
                         label="Check-out Date"
