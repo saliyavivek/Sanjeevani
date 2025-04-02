@@ -115,7 +115,11 @@ const getUserBookings = async (req, res) => {
 
     const currentDate = normalizeDate(new Date());
     bookings.forEach(async (booking) => {
-      if (normalizeDate(booking.endDate) < currentDate) {
+      if (
+        normalizeDate(booking.endDate) < currentDate &&
+        booking.approvalStatus === "rejected" &&
+        booking.status === "declined"
+      ) {
         booking.status = "completed";
         await booking.save();
       }
@@ -393,13 +397,23 @@ const getBookingRequests = async (req, res) => {
     }
 
     const warehouseIds = ownerWarehouses.map((warehouse) => warehouse._id);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // works on local machine, but not on deployed version.
+    // const today = new Date();
+    // today.setHours(0, 0, 0, 0); // works on local machine, but not on deployed version.
+
+    // const expiredBookings = await Booking.find({
+    //   warehouseId: { $in: warehouseIds },
+    //   approvalStatus: "pending",
+    //   startDate: { $lt: today },
+    // });
+
+    const today = normalizeDate(new Date());
 
     const expiredBookings = await Booking.find({
       warehouseId: { $in: warehouseIds },
       approvalStatus: "pending",
-      startDate: { $lt: today },
+      startDate: {
+        $lt: today,
+      },
     });
 
     if (expiredBookings.length > 0) {
