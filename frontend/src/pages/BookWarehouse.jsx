@@ -90,6 +90,7 @@ const BookWarehouse = () => {
       setSending(true);
       if (!startDate || !endDate) {
         showErrorToast("Please select both start and end dates");
+        setSending(false);
         return;
       }
 
@@ -166,7 +167,7 @@ const BookWarehouse = () => {
                           <TextField {...params} fullWidth />
                         )}
                         disablePast
-                        // minDate={dayjs(new Date()).add(1, "day")}
+                        minDate={dayjs(new Date()).add(1, "day")}
                       />
                       <DatePicker
                         label="Check-out Date"

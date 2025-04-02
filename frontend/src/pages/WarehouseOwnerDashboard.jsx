@@ -58,27 +58,70 @@ const WarehouseOwnerDashboard = () => {
     }
   };
 
+  // const formatDate = (dateString) => {
+  //   const options = { year: "numeric", month: "short", day: "numeric" };
+  //   return new Date(dateString).toLocaleDateString(undefined, options);
+  // };
+
+  // const getStatusColor = (status) => {
+  //   switch (status) {
+  //     case "active":
+  //       return "bg-green-100 text-green-800";
+  //     case "upcoming":
+  //       return "bg-blue-100 text-blue-800";
+  //     case "completed":
+  //       return "bg-gray-100 text-gray-800";
+  //     case "pending":
+  //       return "bg-yellow-100 text-yellow-800";
+  //     case "declined":
+  //       return "bg-red-100 text-red-800";
+  //     default:
+  //       return "bg-gray-100 text-gray-800";
+  //   }
+  // };
+
+  const normalizeDate = (date) => {
+    const normalizedDate = new Date(date);
+    normalizedDate.setHours(0, 0, 0, 0);
+    return normalizedDate;
+  };
+
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "short", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "active":
-        return "bg-green-100 text-green-800";
-      case "upcoming":
-        return "bg-blue-100 text-blue-800";
-      case "completed":
-        return "bg-gray-100 text-gray-800";
-      case "pending":
-        return "bg-yellow-100 text-yellow-800";
-      case "declined":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
+  const categorizeBookings = () => {
+    const today = normalizeDate(new Date());
+    return {
+      past: info.filter(
+        (booking) =>
+          normalizeDate(booking.endDate) < today &&
+          booking.approvalStatus == "approved"
+      ),
+      current: info.filter(
+        (booking) =>
+          normalizeDate(booking.startDate) <= today &&
+          normalizeDate(booking.endDate) >= today &&
+          booking.approvalStatus == "approved"
+      ),
+      upcoming: info.filter(
+        (booking) =>
+          normalizeDate(booking.startDate) > today &&
+          booking.approvalStatus == "approved"
+      ),
+      declined: info.filter(
+        (booking) =>
+          booking.approvalStatus == "rejected" && booking.status == "declined"
+      ),
+      pending: info.filter(
+        (booking) =>
+          booking.approvalStatus == "pending" && booking.status == "pending"
+      ),
+    };
   };
+
+  const { past, current, upcoming, declined, pending } = categorizeBookings();
 
   // const toggleSidebar = () => {
   //   setIsSidebarOpen(!isSidebarOpen);
@@ -333,12 +376,37 @@ const WarehouseOwnerDashboard = () => {
                             className="hover:underline"
                           >
                             <span
-                              className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full  ${getStatusColor(
-                                booking.status
-                              )}`}
+                              className={`text-xs font-medium bg-${
+                                upcoming.includes(booking)
+                                  ? "blue"
+                                  : current.includes(booking)
+                                  ? "green"
+                                  : declined.includes(booking)
+                                  ? "red"
+                                  : pending.includes(booking)
+                                  ? "yellow"
+                                  : "gray"
+                              }-100 text-${
+                                upcoming.includes(booking)
+                                  ? "blue"
+                                  : current.includes(booking)
+                                  ? "green"
+                                  : declined.includes(booking)
+                                  ? "red"
+                                  : pending.includes(booking)
+                                  ? "yellow"
+                                  : "gray"
+                              }-800 px-2 py-1 rounded-full text-sm`}
                             >
-                              {booking.status.charAt(0).toUpperCase() +
-                                booking.status.slice(1)}
+                              {upcoming.includes(booking)
+                                ? "Upcoming"
+                                : current.includes(booking)
+                                ? "Active"
+                                : declined.includes(booking)
+                                ? "Declined"
+                                : pending.includes(booking)
+                                ? "Pending"
+                                : "Completed"}
                             </span>
                           </a>
                         </td>
