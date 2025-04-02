@@ -405,7 +405,7 @@ const getBookingRequests = async (req, res) => {
     yesterday.setHours(23, 59, 59, 999);
     const yesterdayISOString = yesterday.toISOString();
 
-    console.log("Yesterday:", yesterdayISOString);
+    // console.log("Yesterday:", yesterdayISOString);
 
     const expiredBookings = await Booking.find({
       warehouseId: { $in: warehouseIds },
