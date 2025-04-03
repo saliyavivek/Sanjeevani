@@ -37,7 +37,7 @@ const normalizeDate = (date) => {
   return normalizedDate;
 };
 
-const BookingCard = ({ booking, navigate }) => (
+const BookingCard = ({ booking, navigate, categorizedBookings }) => (
   <div
     onClick={() => navigate(`/booking/${booking._id}`)}
     className="flex flex-col bg-white overflow-hidden cursor-pointer group"
@@ -54,14 +54,53 @@ const BookingCard = ({ booking, navigate }) => (
           className="w-full h-full object-cover transition-transform duration-300 rounded-xl"
         />
         <div className="absolute top-4 right-4">
-          {booking.status !== "pending" &&
+          {/* {booking.status !== "pending" &&
           normalizeDate(booking.startDate) > normalizeDate(new Date()) ? (
             <StatusBadge status="upcoming" />
           ) : normalizeDate(new Date()) > normalizeDate(booking.endDate) ? (
             <StatusBadge status="completed" />
           ) : (
             <StatusBadge status={booking.status} />
-          )}
+          )} */}
+          <span
+            className={`text-xs font-medium bg-${
+              categorizedBookings.upcoming.includes(booking)
+                ? "blue"
+                : categorizedBookings.current.includes(booking)
+                ? "green"
+                : categorizedBookings.declined.includes(booking)
+                ? "red"
+                : categorizedBookings.pending.includes(booking)
+                ? "yellow"
+                : categorizedBookings.pendingPayment.includes(booking)
+                ? "orange"
+                : "gray"
+            }-100 text-${
+              categorizedBookings.upcoming.includes(booking)
+                ? "blue"
+                : categorizedBookings.current.includes(booking)
+                ? "green"
+                : categorizedBookings.declined.includes(booking)
+                ? "red"
+                : categorizedBookings.pending.includes(booking)
+                ? "yellow"
+                : categorizedBookings.pendingPayment.includes(booking)
+                ? "orange"
+                : "gray"
+            }-800 px-2 py-1 rounded-full text-sm`}
+          >
+            {categorizedBookings.upcoming.includes(booking)
+              ? "Upcoming"
+              : categorizedBookings.current.includes(booking)
+              ? "Active"
+              : categorizedBookings.declined.includes(booking)
+              ? "Declined"
+              : categorizedBookings.pending.includes(booking)
+              ? "Pending"
+              : categorizedBookings.pendingPayment.includes(booking)
+              ? "Awaiting Payment"
+              : "Completed"}
+          </span>
         </div>
       </div>
     </div>
@@ -176,27 +215,37 @@ const MyBookings = () => {
     return {
       past: bookings.filter(
         (booking) =>
-          normalizeDate(booking.endDate) <= today &&
-          booking.status !== "declined" &&
-          booking.status !== "pending"
+          normalizeDate(booking.endDate) < today &&
+          booking.approvalStatus == "approved"
       ),
       current: bookings.filter(
         (booking) =>
           normalizeDate(booking.startDate) <= today &&
-          normalizeDate(booking.endDate) > today &&
-          booking.status !== "declined" && // Exclude declined bookings
-          booking.status !== "pending"
+          normalizeDate(booking.endDate) >= today &&
+          booking.approvalStatus == "approved" &&
+          booking.warehouseId.isStandBy != true
       ),
       upcoming: bookings.filter(
         (booking) =>
           normalizeDate(booking.startDate) > today &&
-          booking.status !== "declined" &&
-          booking.status !== "pending"
+          booking.approvalStatus == "approved" &&
+          booking.warehouseId.isStandBy != true
       ),
-      declined: bookings.filter((booking) => booking.status === "declined"),
+      declined: bookings.filter(
+        (booking) =>
+          booking.approvalStatus == "rejected" && booking.status == "declined"
+      ),
+      pending: bookings.filter(
+        (booking) =>
+          booking.approvalStatus == "pending" &&
+          booking.status == "pending" &&
+          booking.warehouseId.isStandBy != true
+      ),
       pendingPayment: bookings.filter(
         (booking) =>
-          booking.approvalStatus === "approved" && booking.status === "pending"
+          booking.warehouseId.isStandBy == true &&
+          booking.status == "pending" &&
+          booking.approvalStatus == "approved"
       ),
     };
   };
@@ -290,6 +339,7 @@ const MyBookings = () => {
                     key={booking._id}
                     booking={booking}
                     navigate={navigate}
+                    categorizedBookings={categorizedBookings}
                   />
                 ))}
               </div>

@@ -103,12 +103,14 @@ const WarehouseOwnerDashboard = () => {
         (booking) =>
           normalizeDate(booking.startDate) <= today &&
           normalizeDate(booking.endDate) >= today &&
-          booking.approvalStatus == "approved"
+          booking.approvalStatus == "approved" &&
+          booking.warehouseId.isStandBy != true
       ),
       upcoming: info.filter(
         (booking) =>
           normalizeDate(booking.startDate) > today &&
-          booking.approvalStatus == "approved"
+          booking.approvalStatus == "approved" &&
+          booking.warehouseId.isStandBy != true
       ),
       declined: info.filter(
         (booking) =>
@@ -116,12 +118,21 @@ const WarehouseOwnerDashboard = () => {
       ),
       pending: info.filter(
         (booking) =>
-          booking.approvalStatus == "pending" && booking.status == "pending"
+          booking.approvalStatus == "pending" &&
+          booking.status == "pending" &&
+          booking.warehouseId.isStandBy != true
+      ),
+      awaiting: info.filter(
+        (booking) =>
+          booking.warehouseId.isStandBy == true &&
+          booking.status == "pending" &&
+          booking.approvalStatus == "approved"
       ),
     };
   };
 
-  const { past, current, upcoming, declined, pending } = categorizeBookings();
+  const { past, current, upcoming, declined, pending, awaiting } =
+    categorizeBookings();
 
   // const toggleSidebar = () => {
   //   setIsSidebarOpen(!isSidebarOpen);
@@ -385,6 +396,8 @@ const WarehouseOwnerDashboard = () => {
                                   ? "red"
                                   : pending.includes(booking)
                                   ? "yellow"
+                                  : awaiting.includes(booking)
+                                  ? "orange"
                                   : "gray"
                               }-100 text-${
                                 upcoming.includes(booking)
@@ -395,6 +408,8 @@ const WarehouseOwnerDashboard = () => {
                                   ? "red"
                                   : pending.includes(booking)
                                   ? "yellow"
+                                  : awaiting.includes(booking)
+                                  ? "orange"
                                   : "gray"
                               }-800 px-2 py-1 rounded-full text-sm`}
                             >
@@ -406,6 +421,8 @@ const WarehouseOwnerDashboard = () => {
                                 ? "Declined"
                                 : pending.includes(booking)
                                 ? "Pending"
+                                : awaiting.includes(booking)
+                                ? "Awaiting Payment"
                                 : "Completed"}
                             </span>
                           </a>

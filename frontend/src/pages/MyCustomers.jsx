@@ -77,22 +77,79 @@ const MyCustomers = () => {
   };
 
   // Get status badge color
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "active":
-        return "bg-green-100 text-green-800";
-      case "upcoming":
-        return "bg-blue-100 text-blue-800";
-      case "completed":
-        return "bg-gray-100 text-gray-800";
-      case "pending":
-        return "bg-yellow-100 text-yellow-800";
-      case "declined":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
+  // const getStatusColor = (status) => {
+  //   switch (status) {
+  //     case "active":
+  //       return "bg-green-100 text-green-800";
+  //     case "upcoming":
+  //       return "bg-blue-100 text-blue-800";
+  //     case "completed":
+  //       return "bg-gray-100 text-gray-800";
+  //     case "pending":
+  //       return "bg-yellow-100 text-yellow-800";
+  //     case "declined":
+  //       return "bg-red-100 text-red-800";
+  //     default:
+  //       return "bg-gray-100 text-gray-800";
+  //   }
+  // };
+
+  const normalizeDate = (date) => {
+    const normalizedDate = new Date(date);
+    normalizedDate.setHours(0, 0, 0, 0);
+    return normalizedDate;
   };
+
+  const categorizeBookings = () => {
+    const today = normalizeDate(new Date());
+    return {
+      past: customers.filter(
+        (booking) =>
+          normalizeDate(booking.endDate) < today &&
+          booking.approvalStatus == "approved"
+      ),
+      current: customers.filter(
+        (booking) =>
+          normalizeDate(booking.startDate) <= today &&
+          normalizeDate(booking.endDate) >= today &&
+          booking.approvalStatus == "approved" &&
+          booking.warehouseId.isStandBy != true
+      ),
+      upcoming: customers.filter(
+        (booking) =>
+          normalizeDate(booking.startDate) > today &&
+          booking.approvalStatus == "approved" &&
+          booking.warehouseId.isStandBy != true
+      ),
+      declined: customers.filter(
+        (booking) =>
+          booking.approvalStatus == "rejected" && booking.status == "declined"
+      ),
+      pending: customers.filter(
+        (booking) =>
+          booking.approvalStatus == "pending" &&
+          booking.status == "pending" &&
+          booking.warehouseId.isStandBy != true
+      ),
+      awaiting: customers.filter(
+        (booking) =>
+          booking.warehouseId.isStandBy == true &&
+          booking.status == "pending" &&
+          booking.approvalStatus == "approved"
+      ),
+    };
+  };
+  const { past, current, upcoming, declined, pending, awaiting } =
+    customers?.length
+      ? categorizeBookings()
+      : {
+          past: [],
+          current: [],
+          upcoming: [],
+          declined: [],
+          pending: [],
+          awaiting: [],
+        };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -217,12 +274,43 @@ const MyCustomers = () => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap hidden md:table-cell">
                             <span
-                              className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full  ${getStatusColor(
-                                customer.status
-                              )}`}
+                              className={`text-xs font-medium bg-${
+                                upcoming.includes(customer)
+                                  ? "blue"
+                                  : current.includes(customer)
+                                  ? "green"
+                                  : declined.includes(customer)
+                                  ? "red"
+                                  : pending.includes(customer)
+                                  ? "yellow"
+                                  : awaiting.includes(customer)
+                                  ? "orange"
+                                  : "gray"
+                              }-100 text-${
+                                upcoming.includes(customer)
+                                  ? "blue"
+                                  : current.includes(customer)
+                                  ? "green"
+                                  : declined.includes(customer)
+                                  ? "red"
+                                  : pending.includes(customer)
+                                  ? "yellow"
+                                  : awaiting.includes(customer)
+                                  ? "orange"
+                                  : "gray"
+                              }-800 px-2 py-1 rounded-full text-sm`}
                             >
-                              {customer.status.charAt(0).toUpperCase() +
-                                customer.status.slice(1)}
+                              {upcoming.includes(customer)
+                                ? "Upcoming"
+                                : current.includes(customer)
+                                ? "Active"
+                                : declined.includes(customer)
+                                ? "Declined"
+                                : pending.includes(customer)
+                                ? "Pending"
+                                : awaiting.includes(customer)
+                                ? "Awaiting Payment"
+                                : "Completed"}
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -318,14 +406,43 @@ const MyCustomers = () => {
                                         </div>
                                         <div className="text-sm">
                                           <span
-                                            className={`px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
-                                              customer.status
-                                            )}`}
+                                            className={`text-xs font-medium bg-${
+                                              upcoming.includes(customer)
+                                                ? "blue"
+                                                : current.includes(customer)
+                                                ? "green"
+                                                : declined.includes(customer)
+                                                ? "red"
+                                                : pending.includes(customer)
+                                                ? "yellow"
+                                                : awaiting.includes(customer)
+                                                ? "orange"
+                                                : "gray"
+                                            }-100 text-${
+                                              upcoming.includes(customer)
+                                                ? "blue"
+                                                : current.includes(customer)
+                                                ? "green"
+                                                : declined.includes(customer)
+                                                ? "red"
+                                                : pending.includes(customer)
+                                                ? "yellow"
+                                                : awaiting.includes(customer)
+                                                ? "orange"
+                                                : "gray"
+                                            }-800 px-2 py-1 rounded-full text-sm`}
                                           >
-                                            {customer.status
-                                              .charAt(0)
-                                              .toUpperCase() +
-                                              customer.status.slice(1)}
+                                            {upcoming.includes(customer)
+                                              ? "Upcoming"
+                                              : current.includes(customer)
+                                              ? "Active"
+                                              : declined.includes(customer)
+                                              ? "Declined"
+                                              : pending.includes(customer)
+                                              ? "Pending"
+                                              : awaiting.includes(customer)
+                                              ? "Awaiting Payment"
+                                              : "Completed"}
                                           </span>
                                         </div>
                                       </div>

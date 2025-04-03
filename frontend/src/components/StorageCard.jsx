@@ -131,12 +131,18 @@ const StorageCard = ({ warehouse, onDelete, isFavorite = false }) => {
                 </span>
               )}
             </div>
-            <div>
-              <p className="flex items-center text-gray-700 text-sm font-medium">
-                <User2Icon className="w-3 h-3 mr-1" />
-                {warehouse.ownerId.name}
-              </p>
-            </div>
+            {warehouse.ownerId.role === "farmer" && (
+              <div>
+                <p className="flex items-center text-gray-700 text-sm gap-1 font-medium">
+                  {/* <User2Icon className="w-3 h-3 mr-1" /> */}
+                  <img
+                    src={warehouse.ownerId.avatar}
+                    className="w-5 h-5 object-cover rounded-full"
+                  />
+                  {warehouse.ownerId.name}
+                </p>
+              </div>
+            )}
             <p className="text-md text-black-600">
               <span className="text-lg font-semibold">
                 {formatPrice(warehouse.pricePerDay)}

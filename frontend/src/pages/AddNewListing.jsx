@@ -368,7 +368,7 @@ const AddNewListing = () => {
 
       {/* Main Content */}
       <div className="max-w-[1400px] mx-auto p-2 md:p-4">
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center gap-2 mb-4 mt-4">
           <button
             onClick={() => navigate(-1)}
             className="p-2 rounded-full hover:bg-gray-50 transition-colors duration-200"

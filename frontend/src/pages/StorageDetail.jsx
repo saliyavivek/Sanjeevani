@@ -84,7 +84,7 @@ const StorageDetail = () => {
   useEffect(() => {
     fetchCurrentUser();
     fetchReviews();
-  }, []);
+  }, [booked]);
 
   useEffect(() => {
     fetchBookingStatus();
@@ -600,7 +600,7 @@ const StorageDetail = () => {
                 onClick={() => setIsModalOpen(true)}
                 className="py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
-                Add Review
+                Add a Review
               </button>
             ) : (
               <p className="text-gray-600 text-sm sm:text-base">
