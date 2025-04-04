@@ -113,14 +113,16 @@ const getUserBookings = async (req, res) => {
       })
       .sort({ startDate: 1 });
 
+    // if user fails to make payment before the startDate, booking will be declined.
     const currentDate = normalizeDate(new Date());
     bookings.forEach(async (booking) => {
       if (
-        normalizeDate(booking.endDate) < currentDate &&
-        booking.approvalStatus !== "rejected" &&
-        booking.status !== "declined"
+        normalizeDate(booking.startDate) < currentDate &&
+        booking.approvalStatus === "approved" &&
+        booking.status === "pending"
       ) {
-        booking.status = "completed";
+        booking.status = "declined";
+        booking.approvalStatus = "rejected";
         await booking.save();
       }
     });

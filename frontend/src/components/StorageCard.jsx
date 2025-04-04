@@ -19,6 +19,7 @@ const StorageCard = ({ warehouse, onDelete, isFavorite = false }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0); // New state
   const [user, setUser] = useState("");
+  const [userRole, setUserRole] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -70,6 +71,8 @@ const StorageCard = ({ warehouse, onDelete, isFavorite = false }) => {
       try {
         const decodedToken = jwtDecode(storedToken);
         setUser(decodedToken.userId);
+        setUserRole(decodedToken.role);
+        // console.log(user.role);
       } catch (error) {
         console.error("Invalid token", error);
         localStorage.removeItem("token");
@@ -131,7 +134,7 @@ const StorageCard = ({ warehouse, onDelete, isFavorite = false }) => {
                 </span>
               )}
             </div>
-            {warehouse.ownerId.role === "farmer" && (
+            {userRole && userRole === "farmer" && (
               <div>
                 <p className="flex items-center text-gray-700 text-sm gap-1 font-medium">
                   {/* <User2Icon className="w-3 h-3 mr-1" /> */}
