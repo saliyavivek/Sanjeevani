@@ -45,6 +45,55 @@ const BookingManagement = () => {
       booking.status.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const normalizeDate1 = (date) => {
+    const normalizedDate = new Date(date);
+    normalizedDate.setHours(0, 0, 0, 0);
+    return normalizedDate;
+  };
+
+  const categorizeBookings = () => {
+    const today = normalizeDate1(new Date());
+    return {
+      past: bookings.filter(
+        (booking) =>
+          normalizeDate1(booking.endDate) < today &&
+          booking.approvalStatus == "approved"
+      ),
+      current: bookings.filter(
+        (booking) =>
+          normalizeDate1(booking.startDate) <= today &&
+          normalizeDate1(booking.endDate) >= today &&
+          booking.approvalStatus == "approved" &&
+          booking.warehouseId.isStandBy != true
+      ),
+      upcoming: bookings.filter(
+        (booking) =>
+          normalizeDate1(booking.startDate) > today &&
+          booking.approvalStatus == "approved" &&
+          booking.warehouseId.isStandBy != true
+      ),
+      declined: bookings.filter(
+        (booking) =>
+          booking.approvalStatus == "rejected" && booking.status == "declined"
+      ),
+      pending: bookings.filter(
+        (booking) =>
+          booking.approvalStatus == "pending" &&
+          booking.status == "pending" &&
+          booking.warehouseId.isStandBy != true
+      ),
+      awaiting: bookings.filter(
+        (booking) =>
+          booking.warehouseId.isStandBy == true &&
+          booking.status == "pending" &&
+          booking.approvalStatus == "approved"
+      ),
+    };
+  };
+
+  const { past, current, upcoming, declined, pending, awaiting } =
+    categorizeBookings();
+
   return (
     <div>
       <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6">
@@ -146,18 +195,43 @@ const BookingManagement = () => {
                   <td className="py-3 px-6">
                     <a href={`/booking/${booking._id}`}>
                       <span
-                        className={`px-2 py-1 rounded-full text-xs ${
-                          booking.status === "completed"
-                            ? "bg-gray-200 text-gray-800"
-                            : booking.status === "pending"
-                            ? "bg-yellow-200 text-yellow-800"
-                            : booking.status === "active"
-                            ? "bg-green-200 text-green-800"
-                            : "bg-red-200 text-red-800"
-                        }`}
+                        className={`text-xs font-medium bg-${
+                          upcoming.includes(booking)
+                            ? "blue"
+                            : current.includes(booking)
+                            ? "green"
+                            : declined.includes(booking)
+                            ? "red"
+                            : pending.includes(booking)
+                            ? "yellow"
+                            : awaiting.includes(booking)
+                            ? "orange"
+                            : "gray"
+                        }-100 text-${
+                          upcoming.includes(booking)
+                            ? "blue"
+                            : current.includes(booking)
+                            ? "green"
+                            : declined.includes(booking)
+                            ? "red"
+                            : pending.includes(booking)
+                            ? "yellow"
+                            : awaiting.includes(booking)
+                            ? "orange"
+                            : "gray"
+                        }-800 px-2 py-1 rounded-full text-sm`}
                       >
-                        {booking.status.charAt(0).toUpperCase() +
-                          booking.status.slice(1)}
+                        {upcoming.includes(booking)
+                          ? "Upcoming"
+                          : current.includes(booking)
+                          ? "Active"
+                          : declined.includes(booking)
+                          ? "Declined"
+                          : pending.includes(booking)
+                          ? "Pending"
+                          : awaiting.includes(booking)
+                          ? "Awaiting Payment"
+                          : "Completed"}
                       </span>
                     </a>
                   </td>

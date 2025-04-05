@@ -134,7 +134,7 @@ const Navbar = () => {
     <div ref={profileDropdownRef} className="relative">
       <button
         onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-        className={`flex items-center space-x-2 focus:outline-none ${
+        className={`flex items-center space-x-2 focus:outline-none  ${
           hasUnread || hasPendingPayments ? "profile-pic green-dot" : ""
         }`}
       >

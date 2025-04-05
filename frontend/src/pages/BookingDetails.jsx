@@ -135,6 +135,43 @@ const BookingDetails = () => {
     return null; // Render loading state
   }
 
+  const normalizeDate1 = (date) => {
+    const normalizedDate = new Date(date);
+    normalizedDate.setHours(0, 0, 0, 0);
+    return normalizedDate;
+  };
+
+  const categorizeBookings = () => {
+    const today = normalizeDate1(new Date());
+    return {
+      past:
+        normalizeDate1(booking.endDate) < today &&
+        booking.approvalStatus == "approved",
+      current:
+        normalizeDate1(booking.startDate) <= today &&
+        normalizeDate1(booking.endDate) >= today &&
+        booking.approvalStatus == "approved" &&
+        booking.warehouseId.isStandBy != true,
+      upcoming:
+        normalizeDate1(booking.startDate) > today &&
+        booking.approvalStatus == "approved" &&
+        booking.warehouseId.isStandBy != true,
+      declined:
+        booking.approvalStatus == "rejected" && booking.status == "declined",
+      pending:
+        booking.approvalStatus == "pending" &&
+        booking.status == "pending" &&
+        booking.warehouseId.isStandBy != true,
+      awaiting:
+        booking.warehouseId.isStandBy == true &&
+        booking.status == "pending" &&
+        booking.approvalStatus == "approved",
+    };
+  };
+
+  const { past, current, upcoming, declined, pending, awaiting } =
+    categorizeBookings();
+
   const handlePayment = async () => {
     setPaying(true);
     const response = await fetch(`${API_BASE_URL}/bookings/${id}`, {
@@ -155,7 +192,6 @@ const BookingDetails = () => {
     }
     const data = await response.json();
     showSuccessToast("Payment successfull.");
-    setPaying(false);
     // console.log(data.message, data.booking);
     // console.log(data.booking);
     // generateInvoice(data.booking);
@@ -164,6 +200,7 @@ const BookingDetails = () => {
     setTimeout(() => {
       setBooking({ ...booking, status: "active" });
       setIsPaymentModalOpen(false);
+      setPaying(false);
     }, 1000);
   };
 
@@ -254,16 +291,45 @@ const BookingDetails = () => {
                   ) : (
                     <StatusBadge status={booking.status} />
                   )} */}
-                  {booking.status !== "pending" &&
-                  normalizeDate(booking.startDate) >
-                    normalizeDate(new Date()) ? (
-                    <StatusBadge status="upcoming" />
-                  ) : normalizeDate(new Date()) >
-                    normalizeDate(booking.endDate) ? (
-                    <StatusBadge status="completed" />
-                  ) : (
-                    <StatusBadge status={booking.status} />
-                  )}
+                  <span
+                    className={`text-xs font-medium bg-${
+                      upcoming
+                        ? "blue"
+                        : current
+                        ? "green"
+                        : declined
+                        ? "red"
+                        : pending
+                        ? "yellow"
+                        : awaiting
+                        ? "orange"
+                        : "gray"
+                    }-100 text-${
+                      upcoming
+                        ? "blue"
+                        : current
+                        ? "green"
+                        : declined
+                        ? "red"
+                        : pending
+                        ? "yellow"
+                        : awaiting
+                        ? "orange"
+                        : "gray"
+                    }-800 px-2 py-1 rounded-full text-sm`}
+                  >
+                    {upcoming
+                      ? "Upcoming"
+                      : current
+                      ? "Active"
+                      : declined
+                      ? "Declined"
+                      : pending
+                      ? "Pending"
+                      : awaiting
+                      ? "Awaiting Payment"
+                      : "Completed"}
+                  </span>
                 </div>
                 <img
                   src={booking.warehouseId.images[0]}

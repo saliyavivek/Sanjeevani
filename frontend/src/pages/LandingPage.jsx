@@ -279,9 +279,9 @@ const LandingPage = () => {
                     "Our platform provides up-to-date information on storage availability, so you can make informed decisions.",
                 },
                 {
-                  title: "Secure Payments",
+                  title: "Transparent Pricing",
                   description:
-                    "Our integrated payment system ensures your transactions are safe and secure.",
+                    "Easily view storage costs upfront, with no hidden fees, to make informed decisions.",
                 },
               ].map((feature, index) => (
                 <div key={index} className="relative">
@@ -320,25 +320,31 @@ const LandingPage = () => {
             <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
               {[
                 {
-                  name: "Rajesh Kumar",
+                  name: "Drashti Vadchhak",
                   role: "Wheat Farmer",
                   image: "/placeholder.svg?height=100&width=100",
                   quote:
                     "Sanjeevani has been a game-changer for me. I no longer worry about where to store my harvest.",
+                  avatar:
+                    "https://res.cloudinary.com/dqb07bzeu/image/upload/v1741024626/sanjeevani/j56ax8berdhshgl6qqdl.jpg",
                 },
                 {
-                  name: "Priya Sharma",
+                  name: "Vivek Saliya",
                   role: "Rice Grower",
                   image: "/placeholder.svg?height=100&width=100",
                   quote:
                     "The ease of finding and booking storage has significantly reduced my post-harvest stress.",
+                  avatar:
+                    "https://res.cloudinary.com/dqb07bzeu/image/upload/v1741193943/sanjeevani/qo7akbwuearoqpb0enqo.png",
                 },
                 {
-                  name: "Amit Patel",
+                  name: "Deep Patel",
                   role: "Fruit Orchard Owner",
                   image: "/placeholder.svg?height=100&width=100",
                   quote:
                     "Thanks to Sanjeevani, I can now store my fruits in climate-controlled facilities, extending their shelf life.",
+                  avatar:
+                    "https://res.cloudinary.com/dqb07bzeu/image/upload/v1742737099/sanjeevani/z5pmrcrcu7w2f61anxdp.png",
                 },
               ].map((testimonial, index) => (
                 <div
@@ -346,7 +352,10 @@ const LandingPage = () => {
                   className="bg-white shadow-lg rounded-lg px-5 py-6 sm:px-6"
                 >
                   <div className="flex items-center space-x-4">
-                    <User />
+                    <img
+                      src={testimonial.avatar}
+                      className="w-12 h-12 rounded-full"
+                    />
                     <div>
                       <h3 className="text-lg font-medium text-gray-900">
                         {testimonial.name}
@@ -396,7 +405,7 @@ const LandingPage = () => {
       {/* Footer */}
       <footer className="bg-[#F0FDF4] p-8 rounded-lg shadow-lg">
         <div className="grid gap-6 md:grid-cols-3">
-          <div className="">
+          <div>
             <h1 className="text-2xl font-bold text-green-900">
               Connecting Farmers to Trusted Warehouses{" "}
             </h1>
@@ -407,17 +416,23 @@ const LandingPage = () => {
               efficiency, ultimately improving livelihoods and food security.
             </p>
           </div>
-          <div>
+          <div className="flex flex-col gap-9">
             <b className="text-xl text-green-800">Location</b>
-            <p className="mt-2 text-gray-700">Sanjeevani Storage Solutions</p>
-            <p className="text-gray-700">26, Warehouse Street, Surat, 395004</p>
-            <hr className="my-3 border-gray-300" />
-            <p className="text-green-700 font-semibold">
-              contact@sanjeevani.com | +91 7096348632
-            </p>
+            <div>
+              <p className="mt-2 text-gray-700">Sanjeevani Storage Solutions</p>
+              <p className="text-gray-700">
+                26, Warehouse Street, Surat, 395004
+              </p>
+              <hr className="my-3 border-gray-300" />
+              <p className="text-green-700 font-semibold">
+                contact@sanjeevani.com | +91 7096348632
+              </p>
+            </div>
           </div>
-          <div className="p-4 text-center">
-            <p className="mb-4 text-green-800 font-semibold">Follow Us On</p>
+          <div className="p-1 text-center">
+            <p className="mb-4 text-xl text-green-800 font-bold">
+              Follow Us On
+            </p>
             <div className="flex flex-col justify-center items-center">
               <div className="flex justify-center space-x-6">
                 <a href="#" className="text-gray-400 hover:text-gray-500">
@@ -465,7 +480,7 @@ const LandingPage = () => {
             </div>
           </div>
         </div>
-        <p className="text-center text-gray-500 mt-1">
+        <p className="text-center text-gray-500 mt-12">
           &copy; 2025 Sanjeevani. All rights reserved.
         </p>
       </footer>

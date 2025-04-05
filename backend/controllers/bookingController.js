@@ -117,13 +117,23 @@ const getUserBookings = async (req, res) => {
     const currentDate = normalizeDate(new Date());
     bookings.forEach(async (booking) => {
       if (
-        normalizeDate(booking.startDate) < currentDate &&
-        booking.approvalStatus === "approved" &&
-        booking.status === "pending"
+        (normalizeDate(booking.startDate) < currentDate &&
+          booking.approvalStatus === "pending" &&
+          booking.status === "pending") ||
+        (normalizeDate(booking.startDate) < currentDate &&
+          booking.approvalStatus === "appproved" &&
+          booking.status === "pending")
       ) {
+        const warehouse = await Warehouse.findOne({ _id: booking.warehouseId });
+        if (!warehouse) {
+          res.status(200).json({ message: "No warehouse found." });
+        }
+        warehouse.isStandBy = false;
+
         booking.status = "declined";
         booking.approvalStatus = "rejected";
         await booking.save();
+        warehouse.save();
       }
     });
 
