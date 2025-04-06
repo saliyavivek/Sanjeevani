@@ -121,7 +121,7 @@ const getUserBookings = async (req, res) => {
           booking.approvalStatus === "pending" &&
           booking.status === "pending") ||
         (normalizeDate(booking.startDate) < currentDate &&
-          booking.approvalStatus === "appproved" &&
+          booking.approvalStatus === "approved" &&
           booking.status === "pending")
       ) {
         const warehouse = await Warehouse.findOne({ _id: booking.warehouseId });
@@ -133,7 +133,7 @@ const getUserBookings = async (req, res) => {
         booking.status = "declined";
         booking.approvalStatus = "rejected";
         await booking.save();
-        warehouse.save();
+        await warehouse.save();
       }
     });
 
