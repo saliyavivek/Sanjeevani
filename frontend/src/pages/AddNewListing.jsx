@@ -225,7 +225,7 @@ const AddNewListing = () => {
       return;
     }
 
-    if (!formData.image) {
+    if (!existingWarehouse && !formData.image) {
       showErrorToast("Please select an image for your warehouse.");
       return;
     }
