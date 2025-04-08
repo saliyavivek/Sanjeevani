@@ -347,9 +347,48 @@ const totalUsers = async (req, res) => {
 const fetchAllUsers = async (req, res) => {
   try {
     const allUsers = await User.find({ role: { $ne: "admin" } });
-    // console.log(allUsers);
+    const updatedUsersMap = new Map(); // to store user with canDelete flag
 
-    res.status(200).json({ allUsers });
+    for (const user of allUsers) {
+      const userObj = user.toObject();
+      userObj.canDelete = true; // default
+
+      const booking = await Booking.findOne({
+        userId: user._id,
+        approvalStatus: "approved",
+        status: { $in: ["active", "pending"] },
+      }).populate({
+        path: "warehouseId",
+        select: "ownerId",
+      });
+
+      if (booking) {
+        userObj.canDelete = false;
+
+        // Mark the warehouse owner as canDelete = false
+        const ownerId = booking?.warehouseId?.ownerId;
+        if (ownerId) {
+          const ownerKey = ownerId.toString();
+          if (!updatedUsersMap.has(ownerKey)) {
+            const ownerUser = await User.findById(ownerId);
+            if (ownerUser && ownerUser.role !== "admin") {
+              const ownerObj = ownerUser.toObject();
+              ownerObj.canDelete = false;
+              updatedUsersMap.set(ownerKey, ownerObj);
+            }
+          } else {
+            // If already in map, just make sure canDelete is false
+            const existing = updatedUsersMap.get(ownerKey);
+            existing.canDelete = false;
+          }
+        }
+      }
+
+      updatedUsersMap.set(user._id.toString(), userObj);
+    }
+
+    const updatedUsers = Array.from(updatedUsersMap.values());
+    res.status(200).json({ allUsers: updatedUsers });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to fetch all users" });

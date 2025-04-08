@@ -399,12 +399,14 @@ const BookingDetails = () => {
                     onClick={() => setIsPaymentModalOpen(true)}
                     disabled={
                       booking.approvalStatus === "pending" ||
-                      userRole === "admin"
+                      userRole === "admin" ||
+                      userRole === "owner"
                     }
                     className={`w-full bg-emerald-600 text-white py-2 px-4 rounded-lg hover:bg-emerald-700 transition-colors
                         ${
                           booking.approvalStatus === "pending" ||
-                          userRole === "admin"
+                          userRole === "admin" ||
+                          userRole === "owner"
                             ? "opacity-50 cursor-not-allowed"
                             : ""
                         }
@@ -425,13 +427,15 @@ const BookingDetails = () => {
                     booking.status === "active" ||
                     booking.status === "completed" ||
                     booking.status === "declined" ||
-                    userRole === "admin"
+                    userRole === "admin" ||
+                    userRole === "owner"
                   }
                   className={`w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-100 transition-colors ${
                     booking.status === "active" ||
                     booking.status === "completed" ||
                     booking.status === "declined" ||
-                    userRole === "admin"
+                    userRole === "admin" ||
+                    userRole === "owner"
                       ? "opacity-50 cursor-not-allowed"
                       : ""
                   }`}

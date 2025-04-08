@@ -32,6 +32,7 @@ const UserManagement = () => {
       const data = await response.json();
       setAllUsers(data.allUsers);
       setUsers(data.allUsers);
+      // console.log(data.allUsers);
 
       setCountFarmers(
         data.allUsers.filter((user) => user.role === "farmer").length
@@ -231,7 +232,15 @@ const UserManagement = () => {
                       <Edit size={18} />
                     </button>
                     <button
-                      className="text-red-500 hover:text-red-700"
+                      disabled={!user.canDelete}
+                      className={`text-red-500 hover:text-red-700 ${
+                        !user.canDelete ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
+                      title={
+                        !user.canDelete && user.role === "owner"
+                          ? "Can't delete this owner currently"
+                          : "Can't delete this farmer currently"
+                      }
                       onClick={() => {
                         setSelectedUserId(user._id);
                         setIsDeleteModalOpen(true);
