@@ -130,7 +130,7 @@ export default function BrowseStorage() {
             >
               <ArrowLeft className="h-5 w-5 text-gray-600" />
             </button>
-            <h1 className="text-xl font-semibold text-gray-900 md:text-3xl">
+            <h1 className="text-2xl font-semibold text-gray-900 md:text-3xl">
               Explore Storages
             </h1>
           </div>

@@ -198,7 +198,7 @@ const FarmerDashboard = () => {
               Active Bookings
             </h3>
             <p className="text-2xl md:text-3xl font-bold text-green-600">
-              {info.filter((booking) => booking.status === "active").length}
+              {current.length}
             </p>
           </div>
           <div className="bg-white rounded-lg shadow p-4 md:p-6">

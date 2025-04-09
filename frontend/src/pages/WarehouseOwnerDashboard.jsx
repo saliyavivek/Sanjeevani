@@ -219,13 +219,7 @@ const WarehouseOwnerDashboard = () => {
               Active Bookings
             </h3>
             <p className="text-2xl lg:text-3xl font-bold text-blue-600">
-              {
-                info.filter(
-                  (booking) =>
-                    booking.approvalStatus == "approved" &&
-                    booking.status == "active"
-                ).length
-              }
+              {current.length}
             </p>
           </div>
           <div className="bg-white rounded-lg shadow p-4 lg:p-6">
