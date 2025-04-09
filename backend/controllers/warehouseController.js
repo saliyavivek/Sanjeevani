@@ -151,7 +151,10 @@ const getAllWarehouses = async (req, res) => {
         //   warehouse.availability = "booked"; // Ensure availability reflects reality
         //   return warehouse.save();
         // }
-        if (allBookingsCompleted || allBookingsPending) {
+        if (
+          (allBookingsCompleted || allBookingsPending) &&
+          warehouse.availability != "maintenance"
+        ) {
           warehouse.availability = "available";
           return warehouse.save(); // Save the updated warehouse
         }
