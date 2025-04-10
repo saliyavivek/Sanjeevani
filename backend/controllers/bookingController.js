@@ -134,6 +134,15 @@ const getUserBookings = async (req, res) => {
         booking.approvalStatus = "rejected";
         await booking.save();
         await warehouse.save();
+
+        const startDateFormatted = formatDate(booking.startDate);
+        const endDateFormatted = formatDate(booking.endDate);
+
+        await Notification.create({
+          userId: booking.userId,
+          content: `Your booking at ${warehouse.name} from ${startDateFormatted} to ${endDateFormatted} has been canceled due to non-payment within the required timeframe.`,
+          type: "cancel",
+        });
       }
     });
 
