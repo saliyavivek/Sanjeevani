@@ -37,6 +37,8 @@ const UserSettings = () => {
   const navigate = useNavigate();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
@@ -77,7 +79,6 @@ const UserSettings = () => {
         }
         const data = await response.json();
         setUser(data);
-        // console.log(user);
       }
     } catch (error) {
       console.log(error);
@@ -275,6 +276,19 @@ const UserSettings = () => {
     }
   }
 
+  function handleClick(isClicked) {
+    setIsClicked(true);
+
+    if (!user.canDelete) {
+      setShowWarning(true);
+      return;
+    }
+
+    if (!isClicked) {
+      setIsDeleteModalOpen(true);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -431,18 +445,12 @@ const UserSettings = () => {
               />
             </div>
             <div className="py-4">
-              <a
-                onClick={() => setIsDeleteModalOpen(true)}
-                className="text-red-600 hover:bg-red-100 rounded md:p-2 cursor-pointer"
+              <button
+                onClick={() => handleClick(isClicked)}
+                className="text-red-600 hover:bg-red-100 rounded md:p-2"
               >
                 Delete account
-              </a>
-              {/* <button
-              onClick={() => setIsDeleteModalOpen(true)}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-            >
-              Delete Account
-            </button> */}
+              </button>
 
               <DeleteAccountModal
                 isOpen={isDeleteModalOpen}
@@ -451,12 +459,23 @@ const UserSettings = () => {
               />
             </div>
           </div>
-          {/* <InputField
-            label="Password"
-            value="••••••••"
-            field="password"
-            type="password"
-          /> */}
+          <div className={`${isClicked ? "" : "hidden"}`}>
+            {showWarning && !user.canDelete && (
+              <div className="flex items-start justify-between bg-red-50 border border-red-300 text-red-700 p-3 rounded-md mt-2 relative w-full">
+                <p className="text-sm font-semibold">
+                  Account deletion is currently unavailable. Please wait until
+                  all {user.role === "owner" ? "your customers'" : "your"}{" "}
+                  ongoing bookings are completed.
+                </p>
+                <button
+                  className="text-red-500 hover:text-red-700 ml-4"
+                  onClick={() => setShowWarning(false)}
+                >
+                  &times;
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

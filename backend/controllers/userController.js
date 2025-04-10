@@ -110,20 +110,45 @@ const signin = async (req, res) => {
 
 const getUserDetails = async (req, res) => {
   try {
-    // console.log(req.body);
-
     const userId = req.body.userId;
     if (!userId) {
-      return res.status(400).json({ message: "user id is required." });
+      return res.status(400).json({ message: "User ID is required." });
     }
 
-    const user = await User.findOne({ _id: userId });
+    const user = await User.findById(userId);
     if (!user) {
-      return res.status(400).json({ message: "user does not found." });
+      return res.status(404).json({ message: "User not found." });
     }
-    // console.log(user);
 
-    return res.status(200).json(user);
+    let canDelete = true;
+
+    // Check if the user has any active bookings
+    const userBookings = await Booking.find({
+      userId,
+      approvalStatus: "approved",
+      status: { $in: ["active", "pending"] },
+    });
+
+    if (userBookings.length > 0) {
+      canDelete = false;
+    }
+
+    // If user is owner, check if any of their warehouses are booked
+    if (user.role === "owner") {
+      const bookedWarehouses = await Warehouse.find({
+        ownerId: userId,
+        availability: { $in: ["booked", "pending"] },
+      });
+
+      if (bookedWarehouses.length > 0) {
+        canDelete = false;
+      }
+    }
+
+    const userResponse = user.toObject();
+    userResponse.canDelete = canDelete;
+
+    return res.status(200).json(userResponse);
   } catch (error) {
     res.status(500).json({ message: "Error fetching user details." });
   }
@@ -347,12 +372,13 @@ const totalUsers = async (req, res) => {
 const fetchAllUsers = async (req, res) => {
   try {
     const allUsers = await User.find({ role: { $ne: "admin" } });
-    const updatedUsersMap = new Map(); // to store user with canDelete flag
+    const updatedUsersMap = new Map();
 
     for (const user of allUsers) {
       const userObj = user.toObject();
-      userObj.canDelete = true; // default
+      userObj.canDelete = true;
 
+      // 1. Check if user has an active/pending approved booking
       const booking = await Booking.findOne({
         userId: user._id,
         approvalStatus: "approved",
@@ -365,7 +391,7 @@ const fetchAllUsers = async (req, res) => {
       if (booking) {
         userObj.canDelete = false;
 
-        // Mark the warehouse owner as canDelete = false
+        // 2. Mark the warehouse owner as canDelete = false
         const ownerId = booking?.warehouseId?.ownerId;
         if (ownerId) {
           const ownerKey = ownerId.toString();
@@ -377,10 +403,21 @@ const fetchAllUsers = async (req, res) => {
               updatedUsersMap.set(ownerKey, ownerObj);
             }
           } else {
-            // If already in map, just make sure canDelete is false
             const existing = updatedUsersMap.get(ownerKey);
             existing.canDelete = false;
           }
+        }
+      }
+
+      // 3. If user is an owner, check if any of their warehouses are booked
+      if (user.role === "owner") {
+        const hasBookedWarehouse = await Warehouse.exists({
+          ownerId: user._id,
+          availability: { $in: ["booked", "pending"] },
+        });
+
+        if (hasBookedWarehouse) {
+          userObj.canDelete = false;
         }
       }
 

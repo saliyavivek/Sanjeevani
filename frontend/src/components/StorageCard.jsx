@@ -8,6 +8,12 @@ import {
   ChevronRight,
   Star,
   User2Icon,
+  Wrench,
+  CheckCircle,
+  XCircle,
+  Hourglass,
+  Clock,
+  Ban,
 } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import DeleteConfirmModal from "./DeleteConfirmModal";
@@ -156,7 +162,7 @@ const StorageCard = ({ warehouse, onDelete, isFavorite = false }) => {
               <span>{warehouse.size} sq ft</span>
               <span>•</span>
               <p
-                className={`font-medium ${
+                className={`font-medium flex items-center gap-1 ${
                   warehouse.availability === "available" &&
                   warehouse.isStandBy === false
                     ? "text-green-600"
@@ -167,6 +173,17 @@ const StorageCard = ({ warehouse, onDelete, isFavorite = false }) => {
                     : "text-orange-600"
                 }`}
               >
+                {warehouse.availability === "maintenance" &&
+                  warehouse.isStandBy === false && (
+                    <Wrench className="w-4 h-4" />
+                  )}
+                {warehouse.availability === "available" &&
+                  warehouse.isStandBy === false && (
+                    <CheckCircle className="w-4 h-4" />
+                  )}
+                {warehouse.availability === "booked" &&
+                  warehouse.isStandBy === false && <Ban className="w-4 h-4" />}
+                {warehouse.isStandBy === true && <Clock className="w-4 h-4" />}
                 {warehouse.availability === "available" &&
                 warehouse.isStandBy === false
                   ? "Available"
